@@ -49,3 +49,143 @@ Stage Summary:
 - Audit form now includes CA law compliance verification ($1,000 deposit limit per CA BPC §7159)
 - Search dropdown expanded to 22 California-specific home service categories
 - Zero lint errors, zero compilation errors
+
+---
+Task ID: 3-a
+Agent: Dashboard Builder
+Task: Build Dashboard View
+
+Work Log:
+- Created `src/components/dashboard-view.tsx` as a full-featured client component for the homeowner dashboard
+- Implemented Dashboard Header with welcome message ("Welcome back, Homeowner") and 3 quick-action buttons (Audit Anything, Find a Pro, Browse Academy) using `setCurrentPage` from `useAppStore`
+- Built Quick Stats Row with 4 animated stat cards: Sanctuary Points (1,250 pts), Vault Documents (10 files), Academy Progress (8/20 lessons), Active Projects (2) — each with colored icon badges and hover shadow effects
+- Built "The Why" Section with two narrative cards: "The Broken Promise" story (red alert card about $15k contractor fraud) and "Our Mission" statement (blue card about informed ownership) using the exact specified copy
+- Built Vault Widget mini-preview showing 3 recent documents (Contract_AbcRoofing.pdf, Insurance_Cert.pdf, Permit_LACounty.pdf) with typed icons (FileCheck, Shield, FileWarning), dates, and Upload Document + View All Files buttons
+- Built Rewards Tracker with 3 progress items: Referrals (2/5, 200 pts each), Ratings (3 given = +1,500 pts earned), Lessons Completed (8/20, 25 pts each) — each with Progress bars and point descriptions
+- Built Benefit Callout Card as a True Blue gradient card with gold CTA button "Upgrade to Sanctuary Member", listing 3 benefit items with checkmark icons (Priority Guardian access, monthly compliance reports, 2x points)
+- Built Academy Progress section with 4 Pillar mini-cards in a 2-column grid: Pillar I (3/6), Pillar II (2/5), Pillar III (2/5), Pillar IV (1/4) — each with colored Progress bars and Continue buttons
+- Applied Framer Motion fadeUp animations with staggered delays across all sections
+- Used Balanced Palette colors throughout: True Blue (#3257C2), Turquoise (#3ED1B8), Soft Gray (#F4F7F9), Gold (#F5A623), Dark (#1A1D2E)
+- Fully responsive design: 2-col stats on mobile → 4-col on desktop, stacked grids on mobile → side-by-side on desktop
+- Imported `useAppStore` from `@/lib/store` for navigation integration
+- Used shadcn/ui Button and Progress components, lucide-react icons throughout
+- Zero lint errors, zero compilation errors
+
+Stage Summary:
+- Complete Dashboard View component created with 7 distinct sections
+- Integrates with existing Zustand store for navigation state management
+- Consistent with BYLDRS GUARDIAN design system (colors, typography, component patterns)
+- Exported as `DashboardView` for integration into the main page layout
+
+---
+Task ID: 3-b
+Agent: Pro Onboarding Builder
+Task: Build Pro Onboarding View
+
+Work Log:
+- Created `src/components/pro-onboarding-view.tsx` as a full-featured client component for contractor/pro onboarding
+- Implemented 3-step wizard flow with animated step indicator (Step 1: Preview, Step 2: Your Info, Step 3: Discovery Meeting) using clickable step circles, completion checkmarks, connecting progress lines, and page dot indicators
+- Built Step 1 "Pro Splash Page Preview" — aspirational profile card showing: gradient video header with Play button and "Your Video Introduction" text, decorative grid pattern overlay, gold "Certified Guardian" badge, business avatar with gradient, experience stats bar (15+ Years, 500+ Projects, 4.9 Rating) in 3-column grid, Sanctuary Score 96/100 with True Blue progress bar and "Top 5%" callout, verified badge pills (License Verified, Insured, Background Checked)
+- Built Step 2 "Onboarding Form" — two-column layout with Business Information form (Business Name, License # with CSLB helper text, Website URL) and Social Media Links (Instagram, Facebook, LinkedIn) each with platform-specific icons, all using shadcn/ui Input/Label components with icon prefixes
+- Built Business Card Upload section — two side-by-side drag-and-drop zones (Front of Card / Back of Card) with ImagePlus icon, dashed border styling, drag-over state highlighting in True Blue, accepted format notice
+- Built informational gradient callout card ("Why This Matters") with trust-building statistics
+- Built Step 3 "Discovery Meeting" — Calendly-style calendar widget with dynamic current week dates (Mon-Fri), 3 time slot buttons per day (9:00 AM, 11:00 AM, 2:00 PM), clickable selection with True Blue highlight + shadow, past-date disabling, selected slot confirmation display with animated entry, CTA button "Yes, I'm interested — Book my Discovery Meeting" that activates only when a slot is selected, trust signals footer
+- Applied Framer Motion animations: fadeUp with staggered delays, slideIn/exit for step transitions with AnimatePresence, whileHover/whileTap on interactive elements
+- Used Balanced Palette colors: True Blue (#3257C2), Turquoise (#3ED1B8), Soft Gray (#F4F7F9), Gold (#F5A623), Dark (#1A1D2E)
+- Imported `useAppStore` from `@/lib/store` for "Back to Home" navigation
+- Used shadcn/ui Button, Input, Label, Progress components and lucide-react icons throughout
+- Exported as `ProOnboardingView` for integration into the main page layout
+- Zero lint errors, zero compilation errors
+
+Stage Summary:
+- Complete Pro Onboarding View component created with 3-step wizard and 5 major feature sections
+- Aspirational profile preview demonstrates the end-state value proposition for contractor conversion
+- Calendar widget uses real local dates with past-date protection and animated slot selection
+- Consistent with BYLDRS GUARDIAN design system and existing component patterns from dashboard-view
+
+---
+Task ID: 3-c
+Agent: Blog Builder
+Task: Build Blog View
+
+Work Log:
+- Created `src/components/blog-view.tsx` as a full-featured client component for the blog listing page
+- Implemented Blog Header with dark gradient background, decorative blur blobs, "Knowledge Hub" badge, animated title "BYLDRS GUARDIAN Blog" with turquoise gradient text, subtitle, and "Back to Home" navigation button using `setCurrentPage`
+- Built Category Filter as a sticky horizontal filter bar below the header with 7 filter buttons: All, Legal, Roofing, Plumbing, Electrical, Safety, Tips — active filter uses True Blue background with shadow, inactive uses gray; filter logic maps Safety → Electrical/HVAC/Foundation and Tips → Solar/Pool·Spa/Pest Control
+- Built Featured Article hero card with gradient header band (Dark → True Blue → Turquoise), decorative SVG pattern overlay, category badge, full title, excerpt, read time, date, and gold "Featured" badge with star icon
+- Built Article Grid with 8 blog cards (2-column responsive grid) each containing: color-coded category badge, title, excerpt (line-clamp-3), read time, date, top gradient accent bar on hover, "Read more" reveal on hover, shadow transition
+- Built Sidebar (desktop right column / mobile stacked below) with two sections:
+  1. Popular Posts — top 3 posts with numbered rank badges, titles, and read times
+  2. Newsletter Subscribe — dark gradient card with email input, turquoise CTA button, animated success state after subscribe, anti-spam note
+- Applied Framer Motion fadeUp animations with staggered delays, slideIn for sidebar, sticky filter bar with backdrop blur
+- Used Balanced Palette colors: True Blue (#3257C2), Turquoise (#3ED1B8), Soft Gray (#F4F7F9), Gold (#F5A623), Dark (#1A1D2E)
+- Fully responsive: 2-col article grid on sm+, sidebar stacks below on mobile, overflow-x scroll on filter bar
+- Imported `useAppStore` from `@/lib/store`, used shadcn/ui Button, Input, Badge components, lucide-react icons
+- Empty state UI shown when no articles match active filter
+- Zero lint errors, zero compilation errors
+
+Stage Summary:
+- Complete Blog View component created with 5 major sections: header, category filter, featured article, article grid, sidebar
+- 9 articles (1 featured + 8 grid) covering all core industries: Legal, Roofing, Plumbing, Electrical, HVAC, Foundation, Solar, Pool/Spa, Pest Control
+- Interactive category filtering with mapped composite categories (Safety, Tips)
+- Newsletter subscription with animated success feedback
+- Consistent with BYLDRS GUARDIAN design system and existing component patterns
+
+---
+Task ID: 3-e
+Agent: Main Agent
+Task: Full Ecosystem Restoration — Navigation, Routing, Search, Integration
+
+Work Log:
+- Created `src/lib/store.ts` — Zustand navigation store with currentPage (home/dashboard/pro-onboarding/blog), isLoggedIn, userType, login/logout functions, setCurrentPage with auto-scroll-to-top
+- Rebuilt `src/components/header.tsx` — Smart header with public nav (Find a Pro, The Standard, Our Mission) and logged-in homeowner nav (Dashboard, Audit Anything, Academy, Blog). Public CTAs: "Join as a Pro" (outline) + "Join a Property Owner" (solid True Blue). Logged-in CTAs: "Home Dashboard" toggle + logout button. Full mobile menu support for both states.
+- Rebuilt `src/components/hero-section.tsx` — Custom dropdown replacing shadcn Select with Top 20 services (Roofing, Plumbing, Electrical, HVAC, Landscaping, Kitchen Remodel, Bathroom Remodel, Foundation, Solar, Flooring, Painting, Windows/Doors, Concrete, Pool/Spa, Pest Control, Cleaning, Handyman, Drywall, Masonry, Fencing) + "Other" option that triggers a text input "What specialized service do you need?" with AnimatePresence transitions
+- Rebuilt `src/app/page.tsx` — Multi-view router using Zustand store + AnimatePresence for smooth page transitions. Renders HomePage (all landing sections) / DashboardView / ProOnboardingView / BlogView based on currentPage state. Page-level 'use client' directive.
+- Replaced AuditSection with AuditEngine in the homepage flow
+- All linting passes cleanly, dev server compiles without errors
+
+Stage Summary:
+- Platform now has 4 distinct views: Home (landing), Dashboard, Pro Onboarding, Blog
+- Navigation is fully dynamic: public users see marketing nav, logged-in homeowners see dashboard nav
+- Search has Top 20 CA-specific services + Other custom text input
+- "Join a Property Owner" logs user in and navigates to Dashboard; button then becomes "Home Dashboard"
+- Zero lint errors, zero compilation errors, smooth AnimatePresence page transitions
+
+---
+Task ID: 3-d
+Agent: Audit Engine Builder
+Task: Build Audit Engine with Guardian Risk Report
+
+Work Log:
+- Created `src/components/audit-engine.tsx` as a full-featured client component for the Audit Anything tool section
+- Implemented Section Header with "Audit Anything" title (True Blue accent), "The Guardian Risk Report" badge, and subtitle with decorative radial gradient background blobs
+- Built Audit Request Form (left column) with 2-column responsive grid layout:
+  - Row 1: Contractor Name (Input with User icon) + Contractor License # (Input with Hash icon)
+  - Row 2: Trade Category (Select dropdown: Roofing/Plumbing/Electrical/HVAC/General/Solar/Remodeling/Landscaping/Other with Wrench icon) + Contractor Phone (tel Input with Phone icon)
+  - Row 3: Contractor Email (email Input with Mail icon) + Bid Amount $ (number Input with DollarSign icon)
+  - Row 4: Upload Bid Document (drag-and-drop zone with Upload icon, file state tracking, drag-over visual feedback, click-to-upload, file name display with CheckCircle2 confirmation, format/size hints)
+  - Row 5: Additional Concerns (Textarea with MessageSquare icon)
+  - Submit button "Generate Guardian Risk Report" in Turquoise with Shield icon, loading spinner state during generation (1.8s simulated delay)
+- Built Guardian Risk Report (right column, shown via AnimatePresence after form submission):
+  - Report Header: Dark→True Blue gradient with Shield icon, "GUARDIAN RISK REPORT" title, contractor name, date, Report ID (generated from timestamp)
+  - Overall Risk Score: SVG circular progress ring with animated stroke (72/100), color-coded (green >80, gold 60-80, red <60), scale-in animation
+  - Risk Level Badge: "MODERATE RISK" in amber/Gold with AlertTriangle icon
+  - 20-Point Protocol Results: 4-column × 5-row grid (responsive: 1-col mobile, 2-col sm, 4-col lg), each point with green CheckCircle2 (pass) or red XCircle (fail) + numbered label, failed items show red detail text (e.g. "FAILED - $3,500 asked", "FAILED - only 1 of 3", "FAILED - missing"), staggered fadeUp animations
+  - Summary Stats bar: 16/20 Passed (green) vs 4 Failed (red) with icon badges and dividers on Soft Gray background
+  - Action Items box: 3 numbered red alert cards with severity labels (WARNING/CAUTION/ALERT) containing the specified legal compliance warnings about Workers' Comp, $3,500 deposit exceeding CA BPC §7159 limit, and reference verification gap
+  - Report Footer disclaimer about informational purposes
+  - Action buttons: "New Audit Request" (reset form) + "Download Report"
+- Pre-submission placeholder state shows shield icon with "Report will appear here" prompt
+- Applied Framer Motion animations: fadeUp, containerStagger, childFade, AnimatePresence for form↔report transitions, whileInView on main sections
+- Used Balanced Palette colors: True Blue (#3257C2), Turquoise (#3ED1B8), Soft Gray (#F4F7F9), Gold (#F5A623), Dark (#1A1D2E), Red (#EF4444)
+- Used shadcn/ui Button, Input, Textarea, Label, Badge, Select components
+- Used lucide-react icons: Shield, CheckCircle2, XCircle, AlertTriangle, FileText, Upload, ClipboardCheck, User, Phone, Mail, DollarSign, Hash, Wrench, MessageSquare, ChevronDown, Download, Calendar, Fingerprint
+- Fully responsive: 1-col stacked on mobile, 2-col side-by-side on lg+, 2-col form grid collapses to 1-col on mobile
+- Exported as `AuditEngine` named export for page integration
+- Zero lint errors, zero compilation errors
+
+Stage Summary:
+- Complete Audit Engine component created with comprehensive audit request form and Guardian Risk Report generator
+- Mock report displays realistic 20-Point Protocol results (16 passed, 4 failed) with animated circular score, risk level badge, and actionable legal compliance warnings
+- Interactive form with drag-and-drop file upload, trade category select, and form state management via useState
+- Consistent with BYLDRS GUARDIAN design system and existing component patterns

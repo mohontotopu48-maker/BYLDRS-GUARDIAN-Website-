@@ -2,44 +2,49 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
-import { Search, Star, Users, ArrowRight } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Search, Star, Users, ArrowRight, ChevronDown } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-const categories = [
+const top20Services = [
   'Roofing',
   'Plumbing',
   'Electrical',
   'HVAC',
-  'General Contracting',
   'Landscaping',
-  'Solar Installation',
-  'Remodeling',
-  'Painting',
+  'Kitchen Remodel',
+  'Bathroom Remodel',
+  'Foundation',
+  'Solar',
   'Flooring',
-  'Window & Door Installation',
-  'Kitchen & Bath Renovation',
-  'Concrete & Masonry',
-  'Fencing & Gates',
-  'Pool & Spa Construction',
-  'Termite & Pest Control',
-  'Waterproofing',
-  'Demolition',
-  'Tree Service & Removal',
-  'Security & Alarm Systems',
-  'Interior Design',
-  'Structural Engineering',
+  'Painting',
+  'Windows/Doors',
+  'Concrete',
+  'Pool/Spa',
+  'Pest Control',
+  'Cleaning',
+  'Handyman',
+  'Drywall',
+  'Masonry',
+  'Fencing',
 ];
 
 export function HeroSection() {
-  const [category, setCategory] = useState('');
+  const [selectedService, setSelectedService] = useState('');
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [showOtherInput, setShowOtherInput] = useState(false);
+  const [otherValue, setOtherValue] = useState('');
+
+  const handleSelect = (service: string) => {
+    if (service === 'Other') {
+      setShowOtherInput(true);
+      setSelectedService('');
+    } else {
+      setSelectedService(service);
+      setShowOtherInput(false);
+    }
+    setDropdownOpen(false);
+  };
 
   return (
     <section className="relative overflow-hidden bg-white pt-24 pb-16 lg:pt-32 lg:pb-24">
@@ -137,24 +142,82 @@ export function HeroSection() {
               </div>
             </div>
 
-            {/* GHL-Style Search Box */}
+            {/* Perfect Pro Search Box */}
             <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-lg shadow-[#1A1D2E]/[0.04] p-5 sm:p-6">
               <h3 className="text-sm font-semibold text-[#1A1D2E] mb-4">
-                Find Your Perfect Contractor
+                Find Your Perfect Pro
               </h3>
               <div className="space-y-3">
-                <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger className="w-full h-12 rounded-lg border-[#E5E7EB] bg-[#F4F7F9] text-sm">
-                    <SelectValue placeholder="Select Category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories.map((cat) => (
-                      <SelectItem key={cat} value={cat}>
-                        {cat}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                {/* Custom Dropdown */}
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                    className="w-full h-12 rounded-lg border border-[#E5E7EB] bg-[#F4F7F9] text-sm text-left px-4 flex items-center justify-between hover:border-[#3257C2]/30 transition-colors"
+                  >
+                    <span className={showOtherInput ? 'text-[#3257C2] font-medium' : selectedService ? 'text-[#1A1D2E]' : 'text-[#1A1D2E]/40'}>
+                      {showOtherInput ? otherValue || 'Describe your service need...' : selectedService || 'Select a Service'}
+                    </span>
+                    <ChevronDown className={`h-4 w-4 text-[#1A1D2E]/40 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  <AnimatePresence>
+                    {dropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute z-20 top-full left-0 right-0 mt-1 bg-white rounded-lg border border-[#E5E7EB] shadow-xl shadow-[#1A1D2E]/[0.1] overflow-hidden max-h-72 overflow-y-auto scrollbar-thin"
+                      >
+                        <div className="py-1">
+                          {top20Services.map((service) => (
+                            <button
+                              key={service}
+                              type="button"
+                              onClick={() => handleSelect(service)}
+                              className={`w-full text-left px-4 py-2.5 text-sm hover:bg-[#3257C2]/5 transition-colors ${
+                                selectedService === service ? 'text-[#3257C2] font-semibold bg-[#3257C2]/5' : 'text-[#1A1D2E]/80'
+                              }`}
+                            >
+                              {service}
+                            </button>
+                          ))}
+                          <div className="border-t border-[#E5E7EB] my-1" />
+                          <button
+                            type="button"
+                            onClick={() => handleSelect('Other')}
+                            className="w-full text-left px-4 py-2.5 text-sm text-[#3ED1B8] font-semibold hover:bg-[#3ED1B8]/5 transition-colors flex items-center gap-2"
+                          >
+                            <span className="text-base">+</span>
+                            Other — Describe Your Service Need
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Other text input (shown when Other is selected) */}
+                <AnimatePresence>
+                  {showOtherInput && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <Input
+                        value={otherValue}
+                        onChange={(e) => setOtherValue(e.target.value)}
+                        placeholder="What specialized service do you need?"
+                        className="h-12 rounded-lg border-[#3257C2]/30 bg-[#F4F7F9] text-sm placeholder:text-[#1A1D2E]/30 focus:border-[#3257C2]"
+                        autoFocus
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
                 <div className="flex gap-3">
                   <Input
                     placeholder="Enter your ZIP code"
