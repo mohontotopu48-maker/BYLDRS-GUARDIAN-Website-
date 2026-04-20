@@ -18,7 +18,7 @@ import { motion } from 'framer-motion';
 const bulletPoints = [
   {
     icon: Shield,
-    text: 'We cross-check licenses, insurance, and complaint history against state records in real time.',
+    text: 'We cross-check licenses, insurance, and complaint history against CSLB state records in real time.',
   },
   {
     icon: FileWarning,
@@ -26,7 +26,7 @@ const bulletPoints = [
   },
   {
     icon: DollarSign,
-    text: 'Get a free market comparison — know if your bid is fair, high, or suspiciously low.',
+    text: 'We verify compliance with CA law — including the $1,000 deposit limit. Never overpay upfront.',
   },
 ];
 
@@ -240,9 +240,16 @@ export function AuditSection() {
                     <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </Button>
 
-                  <p className="text-center text-xs text-[#1A1D2E]/40 mt-3">
-                    🔒 Your information is secure and never shared with
-                    contractors.
+                  <div className="bg-[#3257C2]/[0.04] border border-[#3257C2]/10 rounded-lg p-3 mt-1">
+                  <p className="text-[11px] text-[#1A1D2E]/50 text-center leading-relaxed">
+                    <span className="font-semibold text-[#3257C2]">CA Law Alert:</span> California limits contractor deposits to{' '}
+                    <span className="font-bold text-[#3257C2]">$1,000 or 10% of the total contract price</span>, whichever is less (CA BPC §7159).
+                    We verify this for you.
+                  </p>
+                </div>
+
+                <p className="text-center text-xs text-[#1A1D2E]/40 mt-3">
+                    🔒 Your information is secure and never shared with contractors.
                   </p>
                 </form>
               )}

@@ -5,9 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Shield, Menu, X } from 'lucide-react';
 
 const navLinks = [
+  { label: 'How It Works', href: '#how-it-works' },
   { label: 'Find a Pro', href: '#pro-grid' },
   { label: 'The Standard', href: '#audit-section' },
-  { label: 'Our Mission', href: '#academy' },
+  { label: 'Our Mission', href: '#mission' },
 ];
 
 export function Header() {

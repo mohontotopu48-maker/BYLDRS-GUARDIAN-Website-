@@ -6,15 +6,15 @@ import { Separator } from '@/components/ui/separator';
 const footerLinks = {
   platform: [
     { label: 'Find a Pro', href: '#pro-grid' },
+    { label: 'How It Works', href: '#how-it-works' },
+    { label: 'How We Rank', href: '#how-we-rank' },
     { label: 'The Standard', href: '#audit-section' },
-    { label: 'Homeowner Academy', href: '#academy' },
-    { label: 'Pricing', href: '#' },
   ],
   company: [
-    { label: 'Our Mission', href: '#' },
-    { label: 'About Us', href: '#' },
-    { label: 'Careers', href: '#' },
-    { label: 'Press', href: '#' },
+    { label: 'Our Mission', href: '#mission' },
+    { label: 'Homeowner Academy', href: '#academy' },
+    { label: 'Rewards Program', href: '#rewards' },
+    { label: 'Homeowner Vault', href: '#vault' },
   ],
   resources: [
     { label: 'Help Center', href: '#' },

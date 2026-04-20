@@ -24,6 +24,18 @@ const categories = [
   'Remodeling',
   'Painting',
   'Flooring',
+  'Window & Door Installation',
+  'Kitchen & Bath Renovation',
+  'Concrete & Masonry',
+  'Fencing & Gates',
+  'Pool & Spa Construction',
+  'Termite & Pest Control',
+  'Waterproofing',
+  'Demolition',
+  'Tree Service & Removal',
+  'Security & Alarm Systems',
+  'Interior Design',
+  'Structural Engineering',
 ];
 
 export function HeroSection() {
