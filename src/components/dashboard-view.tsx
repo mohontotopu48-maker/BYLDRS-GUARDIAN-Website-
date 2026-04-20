@@ -49,7 +49,7 @@ const staggerContainer = {
 const quickStats = [
   {
     label: 'Sanctuary Points',
-    value: '1,250 pts',
+    value: '4,700 pts',
     icon: Trophy,
     color: 'text-[#F5A623]',
     bg: 'bg-[#F5A623]/10',
@@ -92,19 +92,19 @@ const rewardItems = [
     label: 'Referrals',
     current: 2,
     target: 5,
-    points: '200 pts each',
+    points: '+1,000 pts each',
     icon: Users,
     color: 'text-[#3257C2]',
-    description: '2/5 for bonus',
+    description: '2 referred (+2,000 pts earned)',
   },
   {
-    label: 'Ratings',
+    label: 'Verified Ratings',
     current: 3,
-    target: 3,
-    points: '+1,500 pts earned',
+    target: 5,
+    points: '+500 pts each',
     icon: Star,
     color: 'text-[#F5A623]',
-    description: '3 given = +1,500 pts earned',
+    description: '3 given (+1,500 pts earned)',
   },
   {
     label: 'Lessons Completed',
@@ -113,7 +113,7 @@ const rewardItems = [
     points: '25 pts each',
     icon: BookOpen,
     color: 'text-[#3ED1B8]',
-    description: '8/20',
+    description: '8/20 complete',
   },
 ];
 
@@ -359,7 +359,7 @@ export function DashboardView() {
               </div>
               <div className="ml-auto flex items-center gap-1.5 bg-[#F5A623]/10 px-3 py-1.5 rounded-full">
                 <Trophy className="size-4 text-[#F5A623]" />
-                <span className="text-sm font-bold text-[#F5A623]">1,250 pts</span>
+                <span className="text-sm font-bold text-[#F5A623]">4,700 pts</span>
               </div>
             </motion.div>
 

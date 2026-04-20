@@ -1,98 +1,95 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Shield, Menu, X, Home, LayoutDashboard, FileText, PenTool, LogOut } from 'lucide-react';
+import { Shield, Menu, X, Home, LayoutDashboard, LogOut } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
 
 const publicNavLinks = [
   { label: 'Find a Pro', action: 'scroll' as const, href: '#pro-grid' },
-  { label: 'The Standard', action: 'scroll' as const, href: '#audit-section' },
+  { label: 'The Standard', action: 'scroll' as const, href: '#audit-engine' },
   { label: 'Our Mission', action: 'scroll' as const, href: '#mission' },
+  { label: 'How it Works', action: 'scroll' as const, href: '#how-it-works' },
+  { label: 'Contact', action: 'page' as const, page: 'contact' as const },
 ];
 
 const dashboardNavLinks = [
-  { label: 'Dashboard', action: 'page' as const, page: 'dashboard' as const, icon: Home },
-  { label: 'Audit Anything', action: 'page' as const, page: 'home' as const, icon: FileText },
+  { label: 'Dashboard', action: 'page' as const, page: 'dashboard' as const },
+  { label: 'Find a Pro', action: 'scroll' as const, href: '#pro-grid' },
+  { label: 'Audit Anything', action: 'scroll' as const, href: '#audit-engine' },
   { label: 'Academy', action: 'scroll' as const, href: '#academy' },
-  { label: 'Blog', action: 'page' as const, page: 'blog' as const, icon: PenTool },
+  { label: 'Blog', action: 'page' as const, page: 'blog' as const },
+  { label: 'Contact', action: 'page' as const, page: 'contact' as const },
 ];
 
 export function Header() {
-  const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { currentPage, setCurrentPage, isLoggedIn, userType, logout } = useAppStore();
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  // Mobile menu is closed in all navigation click handlers below
 
   const handleNavClick = (link: { action: string; href?: string; page?: string }) => {
     setMobileOpen(false);
     if (link.action === 'page' && link.page) {
-      setCurrentPage(link.page as 'home' | 'dashboard' | 'pro-onboarding' | 'blog');
+      setCurrentPage(link.page as 'home' | 'dashboard' | 'pro-onboarding' | 'blog' | 'contact' | 'tier-2' | 'tier-3');
     } else if (link.href) {
       if (currentPage !== 'home') setCurrentPage('home');
       setTimeout(() => {
         document.querySelector(link.href!)?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
+      }, 150);
     }
+  };
+
+  const goHome = () => {
+    setMobileOpen(false);
+    setCurrentPage('home');
   };
 
   const navLinks = isLoggedIn && userType === 'homeowner' ? dashboardNavLinks : publicNavLinks;
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? 'bg-white/95 backdrop-blur-md shadow-[0_1px_12px_rgba(0,0,0,0.08)]'
-          : 'bg-white'
-      }`}
-    >
+    <header className="fixed top-0 left-0 right-0 z-50 bg-[#0F1219]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between lg:h-20">
-          {/* Logo */}
+        <div className="flex h-16 items-center justify-between lg:h-[72px]">
+          {/* Logo — always returns to home */}
           <button
-            onClick={() => setCurrentPage('home')}
+            onClick={goHome}
             className="flex items-center gap-2.5 group"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#3257C2] shadow-sm group-hover:shadow-md transition-shadow">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#3257C2] shadow-lg shadow-[#3257C2]/30 group-hover:shadow-[#3257C2]/50 transition-shadow">
               <Shield className="h-5 w-5 text-white" />
             </div>
             <div className="flex flex-col leading-none">
-              <span className="text-base font-bold tracking-tight text-[#1A1D2E]">
+              <span className="text-base font-bold tracking-tight text-white">
                 BYLDRS
               </span>
-              <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#3257C2]">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#3ED1B8]">
                 Guardian
               </span>
             </div>
           </button>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-0.5">
             {navLinks.map((link, i) => (
               <button
                 key={i}
                 onClick={() => handleNavClick(link)}
-                className="px-4 py-2 text-sm font-medium text-[#1A1D2E]/70 hover:text-[#3257C2] rounded-lg hover:bg-[#3257C2]/5 transition-all duration-200 flex items-center gap-1.5"
+                className="px-3.5 py-2 text-[13px] font-medium text-white/60 hover:text-white rounded-lg hover:bg-white/[0.06] transition-all duration-200"
               >
-                {'icon' in link && link.icon && <link.icon className="h-4 w-4" />}
                 {link.label}
               </button>
             ))}
           </nav>
 
           {/* Desktop CTA Buttons */}
-          <div className="hidden lg:flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-2.5">
             {!isLoggedIn ? (
               <>
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   onClick={() => setCurrentPage('pro-onboarding')}
-                  className="rounded-lg border-[#3257C2]/20 text-[#3257C2] hover:bg-[#3257C2]/5 hover:border-[#3257C2]/40 font-semibold text-sm px-5 py-2.5 transition-all duration-200"
+                  className="rounded-lg border border-white/15 text-white/70 hover:text-white hover:bg-white/[0.06] hover:border-white/25 font-semibold text-sm px-5 py-2.5 transition-all duration-200"
                 >
                   Join as a Pro
                 </Button>
@@ -101,7 +98,7 @@ export function Header() {
                     useAppStore.getState().login('homeowner');
                     setCurrentPage('dashboard');
                   }}
-                  className="rounded-lg bg-[#3257C2] hover:bg-[#2a49a8] text-white font-semibold text-sm px-5 py-2.5 shadow-sm hover:shadow-md transition-all duration-200"
+                  className="rounded-lg bg-[#3257C2] hover:bg-[#2a49a8] text-white font-semibold text-sm px-5 py-2.5 shadow-lg shadow-[#3257C2]/25 hover:shadow-[#3257C2]/40 transition-all duration-200"
                 >
                   Join a Property Owner
                 </Button>
@@ -109,17 +106,17 @@ export function Header() {
             ) : (
               <>
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   onClick={() => setCurrentPage(currentPage === 'dashboard' ? 'home' : 'dashboard')}
-                  className="rounded-lg border-[#3257C2]/20 text-[#3257C2] hover:bg-[#3257C2]/5 hover:border-[#3257C2]/40 font-semibold text-sm px-5 py-2.5 transition-all duration-200 flex items-center gap-2"
+                  className="rounded-lg text-white/60 hover:text-white hover:bg-white/[0.06] font-semibold text-sm px-4 py-2.5 transition-all duration-200 flex items-center gap-2"
                 >
                   <LayoutDashboard className="h-4 w-4" />
-                  {currentPage === 'dashboard' ? 'Home' : 'Home Dashboard'}
+                  {currentPage === 'dashboard' ? 'Home' : 'Dashboard'}
                 </Button>
                 <Button
                   variant="ghost"
                   onClick={logout}
-                  className="rounded-lg text-[#1A1D2E]/50 hover:text-red-500 hover:bg-red-50 font-semibold text-sm px-3 py-2.5 transition-all duration-200"
+                  className="rounded-lg text-white/40 hover:text-red-400 hover:bg-red-500/10 font-semibold text-sm px-3 py-2.5 transition-all duration-200"
                 >
                   <LogOut className="h-4 w-4" />
                 </Button>
@@ -130,13 +127,13 @@ export function Header() {
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-[#F4F7F9] transition-colors"
+            className="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-white/[0.06] transition-colors"
             aria-label="Toggle menu"
           >
             {mobileOpen ? (
-              <X className="h-5 w-5 text-[#1A1D2E]" />
+              <X className="h-5 w-5 text-white" />
             ) : (
-              <Menu className="h-5 w-5 text-[#1A1D2E]" />
+              <Menu className="h-5 w-5 text-white" />
             )}
           </button>
         </div>
@@ -144,25 +141,24 @@ export function Header() {
 
       {/* Mobile Menu */}
       {mobileOpen && (
-        <div className="lg:hidden border-t border-[#E5E7EB] bg-white">
+        <div className="lg:hidden border-t border-white/[0.06] bg-[#0F1219]">
           <div className="px-4 py-4 space-y-1">
             {navLinks.map((link, i) => (
               <button
                 key={i}
                 onClick={() => handleNavClick(link)}
-                className="w-full text-left px-4 py-2.5 text-sm font-medium text-[#1A1D2E]/70 hover:text-[#3257C2] rounded-lg hover:bg-[#3257C2]/5 transition-colors flex items-center gap-2"
+                className="w-full text-left px-4 py-2.5 text-sm font-medium text-white/60 hover:text-white rounded-lg hover:bg-white/[0.06] transition-colors"
               >
-                {'icon' in link && link.icon && <link.icon className="h-4 w-4" />}
                 {link.label}
               </button>
             ))}
-            <div className="pt-3 space-y-2 border-t border-[#E5E7EB]">
+            <div className="pt-3 space-y-2 border-t border-white/[0.06]">
               {!isLoggedIn ? (
                 <>
                   <Button
-                    variant="outline"
+                    variant="ghost"
                     onClick={() => { setCurrentPage('pro-onboarding'); setMobileOpen(false); }}
-                    className="w-full rounded-lg border-[#3257C2]/20 text-[#3257C2] hover:bg-[#3257C2]/5 font-semibold text-sm"
+                    className="w-full rounded-lg border border-white/15 text-white/70 hover:text-white hover:bg-white/[0.06] font-semibold text-sm"
                   >
                     Join as a Pro
                   </Button>
@@ -176,17 +172,17 @@ export function Header() {
               ) : (
                 <>
                   <Button
-                    variant="outline"
+                    variant="ghost"
                     onClick={() => { setCurrentPage(currentPage === 'dashboard' ? 'home' : 'dashboard'); setMobileOpen(false); }}
-                    className="w-full rounded-lg border-[#3257C2]/20 text-[#3257C2] hover:bg-[#3257C2]/5 font-semibold text-sm flex items-center justify-center gap-2"
+                    className="w-full rounded-lg text-white/60 hover:text-white hover:bg-white/[0.06] font-semibold text-sm flex items-center justify-center gap-2"
                   >
                     <LayoutDashboard className="h-4 w-4" />
-                    {currentPage === 'dashboard' ? 'Home' : 'Home Dashboard'}
+                    {currentPage === 'dashboard' ? 'Home' : 'Dashboard'}
                   </Button>
                   <Button
                     variant="ghost"
                     onClick={() => { logout(); setMobileOpen(false); }}
-                    className="w-full rounded-lg text-red-500 hover:bg-red-50 font-semibold text-sm"
+                    className="w-full rounded-lg text-red-400 hover:bg-red-500/10 font-semibold text-sm"
                   >
                     <LogOut className="h-4 w-4 mr-2" />
                     Sign Out

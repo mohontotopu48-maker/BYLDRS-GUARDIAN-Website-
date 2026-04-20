@@ -189,3 +189,63 @@ Stage Summary:
 - Mock report displays realistic 20-Point Protocol results (16 passed, 4 failed) with animated circular score, risk level badge, and actionable legal compliance warnings
 - Interactive form with drag-and-drop file upload, trade category select, and form state management via useState
 - Consistent with BYLDRS GUARDIAN design system and existing component patterns
+
+---
+Task ID: 4-a
+Agent: Page Builder
+Task: Build Contact Page + Pro Tier Splash Pages
+
+Work Log:
+- Created `src/components/contact-view.tsx` as a full-featured client component for the contact page
+- Implemented dark gradient page header with "Contact Us" title, subtitle "We're here to protect your sanctuary. Reach out anytime.", and decorative blur blobs
+- Built Contact Info Cards (3 columns) with LA Office (12510 Mc Cann Dr., Santa Fe Springs, CA 90670), OC Office (Irvine Spectrum Center, Irvine, CA 92618), and Phone (562-944-0500) — each with colored icon badges and hover shadow effects
+- Built Contact Form (centered, 2-col grid) with Full Name, Email, Phone inputs, Subject select dropdown (General Inquiry / Pro Verification / Account Help / Partnership / Legal), Message textarea, and True Blue "Send Message" submit button with loading spinner state
+- Built form success state with CheckCircle2 icon, confirmation message, and "Send Another Message" reset button
+- Built Social Links Row with Facebook, Instagram, LinkedIn icons — each with hover effects (scale, color change to True Blue, shadow) and whileHover motion animation
+- Built Map Placeholder with grid pattern overlay, decorative road lines, two animated markers (LA Office in True Blue, OC Office in Turquoise) with hover tooltips showing office details, dashed distance line, and bottom info bar with hours/phone/email
+- Added "Back to Home" button using setCurrentPage from useAppStore
+- Created `src/components/pro-splash-pages.tsx` exporting two components: Tier3Splash and Tier2Splash
+- Built Tier3Splash (Certified Guardian - Gold): full-width hero with dark blue → True Blue gradient, gold-bordered Guardian Seal with Shield icon and "CERTIFIED GUARDIAN" badge, pro name "Marcus Rivera" / "Rivera Roofing & Solar", animated SVG circular Sanctuary Score (96/100 in gold), 4 verified badge pills (License Verified, Insured, Background Checked, Workers' Comp), 4-column stats row (15+ Years, 500+ Projects, 4.9 Rating, 324 Reviews), True Blue "Request Audit" CTA, Experience timeline section with 5 entries (2024→2009), "Back to Home" button
+- Built Tier2Splash (Vetted Partner - Silver): clean white card on Soft Gray background, silver gradient header band with Wrench avatar and "VETTED PARTNER" badge, pro name "Sarah Chen" / "Chen Plumbing Solutions", circular Sanctuary Score (82/100 in silver/gray), 3 verified badge pills, 3-column stats row (8+ Years, 218 Projects, 4.8 Rating), Neighborhood Review Feed with 3 review cards (Maria T. 5★ Dec 2024, David K. 5★ Nov 2024, Jennifer M. 4★ Oct 2024) — each with star rating, quote text, reviewer name, MapPin location, date, True Blue "Request Audit" CTA, "Back to Home" button
+- Updated `src/app/page.tsx` to integrate ContactView, Tier2Splash, and Tier3Splash into the PageView router switch
+- Fixed pre-existing lint error in `src/components/header.tsx` (setState in useEffect → removed useEffect, mobile close handled in click handlers)
+- Applied Framer Motion fadeUp, stagger, scale-in, whileInView animations throughout both components
+- Used Balanced Palette colors: True Blue (#3257C2), Turquoise (#3ED1B8), Soft Gray (#F4F7F9), Gold (#F5A623), Dark (#1A1D2E)
+- Used shadcn/ui Button, Input, Textarea, Label, Select, Badge, Progress components
+- Used lucide-react icons: MapPin, Phone, Mail, Clock, Facebook, Instagram, Linkedin, Send, Building2, CheckCircle2, Shield, Star, ArrowRight, Award, Users, Home, Play, Briefcase, Wrench
+- Fully responsive: 1-col on mobile, multi-col grids on md/lg
+- Zero lint errors, zero compilation errors
+
+Stage Summary:
+- Contact page with real office addresses (LA + OC), phone 562-944-0500, social links, styled map placeholder
+- Tier 3 Certified Guardian splash with Guardian Seal, Sanctuary Score 96/100, verified badges, experience timeline
+- Tier 2 Vetted Partner splash with neighborhood review feed (3 reviews), Sanctuary Score 82/100
+- All 3 new views integrated into page router (contact, tier-2, tier-3)
+- Fixed pre-existing header.tsx lint error
+- Zero lint errors
+
+---
+Task ID: 5
+Agent: Main Agent
+Task: Global Ecosystem Restoration — Dark Header, Contact Page, Pro Splash Pages, Footer, Rewards Update
+
+Work Log:
+- Updated `src/lib/store.ts` — Added 'contact', 'tier-2', 'tier-3' to PageView union type
+- Rebuilt `src/components/header.tsx` — Solid Dark Navy (#0F1219) background for rich high-end feel. Logo always returns to home via goHome(). Public nav: [Find a Pro | The Standard | Our Mission | How it Works | Contact]. CTAs: "Join as a Pro" (ghost/outline with border-white/15) + "Join a Property Owner" (solid True Blue). Dashboard nav for logged-in homeowners. Mobile menu on dark bg. Removed useEffect scroll listener (cleaner).
+- Updated `src/components/hero-section.tsx` — "Other" field text changed to "Tell us exactly what you need; we'll vet them for you." in dropdown, input placeholder, and label
+- Updated `src/components/dashboard-view.tsx` — Rewards updated: Referrals now +1,000 pts each (was 200), Verified Ratings +500 pts each (was 50), total Sanctuary Points updated to 4,700 (was 1,250)
+- Created `src/components/contact-view.tsx` — Dark gradient header, 3 office cards (LA: 12510 Mc Cann Dr. Santa Fe Springs CA 90670, OC: Irvine Spectrum Center Irvine CA 92618, Phone: 562-944-0500), contact form (Full Name, Email, Phone, Subject dropdown, Message), social links (FB/IG/LinkedIn), map placeholder with animated markers, business hours
+- Created `src/components/pro-splash-pages.tsx` — Two exported components: Tier3Splash (Certified Guardian, Gold, full-width gradient hero, Guardian Seal, score 96/100, verified badges, experience timeline, video placeholder) and Tier2Splash (Vetted Partner, Silver, white card style, score 82/100, neighborhood review feed with 3 reviews, request audit CTA)
+- Updated `src/components/footer.tsx` — Real office addresses (LA + OC), real phone 562-944-0500, social links (FB/IG/LinkedIn with real hrefs), footer links all clickable via handleLinkClick using useAppStore
+- Updated `src/app/page.tsx` — Router handles all 7 views: home, dashboard, pro-onboarding, blog, contact, tier-2, tier-3
+- Validated all navigation links: "How it Works" → #how-it-works, "The Standard" → #audit-engine, "Our Mission" → #mission, "Find a Pro" → #pro-grid, "Contact" → contact page
+
+Stage Summary:
+- Header now has rich Dark Navy (#0F1219) solid background with white text — high-end feel
+- Home page body remains Pure White (#FFFFFF)
+- Logo click always returns to index/home from any page
+- All 7 views routing correctly with AnimatePresence transitions
+- Real contact info throughout (addresses, phone, social links)
+- Pro Tier Splash Pages restored for Tier 2 (Vetted Partner) and Tier 3 (Certified Guardian)
+- Dashboard rewards now track referrals at +1,000 pts and ratings at +500 pts
+- Zero lint errors, zero compilation errors

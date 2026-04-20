@@ -156,7 +156,7 @@ export function HeroSection() {
                     className="w-full h-12 rounded-lg border border-[#E5E7EB] bg-[#F4F7F9] text-sm text-left px-4 flex items-center justify-between hover:border-[#3257C2]/30 transition-colors"
                   >
                     <span className={showOtherInput ? 'text-[#3257C2] font-medium' : selectedService ? 'text-[#1A1D2E]' : 'text-[#1A1D2E]/40'}>
-                      {showOtherInput ? otherValue || 'Describe your service need...' : selectedService || 'Select a Service'}
+                      {showOtherInput ? otherValue || 'Tell us exactly what you need...' : selectedService || 'Select a Service'}
                     </span>
                     <ChevronDown className={`h-4 w-4 text-[#1A1D2E]/40 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
                   </button>
@@ -190,7 +190,7 @@ export function HeroSection() {
                             className="w-full text-left px-4 py-2.5 text-sm text-[#3ED1B8] font-semibold hover:bg-[#3ED1B8]/5 transition-colors flex items-center gap-2"
                           >
                             <span className="text-base">+</span>
-                            Other — Describe Your Service Need
+                            Other — Tell us exactly what you need; we'll vet them for you.
                           </button>
                         </div>
                       </motion.div>
@@ -210,7 +210,7 @@ export function HeroSection() {
                       <Input
                         value={otherValue}
                         onChange={(e) => setOtherValue(e.target.value)}
-                        placeholder="What specialized service do you need?"
+                        placeholder="Tell us exactly what you need; we'll vet them for you."
                         className="h-12 rounded-lg border-[#3257C2]/30 bg-[#F4F7F9] text-sm placeholder:text-[#1A1D2E]/30 focus:border-[#3257C2]"
                         autoFocus
                       />

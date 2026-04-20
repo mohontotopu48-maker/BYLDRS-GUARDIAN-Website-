@@ -13,6 +13,8 @@ import { VaultSection } from '@/components/vault-section';
 import { DashboardView } from '@/components/dashboard-view';
 import { ProOnboardingView } from '@/components/pro-onboarding-view';
 import { BlogView } from '@/components/blog-view';
+import { ContactView } from '@/components/contact-view';
+import { Tier2Splash, Tier3Splash } from '@/components/pro-splash-pages';
 import { Footer } from '@/components/footer';
 import { useAppStore } from '@/lib/store';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -41,6 +43,12 @@ function PageView({ page }: { page: string }) {
       return <ProOnboardingView />;
     case 'blog':
       return <BlogView />;
+    case 'contact':
+      return <ContactView />;
+    case 'tier-2':
+      return <Tier2Splash />;
+    case 'tier-3':
+      return <Tier3Splash />;
     default:
       return <HomePage />;
   }
