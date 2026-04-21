@@ -143,7 +143,7 @@ export function AcademySection() {
             <span className="text-[#3257C2]">Academy</span>
           </h2>
           <p className="mt-4 text-lg text-[#1A1D2E]/60 max-w-2xl mx-auto">
-            Master the complete 20-Point Protocol across 4 Pillars. Free lessons
+            Master the complete Homeowner Protection Guide across 4 Pillars. Free lessons
             designed to protect your investment and empower you as a homeowner.
           </p>
         </div>
@@ -271,7 +271,7 @@ export function AcademySection() {
         {/* Bottom CTA */}
         <div className="text-center mt-12">
           <button className="inline-flex items-center gap-2 rounded-lg bg-[#3257C2] hover:bg-[#2a49a8] text-white font-semibold px-7 py-3 text-sm shadow-lg shadow-[#3257C2]/20 hover:shadow-xl hover:shadow-[#3257C2]/30 transition-all duration-300 group">
-            Enroll in the Full 20-Point Protocol — Free
+            Enroll in the Full Homeowner Protection Guide — Free
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </button>
           <p className="mt-3 text-xs text-[#1A1D2E]/40">

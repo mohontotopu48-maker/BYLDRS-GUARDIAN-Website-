@@ -31,7 +31,7 @@ const coreValues = [
     icon: RefreshCw,
     title: '30-Day Recurring Audits',
     description:
-      'We don\'t verify once and forget. Every Pro is re-audited every 30 days against the full 20-Point Protocol to ensure ongoing compliance.',
+      'We don\'t verify once and forget. Every Pro is re-audited every 30 days against the full Homeowner Protection Guide to ensure ongoing compliance.',
     color: 'text-[#F5A623]',
     bg: 'bg-[#F5A623]/[0.07]',
   },

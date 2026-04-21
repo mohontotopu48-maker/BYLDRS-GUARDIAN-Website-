@@ -453,7 +453,7 @@ export function DashboardView() {
             </div>
             <div>
               <h2 className="text-xl font-bold text-[#1A1D2E]">Academy Progress</h2>
-              <p className="text-xs text-gray-500">20-Point Homeowner Protection Protocol</p>
+              <p className="text-xs text-gray-500">Homeowner Protection Guide</p>
             </div>
             <div className="ml-auto flex items-center gap-1.5 bg-[#3ED1B8]/10 px-3 py-1.5 rounded-full">
               <Target className="size-4 text-[#3ED1B8]" />

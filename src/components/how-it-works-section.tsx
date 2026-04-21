@@ -18,7 +18,7 @@ const steps = [
     title: 'Search',
     subtitle: 'Find Local Pros',
     description:
-      'Search our database of California-licensed Pros who have passed the initial 20-Point Protocol. Filter by trade, location, tier, and real-time audit health scores.',
+      'Search our database of California-licensed Pros who have passed the initial Homeowner Protection Guide. Filter by trade, location, tier, and real-time audit health scores.',
     features: [
       '20+ California home service categories',
       'Real-time license & insurance verification',

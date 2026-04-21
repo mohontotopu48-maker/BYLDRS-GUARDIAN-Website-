@@ -279,3 +279,39 @@ Stage Summary:
 - All "Audit Anything" references replaced with "Check My Pro"
 - Zero lint errors
 - Code-level formData keys (contractorName) intentionally preserved as internal state
+
+---
+Task ID: 1
+Agent: Main Agent
+Task: BYLDRS GUARDIAN — Clean UI Update: Replace "20-Point Protocol" with "Homeowner Protection Guide" and create 3-Step Clean Layout
+
+Work Log:
+- Read all project files to understand current state (store, header, page.tsx, all components)
+- Confirmed Navigation & Page Separation from prior session was already implemented
+- Rewrote `src/components/the-standard-view.tsx` with clean 3-Step Journey layout:
+  - Step 1: The Money Shield (Shield icon, $1,000 deposit law, milestone payments, Workers' Comp, liens)
+  - Step 2: The Pro Check (BadgeCheck icon, CSLB verification, background checks, references, re-audits)
+  - Step 3: The Job Standard (Home icon, property shielding, magnetic sweeps, uniforms, anti-ghosting)
+  - Each step has large icon, description, 5 key points with checkmarks, and a callout box
+  - Added "Get My Free Protection Guide" email CTA section
+  - Added "Safety Summary" cheat sheet with 6 printable rules + Print/Save buttons
+  - Final CTA: "Now, Check My Pro" button → routes to check-my-pro page
+  - Generous white space between all sections (py-20/py-28)
+- Global name change across 6 files (8 instances total):
+  - `audit-engine.tsx`: Comment, risk report description, assessment label, results header (4 instances)
+  - `who-we-are-section.tsx`: 30-Day Recurring Audits description (1 instance)
+  - `how-we-rank-section.tsx`: Verified Pro requirements (1 instance)
+  - `academy-section.tsx`: Subtitle + CTA button (2 instances)
+  - `dashboard-view.tsx`: Academy Progress subtitle (1 instance)
+  - `how-it-works-section.tsx`: Search step description (1 instance)
+- Verified zero remaining "20-Point Protocol" references across entire src directory
+- ESLint passes clean with no errors
+- Dev server compiles successfully
+
+Stage Summary:
+- Complete visual overhaul of "The Standard" page → now "Homeowner Protection Guide"
+- Clean 3-step layout replaces the old 4-module accordion design
+- All "20-Point Protocol" text globally replaced with "Homeowner Protection Guide"
+- "Get My Free Protection Guide" CTA button added
+- "Now, Check My Pro" final CTA routes to audit tool
+- "Safety Summary" cheat sheet with print/save functionality added
