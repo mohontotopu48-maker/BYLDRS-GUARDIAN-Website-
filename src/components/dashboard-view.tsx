@@ -129,7 +129,7 @@ export function DashboardView() {
   const { setCurrentPage } = useAppStore();
 
   return (
-    <section className="min-h-screen bg-[#F4F7F9]">
+    <section className="min-h-screen bg-[#F4F7F9] pt-[100px] lg:pt-[88px]">
       {/* ── Dashboard Header ──────────────────────────────────── */}
       <div className="bg-white border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
@@ -145,7 +145,7 @@ export function DashboardView() {
                 Dashboard
               </p>
               <h1 className="text-2xl sm:text-3xl font-bold text-[#1A1D2E]">
-                Welcome back, Homeowner
+                Welcome back, Property Owner
               </h1>
               <p className="text-gray-500 mt-1 text-sm sm:text-base">
                 Your sanctuary is protected. Here&apos;s your latest overview.
@@ -155,29 +155,29 @@ export function DashboardView() {
             <motion.div
               variants={fadeUp}
               custom={1}
-              className="flex flex-wrap gap-3"
+              className="flex flex-wrap gap-2 sm:gap-3"
             >
               <Button
                 onClick={() => setCurrentPage('home')}
-                className="bg-[#3ED1B8] hover:bg-[#34b9a2] text-white font-semibold shadow-md"
+                className="bg-[#3ED1B8] hover:bg-[#34b9a2] text-white font-semibold shadow-md text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-2.5"
               >
-                <Zap className="size-4" />
+                <Zap className="size-3.5 sm:size-4" />
                 Audit Anything
               </Button>
               <Button
                 onClick={() => setCurrentPage('home')}
                 variant="outline"
-                className="border-[#3257C2] text-[#3257C2] hover:bg-[#3257C2]/5 font-semibold"
+                className="border-[#3257C2] text-[#3257C2] hover:bg-[#3257C2]/5 font-semibold text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-2.5"
               >
-                <Users className="size-4" />
+                <Users className="size-3.5 sm:size-4" />
                 Find a Pro
               </Button>
               <Button
                 onClick={() => setCurrentPage('home')}
                 variant="outline"
-                className="border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold"
+                className="border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-2.5"
               >
-                <GraduationCap className="size-4" />
+                <GraduationCap className="size-3.5 sm:size-4" />
                 Browse Academy
               </Button>
             </motion.div>
