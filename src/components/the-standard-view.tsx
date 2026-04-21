@@ -117,7 +117,7 @@ const guideSteps: GuideStep[] = [
     accentColor: '#F5A623',
     accentLight: 'bg-[#F5A623]/[0.04]',
     description:
-      'Your home is your sanctuary — not a job site. Clean uniforms, magnetic sweeps for nails, dust barriers, and daily site cleanup aren\'t luxuries. They\'re the baseline standard we hold every Pro to. And ghosting? Not on our watch.',
+      'Your home is your property — not a job site. Clean uniforms, magnetic sweeps for nails, dust barriers, and daily site cleanup aren\'t luxuries. They\'re the baseline standard we hold every Pro to. And ghosting? Not on our watch.',
     keyPoints: [
       'Property shielding — landscaping, hardscape, and HVAC protection',
       'Magnetic sweeps — daily debris scans before the crew leaves',

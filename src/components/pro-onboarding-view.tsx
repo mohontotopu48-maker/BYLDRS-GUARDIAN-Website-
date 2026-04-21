@@ -440,12 +440,12 @@ function StepPreview() {
             ))}
           </div>
 
-          {/* Sanctuary Score */}
+          {/* Property Score */}
           <div className="bg-[#3257C2]/5 border border-[#3257C2]/15 rounded-xl p-5">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <Shield className="size-5 text-[#3257C2]" />
-                <span className="font-bold text-[#1A1D2E]">Sanctuary Score</span>
+                <span className="font-bold text-[#1A1D2E]">Property Score</span>
               </div>
               <span className="text-xl font-bold text-[#3257C2]">96<span className="text-sm text-gray-400 font-medium">/100</span></span>
             </div>
@@ -694,7 +694,7 @@ function StepInfo({
             <h4 className="font-bold mb-2">Why This Matters</h4>
             <p className="text-white/80 text-sm leading-relaxed mb-4">
               A complete profile with verified documents builds trust with homeowners and
-              increases your Sanctuary Score by up to <span className="font-bold text-white">15 points</span>.
+              increases your Property Score by up to <span className="font-bold text-white">15 points</span>.
             </p>
             <div className="space-y-2">
               {[

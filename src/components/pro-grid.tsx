@@ -134,7 +134,7 @@ function GuardianChoiceCard({ pro }: { pro: ProProfile }) {
               </div>
               <div className="flex items-center gap-1 text-xs font-bold text-[#F5A623]">
                 <Shield className="h-3 w-3" />
-                {pro.sanctuaryScore}/100
+                {pro.propertyScore}/100
               </div>
             </div>
             <p className="text-sm text-[#1A1D2E]/55 leading-relaxed line-clamp-2 mb-4">{pro.about}</p>
@@ -212,7 +212,7 @@ function ProCard({ pro, index }: { pro: ProProfile; index: number }) {
           )}
           <div className="flex items-center gap-1">
             <Shield className="h-3 w-3 text-[#1A1D2E]/30" />
-            <span className="text-[11px] font-bold text-[#1A1D2E]/50">{pro.sanctuaryScore}</span>
+            <span className="text-[11px] font-bold text-[#1A1D2E]/50">{pro.propertyScore}</span>
           </div>
         </div>
         <Button variant="outline" className="w-full h-10 rounded-lg border-[#3257C2]/15 text-[#3257C2] hover:bg-[#3257C2] hover:text-white font-semibold text-xs transition-all duration-300 group/btn" onClick={(e) => { e.stopPropagation(); handleViewProfile(); }}>

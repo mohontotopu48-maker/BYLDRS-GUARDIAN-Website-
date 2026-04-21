@@ -96,7 +96,7 @@ export function Tier3Splash() {
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <span className="text-3xl sm:text-4xl font-extrabold text-white">{score}</span>
-                  <span className="text-[10px] font-semibold text-[#F5A623] uppercase tracking-wider">Sanctuary Score</span>
+                  <span className="text-[10px] font-semibold text-[#F5A623] uppercase tracking-wider">Property Score</span>
                 </div>
               </div>
             </motion.div>

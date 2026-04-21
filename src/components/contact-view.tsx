@@ -63,7 +63,7 @@ export function ContactView() {
               Contact Us
             </h1>
             <p className="text-lg text-white/50 max-w-xl mx-auto">
-              We&apos;re here to protect your sanctuary. Reach out anytime.
+              We&apos;re here to protect your property. Reach out anytime.
             </p>
           </motion.div>
         </div>

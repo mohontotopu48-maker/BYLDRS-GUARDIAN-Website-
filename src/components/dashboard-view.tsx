@@ -48,7 +48,7 @@ const staggerContainer = {
 // ── Data ────────────────────────────────────────────────────────
 const quickStats = [
   {
-    label: 'Sanctuary Points',
+    label: 'Property Points',
     value: '4,700 pts',
     icon: Trophy,
     color: 'text-[#F5A623]',
@@ -120,7 +120,7 @@ const rewardItems = [
 const academyPillars = [
   { name: 'Pillar I: Legal & Financial Immunity', current: 3, total: 6, color: '#3257C2' },
   { name: 'Pillar II: Operational Defense', current: 2, total: 5, color: '#3ED1B8' },
-  { name: 'Pillar III: Sanctuary Site Standard', current: 2, total: 5, color: '#F5A623' },
+  { name: 'Pillar III: Property Site Standard', current: 2, total: 5, color: '#F5A623' },
   { name: 'Pillar IV: Accountability & Ethics', current: 1, total: 4, color: '#3257C2' },
 ];
 
@@ -148,7 +148,7 @@ export function DashboardView() {
                 Welcome back, Property Owner
               </h1>
               <p className="text-gray-500 mt-1 text-sm sm:text-base">
-                Your sanctuary is protected. Here&apos;s your latest overview.
+                Your property is protected. Here&apos;s your latest overview.
               </p>
             </motion.div>
 
@@ -355,7 +355,7 @@ export function DashboardView() {
               </div>
               <div>
                 <h2 className="text-xl font-bold text-[#1A1D2E]">Rewards Tracker</h2>
-                <p className="text-xs text-gray-500">Earn Sanctuary Points as you go</p>
+                <p className="text-xs text-gray-500">Earn Property Points as you go</p>
               </div>
               <div className="ml-auto flex items-center gap-1.5 bg-[#F5A623]/10 px-3 py-1.5 rounded-full">
                 <Trophy className="size-4 text-[#F5A623]" />
@@ -414,7 +414,7 @@ export function DashboardView() {
                 <span className="font-semibold text-white">Legal Compliance Audits</span>, and
                 exclusive{' '}
                 <span className="font-semibold text-[#F5A623]">
-                  Sanctuary Member discounts
+                  Property Member discounts
                 </span>
                 .
               </p>
@@ -429,12 +429,12 @@ export function DashboardView() {
                 </li>
                 <li className="flex items-center gap-2 text-sm text-white/85">
                   <CheckCircle2 className="size-4 text-[#3ED1B8] shrink-0" />
-                  2x Sanctuary Points on all activities
+                  2x Property Points on all activities
                 </li>
               </ul>
             </div>
             <Button className="w-full bg-[#F5A623] hover:bg-[#e09518] text-[#1A1D2E] font-bold shadow-lg">
-              Upgrade to Sanctuary Member
+              Upgrade to Property Member
               <ArrowRight className="size-4" />
             </Button>
           </motion.div>

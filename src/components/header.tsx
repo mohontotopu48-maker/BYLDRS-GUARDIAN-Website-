@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Shield, ShieldCheck, Menu, X, Home, LayoutDashboard, LogOut } from 'lucide-react';
+import { ShieldCheck, Menu, X, LayoutDashboard, LogOut } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
 
 const publicNavLinks = [
@@ -31,7 +31,7 @@ export function Header() {
   const handleNavClick = (link: { action: string; href?: string; page?: string }) => {
     setMobileOpen(false);
     if (link.action === 'page' && link.page) {
-      setCurrentPage(link.page as 'home' | 'dashboard' | 'pro-onboarding' | 'blog' | 'contact' | 'check-my-pro' | 'the-standard' | 'pro-profile' | 'tier-2' | 'tier-3');
+      setCurrentPage(link.page as 'home' | 'dashboard' | 'pro-onboarding' | 'blog' | 'contact' | 'check-my-pro' | 'the-standard' | 'pro-profile' | 'tier-2' | 'tier-3' | 'property-story');
     } else if (link.href) {
       if (currentPage !== 'home') setCurrentPage('home');
       setTimeout(() => {
@@ -56,9 +56,11 @@ export function Header() {
             onClick={goHome}
             className="flex items-center gap-2.5 group"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#3257C2] shadow-lg shadow-[#3257C2]/30 group-hover:shadow-[#3257C2]/50 transition-shadow">
-              <Shield className="h-5 w-5 text-white" />
-            </div>
+            <img
+              src="/guardian-logo.png"
+              alt="BYLDRS GUARDIAN"
+              className="h-9 w-auto object-contain"
+            />
             <div className="flex flex-col leading-none">
               <span className="text-base font-bold tracking-tight text-white">
                 BYLDRS
@@ -78,7 +80,9 @@ export function Header() {
                 className={`px-3.5 py-2 text-[13px] font-medium rounded-lg transition-all duration-200 flex items-center gap-1.5 ${
                   'isTool' in link && link.isTool
                     ? 'text-[#3ED1B8] hover:text-[#3ED1B8] bg-[#3ED1B8]/[0.08] hover:bg-[#3ED1B8]/[0.15]'
-                    : 'text-white/60 hover:text-white hover:bg-white/[0.06]'
+                    : currentPage === link.page
+                      ? 'text-[#3ED1B8] hover:text-[#3ED1B8] bg-[#3ED1B8]/[0.08]'
+                      : 'text-white/60 hover:text-white hover:bg-white/[0.06]'
                 }`}
               >
                 {'isTool' in link && link.isTool && <ShieldCheck className="h-3.5 w-3.5" />}
@@ -155,7 +159,9 @@ export function Header() {
                 className={`w-full text-left px-4 py-2.5 text-sm font-medium rounded-lg transition-colors flex items-center gap-2 ${
                   'isTool' in link && link.isTool
                     ? 'text-[#3ED1B8] hover:bg-[#3ED1B8]/[0.08]'
-                    : 'text-white/60 hover:text-white hover:bg-white/[0.06]'
+                    : currentPage === link.page
+                      ? 'text-[#3ED1B8] bg-[#3ED1B8]/[0.08]'
+                      : 'text-white/60 hover:text-white hover:bg-white/[0.06]'
                 }`}
               >
                 {'isTool' in link && link.isTool && <ShieldCheck className="h-4 w-4" />}

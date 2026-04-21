@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BYLDRS GUARDIAN – Hire with Certainty. Protect Your Sanctuary.",
+  title: "BYLDRS GUARDIAN – Hire with Certainty. Protect Your Property.",
   description:
     "California's only platform that audits Pros every 30 days. Find certified, vetted, and verified Pros you can trust.",
   keywords: [

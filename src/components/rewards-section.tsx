@@ -145,7 +145,7 @@ export function RewardsSection() {
             <span className="text-[#3257C2]">Rewards</span>
           </h2>
           <p className="mt-4 text-lg text-[#1A1D2E]/60 max-w-2xl mx-auto">
-            Earn Sanctuary Points for every action on the platform. Redeem them
+            Earn Property Points for every action on the platform. Redeem them
             for premium services that protect and enhance your home.
           </p>
         </div>
@@ -167,7 +167,7 @@ export function RewardsSection() {
                 </div>
                 <div>
                   <p className="text-white/60 text-sm font-medium">
-                    Your Sanctuary Points
+                    Your Property Points
                   </p>
                   <p className="text-4xl font-extrabold text-white">
                     {currentPoints.toLocaleString()}

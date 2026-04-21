@@ -55,7 +55,7 @@ export interface ProProfile {
   responseTime: string;
   yearsExperience: number;
   projectCount: number;
-  sanctuaryScore: number;
+  propertyScore: number;
   licenseNumber: string;
   licenseStatus: 'Active' | 'Expired';
   licenseVerifiedDate: string;
@@ -138,7 +138,7 @@ export const proProfiles: ProProfile[] = [
     responseTime: '< 2 hours',
     yearsExperience: 15,
     projectCount: 520,
-    sanctuaryScore: 96,
+    propertyScore: 96,
     licenseNumber: 'CSLB #958241',
     licenseStatus: 'Active',
     licenseVerifiedDate: 'Dec 1, 2024',
@@ -180,7 +180,7 @@ export const proProfiles: ProProfile[] = [
     responseTime: '< 1 hour',
     yearsExperience: 8,
     projectCount: 340,
-    sanctuaryScore: 82,
+    propertyScore: 82,
     licenseNumber: 'CSLB #876543',
     licenseStatus: 'Active',
     licenseVerifiedDate: 'Nov 28, 2024',
@@ -221,7 +221,7 @@ export const proProfiles: ProProfile[] = [
     responseTime: '< 3 hours',
     yearsExperience: 12,
     projectCount: 410,
-    sanctuaryScore: 94,
+    propertyScore: 94,
     licenseNumber: 'CSLB #765432',
     licenseStatus: 'Active',
     licenseVerifiedDate: 'Dec 2, 2024',
@@ -262,7 +262,7 @@ export const proProfiles: ProProfile[] = [
     responseTime: '< 4 hours',
     yearsExperience: 10,
     projectCount: 275,
-    sanctuaryScore: 78,
+    propertyScore: 78,
     licenseNumber: 'CSLB #843291',
     licenseStatus: 'Active',
     licenseVerifiedDate: 'Nov 15, 2024',
@@ -298,7 +298,7 @@ export const proProfiles: ProProfile[] = [
     responseTime: '< 2 hours',
     yearsExperience: 6,
     projectCount: 180,
-    sanctuaryScore: 71,
+    propertyScore: 71,
     licenseNumber: 'CSLB #901234',
     licenseStatus: 'Active',
     licenseVerifiedDate: 'Dec 5, 2024',
@@ -334,7 +334,7 @@ export const proProfiles: ProProfile[] = [
     responseTime: '< 5 hours',
     yearsExperience: 5,
     projectCount: 120,
-    sanctuaryScore: 68,
+    propertyScore: 68,
     licenseNumber: 'CSLB #912345',
     licenseStatus: 'Active',
     licenseVerifiedDate: 'Nov 20, 2024',

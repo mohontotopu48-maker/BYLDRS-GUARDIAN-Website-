@@ -18,6 +18,7 @@ import { BlogView } from '@/components/blog-view';
 import { ContactView } from '@/components/contact-view';
 import { ProProfileView } from '@/components/pro-profile-view';
 import { Tier2Splash, Tier3Splash } from '@/components/pro-splash-pages';
+import { PropertyStoryView } from '@/components/property-story-view';
 import { Footer } from '@/components/footer';
 import { useAppStore } from '@/lib/store';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -58,6 +59,8 @@ function PageView({ page }: { page: string }) {
       return <Tier2Splash />;
     case 'tier-3':
       return <Tier3Splash />;
+    case 'property-story':
+      return <PropertyStoryView />;
     default:
       return <HomePage />;
   }

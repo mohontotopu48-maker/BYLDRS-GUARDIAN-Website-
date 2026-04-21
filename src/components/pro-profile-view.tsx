@@ -231,7 +231,7 @@ export function ProProfileView() {
                   <ImageIcon className="h-5 w-5 text-[#3257C2]" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-[#1A1D2E]">Sanctuary Projects</h2>
+                  <h2 className="text-xl font-bold text-[#1A1D2E]">Property Projects</h2>
                   <p className="text-xs text-[#1A1D2E]/40">Recent work gallery</p>
                 </div>
               </div>
@@ -426,16 +426,16 @@ export function ProProfileView() {
               <div className="p-5 border-b border-[#E5E7EB]">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs font-bold text-[#1A1D2E]/40 uppercase tracking-wider">
-                    Sanctuary Score
+                    Property Score
                   </span>
                   <span className="text-xl font-extrabold" style={{ color: config.text === 'text-[#F5A623]' ? '#F5A623' : config.text === 'text-[#9CA3AF]' ? '#9CA3AF' : '#CD7F32' }}>
-                    {pro.sanctuaryScore}/100
+                    {pro.propertyScore}/100
                   </span>
                 </div>
                 <div className="h-2.5 rounded-full bg-[#E5E7EB] overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
-                    animate={{ width: `${pro.sanctuaryScore}%` }}
+                    animate={{ width: `${pro.propertyScore}%` }}
                     transition={{ duration: 1, delay: 0.5, ease: 'easeOut' }}
                     className={`h-full rounded-full bg-gradient-to-r ${config.gradient}`}
                   />

@@ -182,7 +182,7 @@ const popularPosts = [
 
 /* ───────────────────────── component ───────────────────────────────── */
 export function BlogView() {
-  const { setCurrentPage } = useAppStore();
+  const { setCurrentPage, setSelectedArticleId } = useAppStore();
   const [activeFilter, setActiveFilter] = useState<Category>('All');
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
@@ -311,6 +311,7 @@ export function BlogView() {
                   variants={fadeUp}
                   custom={0}
                   className="group relative overflow-hidden rounded-2xl bg-white shadow-sm hover:shadow-xl transition-shadow duration-300 cursor-pointer"
+                  onClick={() => { setSelectedArticleId(featured.id); setCurrentPage('property-story'); }}
                 >
                   {/* Gradient header band */}
                   <div className="h-48 sm:h-56 bg-gradient-to-br from-[#1A1D2E] via-[#3257C2] to-[#3ED1B8] relative flex items-end p-6 sm:p-8">
@@ -361,6 +362,7 @@ export function BlogView() {
                   custom={i + 1}
                   variants={fadeUp}
                   className="group flex flex-col overflow-hidden rounded-xl bg-white shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer border border-gray-100 hover:border-[#3257C2]/20"
+                  onClick={() => { setSelectedArticleId(article.id); setCurrentPage('property-story'); }}
                 >
                   {/* Top color accent bar */}
                   <div className="h-1 w-full bg-gradient-to-r from-[#3257C2] to-[#3ED1B8] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -388,7 +390,7 @@ export function BlogView() {
                       <span className="text-xs text-gray-400">
                         {article.date}
                       </span>
-                      <span className="flex items-center gap-1 text-xs font-medium text-[#3257C2] opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="flex items-center gap-1 text-xs font-semibold text-[#3257C2] group-hover:text-[#2a49a8] transition-colors">
                         Read more
                         <ArrowRight className="h-3 w-3" />
                       </span>

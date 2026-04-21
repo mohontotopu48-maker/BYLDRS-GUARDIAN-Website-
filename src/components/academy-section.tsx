@@ -80,7 +80,7 @@ const pillars: Pillar[] = [
   },
   {
     id: 3,
-    title: 'Sanctuary Site Standard',
+    title: 'Property Site Standard',
     subtitle: 'Pillar III',
     description:
       'Protect your property during construction. Learn about property shielding, magnetic sweeps, and keeping your home safe while work is underway.',
