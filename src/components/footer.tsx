@@ -41,7 +41,7 @@ export function Footer() {
 
   const handleLinkClick = (link: { action: string; href?: string; page?: string }) => {
     if (link.action === 'page' && link.page) {
-      setCurrentPage(link.page as 'home' | 'dashboard' | 'pro-onboarding' | 'blog' | 'contact' | 'check-my-pro' | 'the-standard' | 'tier-2' | 'tier-3');
+      setCurrentPage(link.page as 'home' | 'dashboard' | 'pro-onboarding' | 'blog' | 'contact' | 'check-my-pro' | 'the-standard' | 'pro-profile' | 'tier-2' | 'tier-3');
     } else if (link.action === 'scroll' && link.href) {
       if (useAppStore.getState().currentPage !== 'home') setCurrentPage('home');
       setTimeout(() => {

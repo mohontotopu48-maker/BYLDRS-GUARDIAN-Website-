@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type PageView = 'home' | 'dashboard' | 'pro-onboarding' | 'blog' | 'contact' | 'check-my-pro' | 'the-standard' | 'tier-2' | 'tier-3';
+export type PageView = 'home' | 'dashboard' | 'pro-onboarding' | 'blog' | 'contact' | 'check-my-pro' | 'the-standard' | 'pro-profile' | 'tier-2' | 'tier-3';
 
 interface AppStore {
   currentPage: PageView;
@@ -9,6 +9,8 @@ interface AppStore {
   userType: 'homeowner' | 'pro' | null;
   login: (type: 'homeowner' | 'pro') => void;
   logout: () => void;
+  selectedProId: number | null;
+  setSelectedProId: (id: number | null) => void;
 }
 
 export const useAppStore = create<AppStore>((set) => ({
@@ -21,4 +23,6 @@ export const useAppStore = create<AppStore>((set) => ({
   userType: null,
   login: (type) => set({ isLoggedIn: true, userType: type }),
   logout: () => set({ isLoggedIn: false, userType: null, currentPage: 'home' }),
+  selectedProId: null,
+  setSelectedProId: (id) => set({ selectedProId: id }),
 }));

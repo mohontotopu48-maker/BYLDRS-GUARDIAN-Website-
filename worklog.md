@@ -315,3 +315,47 @@ Stage Summary:
 - "Get My Free Protection Guide" CTA button added
 - "Now, Check My Pro" final CTA routes to audit tool
 - "Safety Summary" cheat sheet with print/save functionality added
+
+---
+Task ID: 2
+Agent: Main Agent
+Task: BYLDRS GUARDIAN — Hire a Pro Search & Profile System
+
+Work Log:
+- Generated AI images for 3 featured Pros (Marcus Rivera, Sarah Chen, James Okafor): cover photos (1344x768), headshots (768x1344), and gallery images (1024x1024)
+- Created `src/lib/pro-data.ts` — centralized Pro database with:
+  - 20 service categories (Plumbing, Roofing, HVAC, Electrical, General Contractor, Solar, Remodeling, Landscaping, Painting, Flooring, Window & Door, Kitchen & Bath, Waterproofing, Concrete & Masonry, Pest Control, Insulation, Drywall, Fencing, Tree Service, Pool & Spa)
+  - Full TypeScript types: ProProfile, ProReview, Tier, ServiceCategory
+  - 6 detailed Pro profiles with verification data, about text, reviews, services, gallery references
+  - Tier configuration (certified/vetted/verified with colors, gradients, badges)
+  - Helper functions: getProById(), filterPros()
+- Updated `src/lib/store.ts` — added selectedProId state and setSelectedProId action, added 'pro-profile' to PageView
+- Rewrote `src/components/pro-grid.tsx` with:
+  - Search & Filter bar: "Select Service" dropdown (20 categories), "ZIP Code or City" input, solid Blue "Find My Pro" button
+  - Active filter chips with X dismiss buttons + "Clear all"
+  - Animated card grid with cover photos, tier badges, ratings
+  - Empty state with "No Pros Found" messaging
+  - AnimatePresence for smooth filter transitions
+- Created `src/components/pro-profile-view.tsx` — full Personal Branding Splash Page:
+  - Hero section: Cover photo (280-420px responsive), headshot with Guardian Status badge (Gold/Silver/Bronze gradient overlay), rating badges, verified status, primary CTA "Get a Quote from [Pro Name]"
+  - Sticky verified sidebar: Guardian Status card with sanctuary score bar, 3 stats (Years/Projects/Rating), 5 verification rows (License, Insurance, Workers' Comp, Last Audited, Next Audit) with green/red status indicators and verified dates
+  - Quick Contact card: Call Now + Send Message buttons
+  - "Not sure?" card: links to Check My Pro tool
+  - About section: story, specialty highlight box
+  - Sanctuary Projects gallery: responsive 2-3 column grid of cover + project images
+  - Services section: grid of service offerings with checkmarks
+  - Homeowner Reviews: star ratings, quote styling, verified reviewer locations
+  - Bottom CTA: dark gradient card with "Get a Quote" button
+  - Automatic redirect to home if no Pro selected
+- Updated `src/app/page.tsx` — added 'pro-profile' case rendering ProProfileView
+- Updated `src/components/header.tsx` and `src/components/footer.tsx` — added 'pro-profile' to PageView type union
+- All Pro cards (Marcus, Sarah, James, Maria, David, Emily) link to their specific profile pages via setSelectedProId + setCurrentPage('pro-profile')
+- ESLint passes clean, dev server compiles successfully
+
+Stage Summary:
+- Complete searchable Pro database with 20 service categories
+- Search & Filter bar with dropdown + ZIP/City input + "Find My Pro" button
+- Full Personal Branding Splash Page with hero, sticky sidebar, about, gallery, reviews, CTA
+- 9 AI-generated images (cover photos, headshots, gallery) for 3 featured Pros
+- All existing Pro cards re-linked to their individual profile pages
+- Dark header remains visible at all times (fixed z-50)

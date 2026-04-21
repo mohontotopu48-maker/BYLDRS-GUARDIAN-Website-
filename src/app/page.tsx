@@ -16,6 +16,7 @@ import { TheStandardView } from '@/components/the-standard-view';
 import { ProOnboardingView } from '@/components/pro-onboarding-view';
 import { BlogView } from '@/components/blog-view';
 import { ContactView } from '@/components/contact-view';
+import { ProProfileView } from '@/components/pro-profile-view';
 import { Tier2Splash, Tier3Splash } from '@/components/pro-splash-pages';
 import { Footer } from '@/components/footer';
 import { useAppStore } from '@/lib/store';
@@ -51,6 +52,8 @@ function PageView({ page }: { page: string }) {
       return <BlogView />;
     case 'contact':
       return <ContactView />;
+    case 'pro-profile':
+      return <ProProfileView />;
     case 'tier-2':
       return <Tier2Splash />;
     case 'tier-3':
