@@ -16,15 +16,15 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "BYLDRS GUARDIAN – Hire with Certainty. Protect Your Sanctuary.",
   description:
-    "California's only platform that audits Pros every 30 days. Find certified, vetted, and verified contractors you can trust.",
+    "California's only platform that audits Pros every 30 days. Find certified, vetted, and verified Pros you can trust.",
   keywords: [
     "BYLDRS GUARDIAN",
-    "contractor verification",
+    "pro verification",
     "home improvement",
-    "California contractors",
+    "California Pros",
     "certified pros",
     "homeowner protection",
-    "contractor audit",
+    "pro audit",
   ],
   authors: [{ name: "BYLDRS GUARDIAN" }],
   icons: {

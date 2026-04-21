@@ -82,7 +82,7 @@ const articles: Article[] = [
     id: 0,
     title: 'The $1,000 Deposit Rule: How California Law Protects You',
     excerpt:
-      "Most homeowners don't know that California limits contractor deposits to $1,000 or 10% of the total price. Here's how to enforce your rights.",
+      "Most homeowners don't know that California limits Pro deposits to $1,000 or 10% of the total price. Here's how to enforce your rights.",
     category: 'Legal',
     categoryColor: categoryColorMap['Legal'],
     readTime: '8 min read',
@@ -103,7 +103,7 @@ const articles: Article[] = [
     id: 2,
     title: 'The $1,000 Deposit Rule in Plumbing',
     excerpt:
-      'Plumbers are bound by the same deposit limits as every other contractor in California. Learn how to spot violations before you write the check.',
+      'Plumbers are bound by the same deposit limits as every other Pro in California. Learn how to spot violations before you write the check.',
     category: 'Plumbing',
     categoryColor: categoryColorMap['Plumbing'],
     readTime: '5 min read',

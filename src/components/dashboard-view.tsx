@@ -162,7 +162,7 @@ export function DashboardView() {
                 className="bg-[#3ED1B8] hover:bg-[#34b9a2] text-white font-semibold shadow-md text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-2.5"
               >
                 <Zap className="size-3.5 sm:size-4" />
-                Audit Anything
+                Check My Pro
               </Button>
               <Button
                 onClick={() => setCurrentPage('home')}
@@ -249,7 +249,7 @@ export function DashboardView() {
                         The Broken Promise
                       </h3>
                       <p className="text-red-700/80 text-sm leading-relaxed">
-                        We started BYLDRS GUARDIAN because of a broken promise. A contractor
+                        We started BYLDRS GUARDIAN because of a broken promise. A Pro
                         took a $15,000 deposit, disappeared for 6 months, and left a family
                         with an unfinished home. That family lost everything because nobody
                         was watching.
@@ -272,7 +272,7 @@ export function DashboardView() {
                       <p className="text-gray-600 text-sm leading-relaxed">
                         An informed owner is a protected owner. The Academy exists to give
                         every California homeowner the knowledge to spot red flags, negotiate
-                        fairly, and hold contractors accountable.
+                        fairly, and hold Pros accountable.
                       </p>
                     </div>
                   </div>

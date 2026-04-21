@@ -74,7 +74,7 @@ export function Footer() {
               </div>
             </button>
             <p className="text-sm text-white/40 leading-relaxed max-w-xs mb-6">
-              California&apos;s only platform that audits contractors every 30
+              California&apos;s only platform that audits Pros every 30
               days. Hire with certainty, protect your sanctuary.
             </p>
 

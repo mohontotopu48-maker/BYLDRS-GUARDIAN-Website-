@@ -249,3 +249,33 @@ Stage Summary:
 - Pro Tier Splash Pages restored for Tier 2 (Vetted Partner) and Tier 3 (Certified Guardian)
 - Dashboard rewards now track referrals at +1,000 pts and ratings at +500 pts
 - Zero lint errors, zero compilation errors
+---
+Task ID: 1
+Agent: Main
+Task: Final Language Sync — Replace "Audit Anything", "Contractor Shield", "Check My Contractor" with "Check My Pro" terminology
+
+Work Log:
+- Searched entire src/ directory for all instances of deprecated terms
+- Updated header.tsx: dashboard nav "Audit Anything" → "Check My Pro"
+- Updated audit-engine.tsx: headline → "Check My Pro", sub-headline → user's exact text, form title → "Pro Safety Check", submit button → "Check My Pro Now", all form labels (Pro Name, Pro License #, Pro Phone, Pro Email), placeholder text, report placeholder, reset button → "New Pro Check"
+- Updated hero-section.tsx: badge "California's #1 Pro Verification Platform", description "Every Pro is verified..."
+- Updated audit-section.tsx: section title "Check My Pro", left column "Already have a quote? Check My Pro for free before you sign anything.", form title "Free Pro Check", label "Pro Name", submit button "Check My Pro Now", CA law alert "Pro deposits", privacy line "Pros"
+- Updated how-it-works-section.tsx: step 3 subtitle "Check My Pro", description "Check My Pro" tool
+- Updated dashboard-view.tsx: action button "Check My Pro", Broken Promise story "A Pro", Mission "hold Pros accountable"
+- Updated who-we-are-section.tsx: 3 instances of contractor → Pro
+- Updated how-we-rank-section.tsx: "Pro excellence", "each Pro has achieved"
+- Updated blog-view.tsx: 2 article excerpts contractor → Pro
+- Updated academy-section.tsx: "hold Pros accountable"
+- Updated vault-section.tsx: "your Pro or auditor"
+- Updated pro-onboarding-view.tsx: "Licensed Pro", "Top 5% of all Pros"
+- Updated layout.tsx: meta description and 3 SEO keywords
+- Updated footer.tsx: "audits Pros every 30 days"
+- Fixed 2 missing trailing commas in academy-section.tsx and blog-view.tsx
+- Final grep: 0 matches for "Audit Anything|Contractor Shield|Check My Contractor"
+
+Stage Summary:
+- 13 files modified, 35+ text replacements
+- All user-facing "contractor" references replaced with "Pro"
+- All "Audit Anything" references replaced with "Check My Pro"
+- Zero lint errors
+- Code-level formData keys (contractorName) intentionally preserved as internal state

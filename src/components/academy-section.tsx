@@ -104,7 +104,7 @@ const pillars: Pillar[] = [
     title: 'Accountability & Ethics',
     subtitle: 'Pillar IV',
     description:
-      'Ensure verified identities, prevent ghosting, and hold contractors accountable with documented evidence and transparency.',
+      'Ensure verified identities, prevent ghosting, and hold Pros accountable with documented evidence and transparency.',
     totalLessons: 4,
     totalDuration: '20 min',
     color: 'text-[#CD7F32]',

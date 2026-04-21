@@ -418,7 +418,7 @@ function StepPreview() {
                 Your Business Name
                 <Shield className="size-5 text-[#3257C2]" />
               </h3>
-              <p className="text-gray-500 text-sm">Licensed Contractor &bull; Los Angeles, CA</p>
+              <p className="text-gray-500 text-sm">Licensed Pro &bull; Los Angeles, CA</p>
             </div>
           </div>
 
@@ -458,7 +458,7 @@ function StepPreview() {
             </div>
             <p className="text-xs text-gray-500 mt-2 flex items-center gap-1.5">
               <CheckCircle2 className="size-3 text-[#3ED1B8]" />
-              Top 5% of all contractors in California
+              Top 5% of all Pros in California
             </p>
           </div>
 

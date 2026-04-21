@@ -324,11 +324,12 @@ export function AuditEngine() {
             className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4"
             style={{ color: DARK }}
           >
-            Audit{' '}
-            <span style={{ color: TRUE_BLUE }}>Anything</span>
+            Check My{' '}
+            <span style={{ color: TRUE_BLUE }}>Pro</span>
           </h2>
           <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            Submit any contractor for a comprehensive 20-Point Protocol audit
+            Got a quote? Tell us who you&apos;re hiring. We&apos;ll check their license,
+            insurance, and the law to make sure your home and money are safe.
           </p>
         </motion.div>
 
@@ -351,10 +352,10 @@ export function AuditEngine() {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold" style={{ color: DARK }}>
-                    Audit Request
+                    Pro Safety Check
                   </h3>
                   <p className="text-xs text-gray-500">
-                    Fill in contractor details to generate your report
+                    Fill in Pro details to generate your report
                   </p>
                 </div>
               </div>
@@ -368,7 +369,7 @@ export function AuditEngine() {
                       className="text-xs font-semibold text-gray-700 uppercase tracking-wider"
                     >
                       <User className="size-3.5 mr-1 inline text-gray-400" />
-                      Contractor Name
+                      Pro Name
                     </Label>
                     <Input
                       id="contractor-name"
@@ -386,7 +387,7 @@ export function AuditEngine() {
                       className="text-xs font-semibold text-gray-700 uppercase tracking-wider"
                     >
                       <Hash className="size-3.5 mr-1 inline text-gray-400" />
-                      Contractor License #
+                      Pro License #
                     </Label>
                     <Input
                       id="license-number"
@@ -434,7 +435,7 @@ export function AuditEngine() {
                       className="text-xs font-semibold text-gray-700 uppercase tracking-wider"
                     >
                       <Phone className="size-3.5 mr-1 inline text-gray-400" />
-                      Contractor Phone
+                      Pro Phone
                     </Label>
                     <Input
                       id="phone"
@@ -457,7 +458,7 @@ export function AuditEngine() {
                       className="text-xs font-semibold text-gray-700 uppercase tracking-wider"
                     >
                       <Mail className="size-3.5 mr-1 inline text-gray-400" />
-                      Contractor Email
+                      Pro Email
                     </Label>
                     <Input
                       id="email"
@@ -564,7 +565,7 @@ export function AuditEngine() {
                   </Label>
                   <Textarea
                     id="concerns"
-                    placeholder="Describe any specific concerns about this contractor, unusual payment demands, missing documentation, etc."
+                    placeholder="Describe any specific concerns about this Pro, unusual payment demands, missing documentation, etc."
                     value={formData.concerns}
                     onChange={(e) =>
                       handleInputChange('concerns', e.target.value)
@@ -600,7 +601,7 @@ export function AuditEngine() {
                   ) : (
                     <>
                       <Shield className="size-5" />
-                      Generate Guardian Risk Report
+                      Check My Pro Now
                     </>
                   )}
                 </Button>
@@ -641,7 +642,7 @@ export function AuditEngine() {
                     Guardian Risk Report
                   </h3>
                   <p className="text-sm text-gray-400 max-w-xs leading-relaxed">
-                    Complete the audit request form and submit to generate your
+                    Complete the Pro Safety Check form and submit to generate your
                     comprehensive 20-Point Protocol Risk Report.
                   </p>
                   <div className="flex items-center gap-2 mt-6 text-xs text-gray-400">
@@ -680,7 +681,7 @@ export function AuditEngine() {
                       </div>
                       <div className="flex flex-col items-start sm:items-end gap-1 text-xs text-white/70">
                         <span className="font-semibold text-white/90">
-                          {formData.contractorName || 'Contractor Name'}
+                          {formData.contractorName || 'Pro Name'}
                         </span>
                         <span className="flex items-center gap-1">
                           <Calendar className="size-3" />
@@ -893,7 +894,7 @@ export function AuditEngine() {
                       className="flex-1 h-11 rounded-xl font-semibold border-gray-300"
                     >
                       <ClipboardCheck className="size-4 mr-2" />
-                      New Audit Request
+                      New Pro Check
                     </Button>
                     <Button
                       variant="outline"

@@ -61,11 +61,11 @@ export function AuditSection() {
           <div className="inline-flex items-center gap-2 rounded-full bg-[#3ED1B8]/10 px-4 py-1.5 mb-4">
             <AlertTriangle className="h-3.5 w-3.5 text-[#3ED1B8]" />
             <span className="text-xs font-semibold text-[#3ED1B8] tracking-wide uppercase">
-              Contractor Verification
+              Pro Verification
             </span>
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#1A1D2E]">
-            Audit My Contractor
+            Check My Pro
           </h2>
           <p className="mt-4 text-lg text-[#1A1D2E]/60 max-w-2xl mx-auto">
             Don&apos;t sign on the dotted line until you know for sure.
@@ -82,14 +82,14 @@ export function AuditSection() {
           >
             <div className="bg-white rounded-2xl p-8 lg:p-10 shadow-lg shadow-[#1A1D2E]/[0.04] border border-[#E5E7EB]/60">
               <h3 className="text-2xl sm:text-3xl font-bold text-[#1A1D2E] leading-snug">
-                Got an outside bid?
+                Already have a quote?
                 <br />
                 <span className="text-[#3257C2]">
-                  Don&apos;t sign until you know.
+                  Check My Pro for free before you sign anything.
                 </span>
               </h3>
               <p className="mt-4 text-[#1A1D2E]/60 leading-relaxed">
-                Our free audit service reviews your contractor&apos;s bid,
+                We review your Pro&apos;s bid,
                 background, and credentials — giving you the confidence to make
                 the right decision.
               </p>
@@ -145,7 +145,7 @@ export function AuditSection() {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-[#1A1D2E]">
-                    Free Audit Request
+                    Free Pro Check
                   </h3>
                   <p className="text-xs text-[#1A1D2E]/50">
                     We&apos;ll review within 24 hours
@@ -162,7 +162,7 @@ export function AuditSection() {
                     Request Submitted!
                   </h4>
                   <p className="text-sm text-[#1A1D2E]/60 max-w-sm mx-auto">
-                    Our team will review your contractor and get back to you
+                    Our team will review your Pro and get back to you
                     within 24 hours. Check your email for confirmation.
                   </p>
                 </div>
@@ -170,7 +170,7 @@ export function AuditSection() {
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-[#1A1D2E] mb-1.5">
-                      Contractor Name
+                      Pro Name
                     </label>
                     <Input
                       required
@@ -226,7 +226,7 @@ export function AuditSection() {
                       Additional Notes (Optional)
                     </label>
                     <Textarea
-                      placeholder="Any concerns about this contractor or bid?"
+                      placeholder="Any concerns about this Pro or bid?"
                       rows={3}
                       className="rounded-lg border-[#E5E7EB] bg-[#F4F7F9] text-sm placeholder:text-[#1A1D2E]/30 resize-none"
                     />
@@ -236,20 +236,20 @@ export function AuditSection() {
                     type="submit"
                     className="w-full h-12 rounded-lg bg-[#3ED1B8] hover:bg-[#36bda6] text-white font-bold text-base shadow-lg shadow-[#3ED1B8]/20 hover:shadow-xl hover:shadow-[#3ED1B8]/30 transition-all duration-300 group mt-2"
                   >
-                    Submit Audit Request
+                    Check My Pro Now
                     <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </Button>
 
                   <div className="bg-[#3257C2]/[0.04] border border-[#3257C2]/10 rounded-lg p-3 mt-1">
                   <p className="text-[11px] text-[#1A1D2E]/50 text-center leading-relaxed">
-                    <span className="font-semibold text-[#3257C2]">CA Law Alert:</span> California limits contractor deposits to{' '}
+                    <span className="font-semibold text-[#3257C2]">CA Law Alert:</span> California limits Pro deposits to{' '}
                     <span className="font-bold text-[#3257C2]">$1,000 or 10% of the total contract price</span>, whichever is less (CA BPC §7159).
                     We verify this for you.
                   </p>
                 </div>
 
                 <p className="text-center text-xs text-[#1A1D2E]/40 mt-3">
-                    🔒 Your information is secure and never shared with contractors.
+                    🔒 Your information is secure and never shared with Pros.
                   </p>
                 </form>
               )}

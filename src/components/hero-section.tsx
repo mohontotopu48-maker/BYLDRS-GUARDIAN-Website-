@@ -67,7 +67,7 @@ export function HeroSection() {
             <div className="inline-flex items-center gap-2 rounded-full bg-[#3257C2]/[0.07] px-4 py-1.5 mb-6">
               <div className="h-2 w-2 rounded-full bg-[#3ED1B8] animate-pulse" />
               <span className="text-xs font-semibold text-[#3257C2] tracking-wide uppercase">
-                California&apos;s #1 Contractor Verification Platform
+                California&apos;s #1 Pro Verification Platform
               </span>
             </div>
 
@@ -82,7 +82,7 @@ export function HeroSection() {
             <p className="mt-6 text-lg sm:text-xl text-[#1A1D2E]/60 leading-relaxed max-w-lg">
               California&apos;s only platform that audits Pros every{' '}
               <span className="font-semibold text-[#1A1D2E]">30 days</span>.
-              Every contractor is verified, vetted, and monitored — so you never
+              Every Pro is verified, vetted, and monitored — so you never
               have to worry.
             </p>
 

@@ -15,7 +15,7 @@ const coreValues = [
     icon: Scale,
     title: 'Accountability',
     description:
-      'Every contractor on our platform is held to the same rigorous standard. No favoritism, no exceptions — just verifiable performance data.',
+      'Every Pro on our platform is held to the same rigorous standard. No favoritism, no exceptions — just verifiable performance data.',
     color: 'text-[#3257C2]',
     bg: 'bg-[#3257C2]/[0.07]',
   },
@@ -63,7 +63,7 @@ export function WhoWeAreSection() {
 
             <p className="mt-6 text-base sm:text-lg text-[#1A1D2E]/60 leading-relaxed">
               BYLDRS GUARDIAN was born from a simple truth: homeowners deserve the
-              same level of protection when hiring a contractor that they get from
+              same level of protection when hiring a Pro that they get from
               their bank, their doctor, or their attorney.
             </p>
 
@@ -73,7 +73,7 @@ export function WhoWeAreSection() {
               annually — yet there&apos;s been no independent oversight. Until now.
               We are the <span className="font-semibold text-[#3257C2]">Guardian</span>{' '}
               that stands between homeowners and the risks of unverified,
-              unaudited, and unaccountable contractors.
+              unaudited, and unaccountable Pros.
             </p>
 
             <div className="mt-8 flex items-center gap-4">

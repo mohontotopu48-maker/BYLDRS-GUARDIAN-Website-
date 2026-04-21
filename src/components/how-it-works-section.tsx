@@ -18,7 +18,7 @@ const steps = [
     title: 'Search',
     subtitle: 'Find Local Pros',
     description:
-      'Search our database of California-licensed contractors who have passed the initial 20-Point Protocol. Filter by trade, location, tier, and real-time audit health scores.',
+      'Search our database of California-licensed Pros who have passed the initial 20-Point Protocol. Filter by trade, location, tier, and real-time audit health scores.',
     features: [
       '20+ California home service categories',
       'Real-time license & insurance verification',
@@ -50,9 +50,9 @@ const steps = [
     number: '03',
     icon: UserCheck,
     title: 'Hire',
-    subtitle: 'Audit Anything Tool',
+    subtitle: 'Check My Pro',
     description:
-      'Before signing, submit any outside bid through our "Audit Anything" tool. We verify compliance with CA law — including the $1,000 deposit limit — so you never overpay upfront.',
+      'Before signing, submit any outside bid through our "Check My Pro" tool. We verify compliance with CA law — including the $1,000 deposit limit — so you never overpay upfront.',
     features: [
       'Free bid verification & market comparison',
       'CA deposit law compliance check ($1,000 max)',

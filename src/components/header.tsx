@@ -16,7 +16,7 @@ const publicNavLinks = [
 const dashboardNavLinks = [
   { label: 'Dashboard', action: 'page' as const, page: 'dashboard' as const },
   { label: 'Find a Pro', action: 'scroll' as const, href: '#pro-grid' },
-  { label: 'Audit Anything', action: 'scroll' as const, href: '#audit-engine' },
+  { label: 'Check My Pro', action: 'scroll' as const, href: '#audit-engine' },
   { label: 'Academy', action: 'scroll' as const, href: '#academy' },
   { label: 'Blog', action: 'page' as const, page: 'blog' as const },
   { label: 'Contact', action: 'page' as const, page: 'contact' as const },

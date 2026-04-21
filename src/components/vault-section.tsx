@@ -28,7 +28,7 @@ const vaultFeatures = [
   {
     icon: Eye,
     title: 'Access Control',
-    description: 'Share specific documents with your contractor or auditor without exposing your entire vault.',
+    description: 'Share specific documents with your Pro or auditor without exposing your entire vault.'
   },
   {
     icon: CloudOff,

@@ -44,7 +44,7 @@ const tiers: TierDetail[] = [
     bgColor: 'bg-[#F5A623]/[0.06]',
     borderColor: 'border-[#F5A623]/30',
     description:
-      'The pinnacle of contractor excellence. Certified Guardians represent the top 5% of all Pros — zero audit failures, full CRM integration, and a verified video splash page.',
+      'The pinnacle of Pro excellence. Certified Guardians represent the top 5% of all Pros — zero audit failures, full CRM integration, and a verified video splash page.',
     requirements: [
       '100% audit pass rate (all 20 points)',
       '3+ years verified history on platform',
@@ -146,7 +146,7 @@ export function HowWeRankSection() {
           </h2>
           <p className="mt-4 text-lg text-[#1A1D2E]/60 max-w-2xl mx-auto">
             Our transparent tier system ensures homeowners know exactly what level
-            of verification each contractor has achieved.
+            of verification each Pro has achieved.
           </p>
         </div>
 
