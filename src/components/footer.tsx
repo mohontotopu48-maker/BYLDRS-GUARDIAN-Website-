@@ -5,10 +5,10 @@ import { useAppStore } from '@/lib/store';
 
 const footerLinks = {
   platform: [
-    { label: 'Find a Pro', action: 'scroll', href: '#pro-grid' },
-    { label: 'How It Works', action: 'scroll', href: '#how-it-works' },
+    { label: 'Check My Pro', action: 'page', page: 'check-my-pro' },
+    { label: 'Hire a Pro', action: 'scroll', href: '#pro-grid' },
+    { label: 'The Standard', action: 'page', page: 'the-standard' },
     { label: 'How We Rank', action: 'scroll', href: '#how-we-rank' },
-    { label: 'The Standard', action: 'scroll', href: '#audit-engine' },
   ],
   company: [
     { label: 'Our Mission', action: 'scroll', href: '#mission' },
@@ -41,7 +41,7 @@ export function Footer() {
 
   const handleLinkClick = (link: { action: string; href?: string; page?: string }) => {
     if (link.action === 'page' && link.page) {
-      setCurrentPage(link.page as 'home' | 'dashboard' | 'pro-onboarding' | 'blog' | 'contact' | 'tier-2' | 'tier-3');
+      setCurrentPage(link.page as 'home' | 'dashboard' | 'pro-onboarding' | 'blog' | 'contact' | 'check-my-pro' | 'the-standard' | 'tier-2' | 'tier-3');
     } else if (link.action === 'scroll' && link.href) {
       if (useAppStore.getState().currentPage !== 'home') setCurrentPage('home');
       setTimeout(() => {

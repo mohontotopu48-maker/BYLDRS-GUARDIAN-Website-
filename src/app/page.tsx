@@ -11,6 +11,8 @@ import { AcademySection } from '@/components/academy-section';
 import { RewardsSection } from '@/components/rewards-section';
 import { VaultSection } from '@/components/vault-section';
 import { DashboardView } from '@/components/dashboard-view';
+import { CheckMyProView } from '@/components/check-my-pro-view';
+import { TheStandardView } from '@/components/the-standard-view';
 import { ProOnboardingView } from '@/components/pro-onboarding-view';
 import { BlogView } from '@/components/blog-view';
 import { ContactView } from '@/components/contact-view';
@@ -39,6 +41,10 @@ function PageView({ page }: { page: string }) {
   switch (page) {
     case 'dashboard':
       return <DashboardView />;
+    case 'check-my-pro':
+      return <CheckMyProView />;
+    case 'the-standard':
+      return <TheStandardView />;
     case 'pro-onboarding':
       return <ProOnboardingView />;
     case 'blog':

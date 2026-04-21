@@ -158,7 +158,7 @@ export function DashboardView() {
               className="flex flex-wrap gap-2 sm:gap-3"
             >
               <Button
-                onClick={() => setCurrentPage('home')}
+                onClick={() => setCurrentPage('check-my-pro')}
                 className="bg-[#3ED1B8] hover:bg-[#34b9a2] text-white font-semibold shadow-md text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-2.5"
               >
                 <Zap className="size-3.5 sm:size-4" />

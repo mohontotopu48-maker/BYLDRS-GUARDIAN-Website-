@@ -2,22 +2,22 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Shield, Menu, X, Home, LayoutDashboard, LogOut } from 'lucide-react';
+import { Shield, ShieldCheck, Menu, X, Home, LayoutDashboard, LogOut } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
 
 const publicNavLinks = [
-  { label: 'Find a Pro', action: 'scroll' as const, href: '#pro-grid' },
-  { label: 'The Standard', action: 'scroll' as const, href: '#audit-engine' },
+  { label: 'Check My Pro', action: 'page' as const, page: 'check-my-pro' as const, isTool: true as const },
+  { label: 'Hire a Pro', action: 'scroll' as const, href: '#pro-grid' },
+  { label: 'The Standard', action: 'page' as const, page: 'the-standard' as const },
   { label: 'Our Mission', action: 'scroll' as const, href: '#mission' },
-  { label: 'How it Works', action: 'scroll' as const, href: '#how-it-works' },
   { label: 'Contact', action: 'page' as const, page: 'contact' as const },
 ];
 
 const dashboardNavLinks = [
   { label: 'Dashboard', action: 'page' as const, page: 'dashboard' as const },
-  { label: 'Find a Pro', action: 'scroll' as const, href: '#pro-grid' },
-  { label: 'Check My Pro', action: 'scroll' as const, href: '#audit-engine' },
-  { label: 'Academy', action: 'scroll' as const, href: '#academy' },
+  { label: 'Check My Pro', action: 'page' as const, page: 'check-my-pro' as const, isTool: true as const },
+  { label: 'Hire a Pro', action: 'scroll' as const, href: '#pro-grid' },
+  { label: 'The Standard', action: 'page' as const, page: 'the-standard' as const },
   { label: 'Blog', action: 'page' as const, page: 'blog' as const },
   { label: 'Contact', action: 'page' as const, page: 'contact' as const },
 ];
@@ -31,7 +31,7 @@ export function Header() {
   const handleNavClick = (link: { action: string; href?: string; page?: string }) => {
     setMobileOpen(false);
     if (link.action === 'page' && link.page) {
-      setCurrentPage(link.page as 'home' | 'dashboard' | 'pro-onboarding' | 'blog' | 'contact' | 'tier-2' | 'tier-3');
+      setCurrentPage(link.page as 'home' | 'dashboard' | 'pro-onboarding' | 'blog' | 'contact' | 'check-my-pro' | 'the-standard' | 'tier-2' | 'tier-3');
     } else if (link.href) {
       if (currentPage !== 'home') setCurrentPage('home');
       setTimeout(() => {
@@ -75,8 +75,13 @@ export function Header() {
               <button
                 key={i}
                 onClick={() => handleNavClick(link)}
-                className="px-3.5 py-2 text-[13px] font-medium text-white/60 hover:text-white rounded-lg hover:bg-white/[0.06] transition-all duration-200"
+                className={`px-3.5 py-2 text-[13px] font-medium rounded-lg transition-all duration-200 flex items-center gap-1.5 ${
+                  'isTool' in link && link.isTool
+                    ? 'text-[#3ED1B8] hover:text-[#3ED1B8] bg-[#3ED1B8]/[0.08] hover:bg-[#3ED1B8]/[0.15]'
+                    : 'text-white/60 hover:text-white hover:bg-white/[0.06]'
+                }`}
               >
+                {'isTool' in link && link.isTool && <ShieldCheck className="h-3.5 w-3.5" />}
                 {link.label}
               </button>
             ))}
@@ -147,8 +152,13 @@ export function Header() {
               <button
                 key={i}
                 onClick={() => handleNavClick(link)}
-                className="w-full text-left px-4 py-2.5 text-sm font-medium text-white/60 hover:text-white rounded-lg hover:bg-white/[0.06] transition-colors"
+                className={`w-full text-left px-4 py-2.5 text-sm font-medium rounded-lg transition-colors flex items-center gap-2 ${
+                  'isTool' in link && link.isTool
+                    ? 'text-[#3ED1B8] hover:bg-[#3ED1B8]/[0.08]'
+                    : 'text-white/60 hover:text-white hover:bg-white/[0.06]'
+                }`}
               >
+                {'isTool' in link && link.isTool && <ShieldCheck className="h-4 w-4" />}
                 {link.label}
               </button>
             ))}
