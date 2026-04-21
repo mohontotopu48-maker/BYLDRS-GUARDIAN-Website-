@@ -40,6 +40,7 @@ const fadeUp = {
 export function ContactView() {
   const { setCurrentPage } = useAppStore();
   const [submitted, setSubmitted] = useState(false);
+  const [subject, setSubject] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -178,16 +179,16 @@ export function ContactView() {
                     <Label className="text-sm font-medium text-[#1A1D2E] mb-1.5 block">
                       Subject
                     </Label>
-                    <Select>
+                    <Select value={subject} onValueChange={setSubject}>
                       <SelectTrigger className="h-12 rounded-lg border-[#E5E7EB] bg-[#F4F7F9] text-sm">
                         <SelectValue placeholder="Select a topic" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="general">General Inquiry</SelectItem>
-                        <SelectItem value="verification">Pro Verification</SelectItem>
-                        <SelectItem value="account">Account Help</SelectItem>
-                        <SelectItem value="partnership">Partnership</SelectItem>
-                        <SelectItem value="legal">Legal</SelectItem>
+                        <SelectItem value="find-pro">I need help finding a Pro</SelectItem>
+                        <SelectItem value="check-quote">I need help checking a quote</SelectItem>
+                        <SelectItem value="billing">Billing / Account help</SelectItem>
+                        <SelectItem value="report-pro">I want to report a Pro</SelectItem>
+                        <SelectItem value="other">Other (Please specify below)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -199,10 +200,20 @@ export function ContactView() {
                   </Label>
                   <Textarea
                     required
-                    placeholder="How can we help?"
-                    rows={5}
-                    className="rounded-lg border-[#E5E7EB] bg-[#F4F7F9] text-sm resize-none"
+                    placeholder="Tell us more about your project or the problem you're trying to solve..."
+                    rows={6}
+                    className={`rounded-lg bg-[#F4F7F9] text-sm resize-none transition-all duration-200 ${
+                      subject === 'other'
+                        ? 'border-2 border-[#3257C2] ring-2 ring-[#3257C2]/20 shadow-sm shadow-[#3257C2]/10'
+                        : 'border border-[#E5E7EB]'
+                    }`}
                   />
+                  {subject === 'other' && (
+                    <p className="text-xs text-[#3257C2] font-medium mt-1.5 flex items-center gap-1.5">
+                      <span className="inline-block size-1.5 rounded-full bg-[#3257C2] animate-pulse" />
+                      Please describe your request in detail above so we can help you faster.
+                    </p>
+                  )}
                 </div>
 
                 <Button
