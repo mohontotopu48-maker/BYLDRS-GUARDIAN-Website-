@@ -11,6 +11,12 @@ interface AppStore {
   logout: () => void;
   selectedProId: number | null;
   setSelectedProId: (id: number | null) => void;
+  searchZipCode: string;
+  setSearchZipCode: (zip: string) => void;
+  searchCategory: string;
+  setSearchCategory: (category: string) => void;
+  hasSearched: boolean;
+  setHasSearched: (searched: boolean) => void;
 }
 
 export const useAppStore = create<AppStore>((set) => ({
@@ -25,4 +31,10 @@ export const useAppStore = create<AppStore>((set) => ({
   logout: () => set({ isLoggedIn: false, userType: null, currentPage: 'home' }),
   selectedProId: null,
   setSelectedProId: (id) => set({ selectedProId: id }),
+  searchZipCode: '',
+  setSearchZipCode: (zip) => set({ searchZipCode: zip }),
+  searchCategory: '',
+  setSearchCategory: (category) => set({ searchCategory: category }),
+  hasSearched: false,
+  setHasSearched: (searched) => set({ hasSearched: searched }),
 }));
