@@ -418,3 +418,26 @@ Stage Summary:
 - No "Sanctuary" text found in codebase (already uses "Property")
 - 3 AI-generated blog feature images saved to /public/
 - Zero lint errors, zero compilation errors, site serving 200
+---
+Task ID: 1
+Agent: Main Agent
+Task: BYLDRS GUARDIAN – Global Header & UX Sync: Active State + Why Us Mega-Flyout
+
+Work Log:
+- Read all project files to understand current state: page.tsx, header.tsx, store.ts, blog-view.tsx, footer.tsx, property-story-view.tsx
+- Confirmed property-story-view.tsx already exists and compiles (site was previously broken but is now fixed)
+- Rewrote header.tsx with three major changes:
+  1. Global Turquoise Active State: Created pageChildMap to track parent-child page relationships. isPageActive() now detects sub-pages (e.g., property-story activates "Blog", the-standard/blog/property-story all activate "Why Us")
+  2. Why Us Mega-Flyout: Replaced "Our Mission" with "Why Us" link featuring Apple-style glassmorphism mega-menu. Uses bg-[#1A1D2E]/85 backdrop-blur-2xl with subtle turquoise accent lines. Two sections: The Standard (ClipboardCheck icon) and Property Stories (BookOpen icon). Supports hover with 180ms delay, click outside to close, and Framer Motion animations.
+  3. Link verification: The Standard flyout item → page 'the-standard', Property Stories flyout item → page 'blog'
+- Mobile responsive: Added mobile accordion-style Why Us submenu with Framer Motion height animation
+- Dashboard nav also updated: Replaced "Blog" with "Why Us" mega-flyout for consistency
+- Fixed lint errors (react-hooks/set-state-in-effect) by removing problematic useEffect and relying on explicit close calls in handlers
+- Ran bun run lint — passes clean with 0 errors
+
+Stage Summary:
+- File modified: src/components/header.tsx (complete rewrite)
+- Active state system: pageChildMap + isPageActive() handles all parent-child relationships
+- Why Us mega-flyout: Desktop (hover) + Mobile (accordion), glassmorphism design, Framer Motion animations
+- Links verified: The Standard → the-standard page, Property Stories → blog page
+- Lint passes clean, dev server compiles with 200 OK
