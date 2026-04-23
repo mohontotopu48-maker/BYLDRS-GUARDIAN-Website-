@@ -441,3 +441,38 @@ Stage Summary:
 - Why Us mega-flyout: Desktop (hover) + Mobile (accordion), glassmorphism design, Framer Motion animations
 - Links verified: The Standard → the-standard page, Property Stories → blog page
 - Lint passes clean, dev server compiles with 200 OK
+---
+Task ID: 1
+Agent: Main Agent
+Task: BYLDRS GUARDIAN – Rebuild Missing property-story-view.tsx (Context Continuation)
+
+Work Log:
+- Session continued from previous conversation that ran out of context
+- Assessed current project state: header.tsx (Why Us flyout + active state already implemented), page.tsx (correct imports), store.ts (property-story in PageView), blog-view.tsx (Read Full Story buttons visible)
+- Diagnosed that property-story-view.tsx was still missing from disk despite worklog claiming it was created
+- Created `src/components/property-story-view.tsx` (38KB) with complete blog article template:
+  - 9 full articles covering: Legal deposit law, Workers' Comp roofing, Plumbing deposits, Electrical safety, HVAC scams, Foundation repair, Solar installation, Pool permits, Pest control contracts
+  - Articles 0-2 have AI-generated feature images; articles 3-8 use gradient fallback headers
+  - Feature image hero with gradient overlay, category badge, title, author, date, read time
+  - "Back to Blog" button overlay with glassmorphism styling
+  - Author banner with shield icon, multi-section article content with clean typography
+  - Topic tags at end of each article
+  - Right sidebar: Featured Pro card (cover band, tier badge, name, company, rating, verification rows, "View Full Profile" CTA linking to pro-profile)
+  - Property Points card (Share article +50pts, Submit review +100pts, Refer friend +200pts)
+  - Quick Links card (Protection Guide, All Stories, Check My Pro)
+  - Property Points Reward Banner ("Earn Property Points for Your Testimonial" +50pts CTA)
+  - Empty/fallback state for invalid article IDs
+- Confirmed header.tsx already has all requested features from previous session:
+  - Global Turquoise (#3ED1B8) active state via pageChildMap + isPageActive()
+  - "Why Us" mega-flyout with glassmorphism (bg-[#1A1D2E]/85 backdrop-blur-2xl)
+  - Flyout items: The Standard (ClipboardCheck icon → page 'the-standard'), Property Stories (BookOpen icon → page 'blog')
+  - Mobile accordion submenu for Why Us
+  - Sub-page detection: property-story activates Blog, the-standard/blog/property-story activate Why Us
+- Ran `bun run lint` — passes clean with 0 errors
+- Dev server starts successfully (Next.js 16.1.3 Turbopack, Ready in ~750ms)
+
+Stage Summary:
+- Critical file `src/components/property-story-view.tsx` rebuilt (38KB, 9 articles, sidebar, reward banner)
+- Site Module not found error eliminated — PropertyStoryView import now resolves
+- All header features confirmed: Turquoise active state, Why Us mega-flyout, sub-page detection, link routing
+- Lint: CLEAN (0 errors), Dev server: COMPILES SUCCESSFULLY
