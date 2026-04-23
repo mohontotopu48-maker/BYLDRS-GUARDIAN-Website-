@@ -22,6 +22,15 @@ const dashboardNavLinks = [
   { label: 'Contact', action: 'page' as const, page: 'contact' as const },
 ];
 
+/* Pages that should activate the Blog nav link */
+const blogSubPages = new Set(['blog', 'property-story']);
+
+function isPageActive(currentPage: string, linkPage: string | undefined): boolean {
+  if (!linkPage) return false;
+  if (linkPage === 'blog') return blogSubPages.has(currentPage);
+  return currentPage === linkPage;
+}
+
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { currentPage, setCurrentPage, isLoggedIn, userType, logout } = useAppStore();
@@ -80,7 +89,7 @@ export function Header() {
                 className={`px-3.5 py-2 text-[13px] font-medium rounded-lg transition-all duration-200 flex items-center gap-1.5 ${
                   'isTool' in link && link.isTool
                     ? 'text-[#3ED1B8] hover:text-[#3ED1B8] bg-[#3ED1B8]/[0.08] hover:bg-[#3ED1B8]/[0.15]'
-                    : currentPage === link.page
+                    : isPageActive(currentPage, link.page)
                       ? 'text-[#3ED1B8] hover:text-[#3ED1B8] bg-[#3ED1B8]/[0.08]'
                       : 'text-white/60 hover:text-white hover:bg-white/[0.06]'
                 }`}
@@ -159,7 +168,7 @@ export function Header() {
                 className={`w-full text-left px-4 py-2.5 text-sm font-medium rounded-lg transition-colors flex items-center gap-2 ${
                   'isTool' in link && link.isTool
                     ? 'text-[#3ED1B8] hover:bg-[#3ED1B8]/[0.08]'
-                    : currentPage === link.page
+                    : isPageActive(currentPage, link.page)
                       ? 'text-[#3ED1B8] bg-[#3ED1B8]/[0.08]'
                       : 'text-white/60 hover:text-white hover:bg-white/[0.06]'
                 }`}

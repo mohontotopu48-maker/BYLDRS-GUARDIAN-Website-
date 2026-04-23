@@ -379,3 +379,42 @@ Stage Summary:
 - All Pros linked to existing Pro Profile splash pages
 - Dark Navy header preserved throughout
 - Lint: CLEAN, Compilation: SUCCESS
+
+---
+Task ID: 6
+Agent: Main Agent
+Task: Fix Broken Site — Create Missing Property Story View + Apply Feature Integrations
+
+Work Log:
+- Diagnosed Module not found error for @/components/property-story-view
+- Verified page.tsx already has correct import and route case for 'property-story'
+- Verified store.ts already has 'property-story' in PageView union type and selectedArticleId state
+- Created `src/components/property-story-view.tsx` — full blog article template:
+  - Feature image hero with gradient overlay, category badge, title, author, date, read time
+  - "Back to Blog" button overlay
+  - Main body with clean typography: author banner, multi-section article content, topic tags
+  - 3 fully-written articles with real content (Legal deposit law, Workers' Comp roofing, Plumbing deposits) + fallback entries for all 9 blog posts
+  - Right sidebar with Featured Pro card (cover photo, avatar, Guardian Tier Badge, rating, verified status, "View Full Profile" CTA)
+  - Property Points summary card with earn actions (50/100/200 pts)
+  - Quick Links card (Protection Guide, All Stories, Check My Pro)
+  - Property Points Reward Banner below article ("Earn Property Points for Your Testimonial" with +50 pts CTA)
+- Applied Turquoise (#3ED1B8) active state to header links:
+  - Added `isPageActive()` helper function that treats 'property-story' as a sub-page of 'blog'
+  - Both desktop and mobile nav now highlight Blog in Turquoise when viewing Property Story pages
+- Confirmed "Sanctuary" → "Property" text swap: searched entire src/ — zero instances of "Sanctuary" found (already clean)
+- Fixed Blog "Read More" visibility:
+  - Featured article: added explicit "Read Full Story →" button in bordered section below metadata (always visible)
+  - Grid article cards: upgraded from `text-xs font-semibold` to `text-sm font-bold` with animated arrow (always visible)
+- Generated 3 AI blog feature images:
+  - /public/blog-featured-deposit-law.png (roofing project, 1344x768)
+  - /public/blog-featured-workers-comp.png (solar installation, 1344x768)
+  - /public/blog-featured-plumbing.png (plumbing work, 1344x768)
+- Lint: CLEAN (0 errors), Compilation: SUCCESS (GET / 200)
+
+Stage Summary:
+- Site error fixed — property-story-view.tsx created with complete blog article template
+- Header Blog link turns Turquoise on both Blog and Property Story pages
+- Blog "Read Full Story" buttons are 100% visible on all cards (featured + grid)
+- No "Sanctuary" text found in codebase (already uses "Property")
+- 3 AI-generated blog feature images saved to /public/
+- Zero lint errors, zero compilation errors, site serving 200

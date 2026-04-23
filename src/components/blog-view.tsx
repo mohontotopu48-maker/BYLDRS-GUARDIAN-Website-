@@ -347,6 +347,12 @@ export function BlogView() {
                         Featured
                       </Badge>
                     </div>
+                    <div className="mt-5 pt-4 border-t border-gray-100">
+                      <span className="inline-flex items-center gap-1.5 text-sm font-bold text-[#3257C2] group-hover:text-[#2a49a8] transition-colors">
+                        Read Full Story
+                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      </span>
+                    </div>
                   </div>
                 </motion.div>
               </motion.div>
@@ -390,9 +396,9 @@ export function BlogView() {
                       <span className="text-xs text-gray-400">
                         {article.date}
                       </span>
-                      <span className="flex items-center gap-1 text-xs font-semibold text-[#3257C2] group-hover:text-[#2a49a8] transition-colors">
-                        Read more
-                        <ArrowRight className="h-3 w-3" />
+                      <span className="inline-flex items-center gap-1.5 text-sm font-bold text-[#3257C2] group-hover:text-[#2a49a8] transition-colors">
+                        Read Full Story
+                        <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                       </span>
                     </div>
                   </div>
