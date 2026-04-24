@@ -20,6 +20,7 @@ import { ProProfileView } from '@/components/pro-profile-view';
 import { Tier2Splash, Tier3Splash } from '@/components/pro-splash-pages';
 import { PropertyStoryView } from '@/components/property-story-view';
 import { WhyUsView } from '@/components/why-us-view';
+import { ProtectionGuideDownloadView } from '@/components/protection-guide-download-view';
 import { Footer } from '@/components/footer';
 import { useAppStore } from '@/lib/store';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -64,6 +65,8 @@ function PageView({ page }: { page: string }) {
       return <PropertyStoryView />;
     case 'why-us':
       return <WhyUsView />;
+    case 'protection-guide-download':
+      return <ProtectionGuideDownloadView />;
     default:
       return <HomePage />;
   }

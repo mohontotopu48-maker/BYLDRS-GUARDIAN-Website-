@@ -203,9 +203,7 @@ export function TheStandardView() {
             {/* CTA */}
             <motion.div variants={fadeUp} custom={3}>
               <Button
-                onClick={() => {
-                  document.getElementById('guide-steps')?.scrollIntoView({ behavior: 'smooth' });
-                }}
+                onClick={() => setCurrentPage('protection-guide-download')}
                 size="lg"
                 className="h-13 px-8 rounded-xl bg-[#3ED1B8] hover:bg-[#34b9a2] text-[#0A0D14] font-bold text-sm shadow-xl shadow-[#3ED1B8]/20 hover:shadow-[#3ED1B8]/30 transition-all duration-300 group"
               >
@@ -362,6 +360,7 @@ export function TheStandardView() {
 
               <Button
                 size="lg"
+                onClick={() => setCurrentPage('protection-guide-download')}
                 className="h-13 px-8 rounded-xl bg-[#3ED1B8] hover:bg-[#34b9a2] text-[#0A0D14] font-bold text-sm shadow-lg shadow-[#3ED1B8]/20 hover:shadow-xl transition-all duration-300"
               >
                 <Download className="mr-2 h-4 w-4" />

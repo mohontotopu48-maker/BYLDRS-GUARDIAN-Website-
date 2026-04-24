@@ -560,3 +560,34 @@ Stage Summary:
 - All source files (page.tsx, header.tsx, store.ts) were verified correct
 - Server is now running cleanly on port 3000 (PID 6102)
 - Page renders with HTTP 200, no compilation errors
+---
+Task ID: 2
+Agent: Main Agent
+Task: Build Protection Guide Download fulfillment page
+
+Work Log:
+- Updated `src/lib/store.ts` — added `'protection-guide-download'` to `PageView` type
+- Updated `src/components/header.tsx` — added `'protection-guide-download'` to `pageChildMap['the-standard']` for active state
+- Updated `src/components/the-standard-view.tsx` — wired both "Get My Free Protection Guide" buttons (hero CTA and email CTA section) to `setCurrentPage('protection-guide-download')`
+- Generated AI book mockup image at `public/guide-book-mockup.png` (portrait 768x1344)
+- Created `src/components/protection-guide-download-view.tsx` — full fulfillment page with:
+  - Elite dark theme (#0A0D14 / #0F1219) matching The Standard page
+  - Book mockup with floating "Guardian Verified 2025" badge
+  - "Your 20-Point Shield is Ready" hero headline
+  - 3 feature sections: Contractor Law Cheat Sheet, 30-Day Audit Checklist, The Vault Organizer
+  - Framer Motion download success animation (ring pulse + verified checkmark)
+  - Functional TXT placeholder download via Blob URL
+  - Quick stat counters (20 checkpoints, 3 sections, 100% free, 4.9/5 rating)
+  - Final CTA: Download Again + Check My Pro buttons
+  - Responsive design (mobile-first)
+- Updated `src/app/page.tsx` — added import and route case for `protection-guide-download`
+- ESLint clean (no errors)
+- Dev server restarted: Ready in 918ms, GET / 200
+
+Stage Summary:
+- New page `/protection-guide-download` is fully functional
+- Both CTA buttons on The Standard page now navigate to download page
+- Header "The Standard" nav link highlights with turquoise on the download page
+- Download triggers a real TXT file download with guide content
+- Success animation plays after download completes
+- No changes to homepage or Why Us page

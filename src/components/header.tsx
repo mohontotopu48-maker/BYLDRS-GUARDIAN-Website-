@@ -24,7 +24,7 @@ import { motion, AnimatePresence } from 'framer-motion';
  * This enables parent-link highlighting when the user is on a sub-page.
  */
 const pageChildMap: Record<string, string[]> = {
-  'the-standard': ['the-standard', 'blog', 'property-story'],
+  'the-standard': ['the-standard', 'blog', 'property-story', 'protection-guide-download'],
 };
 
 function isPageActive(currentPage: string, linkPage: string | undefined): boolean {
