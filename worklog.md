@@ -537,3 +537,26 @@ Stage Summary:
 - New "Why Us" page at /why-us with full content
 - "Our Mission" fully rebranded to "Why Us" across header + footer
 - Lint clean, dev server running
+---
+Task ID: 1
+Agent: Main Agent
+Task: Critical Force-Sync — Diagnose and fix preview stuck on loading logo
+
+Work Log:
+- Read src/app/page.tsx — confirmed correct default export `Home`, correct `WhyUsView` import from `@/components/why-us-view`, all route cases present
+- Read src/components/header.tsx — confirmed all icon imports are standard `lucide-react` (ShieldCheck, Menu, X, LayoutDashboard, LogOut, ChevronDown, BookOpen, ClipboardCheck, ArrowRight). No broken imports.
+- Read src/lib/store.ts — confirmed `currentPage` state matches `page.tsx` usage, `PageView` type includes `'why-us'`
+- Verified why-us-view.tsx exists at src/components/why-us-view.tsx
+- Killed all stale Next.js processes occupying port 3000
+- Discovered ROOT CAUSE: Turbopack's `.next` cache was corrupted (SST file errors, missing build-manifest.json, tokio thread panics)
+- Fix: `rm -rf .next` to completely purge corrupted Turbopack database
+- Restarted dev server with `bun run dev`
+- Server confirmed: Ready in 974ms, GET / 200 in 4.7s (compile: 4.2s, render: 454ms)
+- No z-index issues found in header.tsx (standard z-50 fixed header with opaque bg-[#0F1219])
+- Hero section has proper pt-28/lg:pt-36 padding for fixed header offset
+
+Stage Summary:
+- Root cause was corrupted Turbopack `.next` cache, NOT a code issue
+- All source files (page.tsx, header.tsx, store.ts) were verified correct
+- Server is now running cleanly on port 3000 (PID 6102)
+- Page renders with HTTP 200, no compilation errors
