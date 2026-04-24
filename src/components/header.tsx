@@ -24,7 +24,7 @@ import { motion, AnimatePresence } from 'framer-motion';
  * This enables parent-link highlighting when the user is on a sub-page.
  */
 const pageChildMap: Record<string, string[]> = {
-  'why-us': ['the-standard', 'blog', 'property-story'],
+  'the-standard': ['the-standard', 'blog', 'property-story'],
 };
 
 function isPageActive(currentPage: string, linkPage: string | undefined): boolean {
@@ -52,9 +52,9 @@ interface NavLink {
   flyoutItems?: FlyoutItem[];
 }
 
-const whyUsFlyoutItems: FlyoutItem[] = [
+const standardFlyoutItems: FlyoutItem[] = [
   {
-    label: 'The Standard',
+    label: 'The Protection Guide',
     subtext: 'Learn about our 30-day recurring audit process.',
     icon: ClipboardCheck,
     page: 'the-standard',
@@ -70,12 +70,12 @@ const whyUsFlyoutItems: FlyoutItem[] = [
 const publicNavLinks: NavLink[] = [
   { label: 'Check My Pro', action: 'page', page: 'check-my-pro', isTool: true },
   { label: 'Hire a Pro', action: 'scroll', href: '#pro-grid' },
-  { label: 'The Standard', action: 'page', page: 'the-standard' },
   {
-    label: 'Why Us',
+    label: 'The Standard',
     action: 'flyout',
-    flyoutItems: whyUsFlyoutItems,
+    flyoutItems: standardFlyoutItems,
   },
+  { label: 'Why Us', action: 'page', page: 'why-us' },
   { label: 'Contact', action: 'page', page: 'contact' },
 ];
 
@@ -83,18 +83,18 @@ const dashboardNavLinks: NavLink[] = [
   { label: 'Dashboard', action: 'page', page: 'dashboard' },
   { label: 'Check My Pro', action: 'page', page: 'check-my-pro', isTool: true },
   { label: 'Hire a Pro', action: 'scroll', href: '#pro-grid' },
-  { label: 'The Standard', action: 'page', page: 'the-standard' },
   {
-    label: 'Why Us',
+    label: 'The Standard',
     action: 'flyout',
-    flyoutItems: whyUsFlyoutItems,
+    flyoutItems: standardFlyoutItems,
   },
+  { label: 'Why Us', action: 'page', page: 'why-us' },
   { label: 'Contact', action: 'page', page: 'contact' },
 ];
 
-/* ──────────────────────── Why Us Mega-Flyout ─────────────────────────────── */
+/* ──────────────────────── Standard Mega-Flyout ─────────────────────────────── */
 
-function WhyUsFlyout({
+function StandardFlyout({
   items,
   currentPage,
   onNavigate,
@@ -205,7 +205,7 @@ function WhyUsFlyout({
 
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [mobileWhyUsOpen, setMobileWhyUsOpen] = useState(false);
+  const [mobileFlyoutOpen, setMobileFlyoutOpen] = useState(false);
   const [flyoutOpen, setFlyoutOpen] = useState(false);
   const flyoutTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const flyoutContainerRef = useRef<HTMLDivElement>(null);
@@ -233,7 +233,7 @@ export function Header() {
 
   const handleNavClick = (link: NavLink) => {
     setMobileOpen(false);
-    setMobileWhyUsOpen(false);
+    setMobileFlyoutOpen(false);
     setFlyoutOpen(false);
 
     if (link.action === 'page' && link.page) {
@@ -249,7 +249,7 @@ export function Header() {
 
   const goHome = () => {
     setMobileOpen(false);
-    setMobileWhyUsOpen(false);
+    setMobileFlyoutOpen(false);
     setCurrentPage('home');
   };
 
@@ -273,9 +273,9 @@ export function Header() {
       return `${base} text-white/60 hover:text-white hover:bg-white/[0.06]`;
     }
 
-    // Flyout links (Why Us) — check if any child page is active
+    // Flyout links (The Standard) — check if any child page is active
     if (link.action === 'flyout') {
-      const isActive = isPageActive(currentPage, 'why-us');
+      const isActive = isPageActive(currentPage, 'the-standard');
       if (isActive) {
         return `${base} text-[#3ED1B8] hover:text-[#3ED1B8] bg-[#3ED1B8]/[0.08]`;
       }
@@ -313,7 +313,7 @@ export function Header() {
           <nav className="hidden lg:flex items-center gap-0.5">
             {navLinks.map((link, i) => {
               if (link.action === 'flyout' && link.flyoutItems) {
-                const isFlyoutActive = isPageActive(currentPage, 'why-us');
+                const isFlyoutActive = isPageActive(currentPage, 'the-standard');
                 return (
                   <div
                     key={i}
@@ -350,7 +350,7 @@ export function Header() {
 
                     <AnimatePresence>
                       {flyoutOpen && (
-                        <WhyUsFlyout
+                        <StandardFlyout
                           items={link.flyoutItems}
                           currentPage={currentPage}
                           onNavigate={(page) => setCurrentPage(page)}
@@ -423,7 +423,7 @@ export function Header() {
           <button
             onClick={() => {
               setMobileOpen(!mobileOpen);
-              setMobileWhyUsOpen(false);
+              setMobileFlyoutOpen(false);
             }}
             className="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-white/[0.06] transition-colors"
             aria-label="Toggle menu"
@@ -450,11 +450,11 @@ export function Header() {
             <div className="px-4 py-4 space-y-1">
               {navLinks.map((link, i) => {
                 if (link.action === 'flyout' && link.flyoutItems) {
-                  const isFlyoutActive = isPageActive(currentPage, 'why-us');
+                  const isFlyoutActive = isPageActive(currentPage, 'the-standard');
                   return (
                     <div key={i}>
                       <button
-                        onClick={() => setMobileWhyUsOpen(!mobileWhyUsOpen)}
+                        onClick={() => setMobileFlyoutOpen(!mobileFlyoutOpen)}
                         className={`
                           w-full text-left px-4 py-2.5 text-sm font-medium rounded-lg transition-colors
                           flex items-center justify-between
@@ -467,14 +467,14 @@ export function Header() {
                         {link.label}
                         <ChevronDown
                           className={`h-4 w-4 transition-transform duration-200 ${
-                            mobileWhyUsOpen ? 'rotate-180' : ''
+                            mobileFlyoutOpen ? 'rotate-180' : ''
                           }`}
                         />
                       </button>
 
                       {/* Mobile flyout sub-items */}
                       <AnimatePresence>
-                        {mobileWhyUsOpen && (
+                        {mobileFlyoutOpen && (
                           <motion.div
                             initial={{ opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: 'auto' }}

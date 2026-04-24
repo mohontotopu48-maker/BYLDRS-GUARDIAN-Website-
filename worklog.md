@@ -504,3 +504,36 @@ Stage Summary:
 - Why Us flyout: glassmorphism (bg-[#1A1D2E]/85 backdrop-blur-2xl), animated entry/exit, active item indicators
 - No header height or CTA positioning changes (surgical update)
 - Lint clean, dev server running on port 3000
+---
+Task ID: 2
+Agent: Main Agent
+Task: Final UX Polish — Restructure header navigation, move flyout to "The Standard", create Why Us page
+
+Work Log:
+- Added 'why-us' to PageView type in src/lib/store.ts
+- Created src/components/why-us-view.tsx — full "Why Us" page with hero, 3 pillars, 6 differentiators, impact stats, problem section
+- Added 'why-us' route case to src/app/page.tsx PageView switch
+- Restructured header.tsx navigation:
+  - Moved mega-flyout from "Why Us" to "The Standard"
+  - Renamed flyout items: "The Standard" → "The Protection Guide" (→ the-standard page), "Property Stories" (→ blog page)
+  - Made "Why Us" a standalone page link → why-us page
+  - Updated pageChildMap: 'the-standard' → ['the-standard', 'blog', 'property-story']
+  - Renamed component WhyUsFlyout → StandardFlyout
+  - Renamed state variable mobileWhyUsOpen → mobileFlyoutOpen
+- Updated footer.tsx: "Our Mission" → "Why Us" (page link to why-us), updated PageView type cast to include 'why-us' and 'property-story'
+- Verified no "Our Mission" references in header or footer
+
+Stage Summary:
+- Active State Matrix (✅ verified):
+  | Page | Check My Pro | Hire a Pro | The Standard ↓ | Why Us | Contact |
+  |------|-------------|------------|----------------|--------|---------|
+  | home | ✅ always    | ✅ turquoise | ❌ | ❌ | ❌ |
+  | why-us | ✅ always | ❌ | ❌ | ✅ turquoise | ❌ |
+  | the-standard | ✅ always | ❌ | ✅ turquoise | ❌ | ❌ |
+  | blog | ✅ always | ❌ | ✅ turquoise | ❌ | ❌ |
+  | property-story | ✅ always | ❌ | ✅ turquoise | ❌ | ❌ |
+  | contact | ✅ always | ❌ | ❌ | ❌ | ✅ turquoise |
+- Flyout on "The Standard" hover with glassmorphism + active item indicators
+- New "Why Us" page at /why-us with full content
+- "Our Mission" fully rebranded to "Why Us" across header + footer
+- Lint clean, dev server running

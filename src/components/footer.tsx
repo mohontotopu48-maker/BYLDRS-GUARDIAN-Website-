@@ -11,7 +11,7 @@ const footerLinks = {
     { label: 'How We Rank', action: 'scroll', href: '#how-we-rank' },
   ],
   company: [
-    { label: 'Our Mission', action: 'scroll', href: '#mission' },
+    { label: 'Why Us', action: 'page', page: 'why-us' },
     { label: 'Homeowner Academy', action: 'scroll', href: '#academy' },
     { label: 'Rewards Program', action: 'scroll', href: '#rewards' },
     { label: 'Homeowner Vault', action: 'scroll', href: '#vault' },
@@ -41,7 +41,7 @@ export function Footer() {
 
   const handleLinkClick = (link: { action: string; href?: string; page?: string }) => {
     if (link.action === 'page' && link.page) {
-      setCurrentPage(link.page as 'home' | 'dashboard' | 'pro-onboarding' | 'blog' | 'contact' | 'check-my-pro' | 'the-standard' | 'pro-profile' | 'tier-2' | 'tier-3');
+      setCurrentPage(link.page as 'home' | 'dashboard' | 'pro-onboarding' | 'blog' | 'contact' | 'check-my-pro' | 'the-standard' | 'why-us' | 'pro-profile' | 'tier-2' | 'tier-3' | 'property-story');
     } else if (link.action === 'scroll' && link.href) {
       if (useAppStore.getState().currentPage !== 'home') setCurrentPage('home');
       setTimeout(() => {
