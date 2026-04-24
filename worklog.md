@@ -476,3 +476,31 @@ Stage Summary:
 - Site Module not found error eliminated — PropertyStoryView import now resolves
 - All header features confirmed: Turquoise active state, Why Us mega-flyout, sub-page detection, link routing
 - Lint: CLEAN (0 errors), Dev server: COMPILES SUCCESSFULLY
+---
+Task ID: 1
+Agent: Main Agent
+Task: Implement "Why Us" mega-flyout and fix Turquoise (#3ED1B8) active state for all header nav links
+
+Work Log:
+- Assessed current project state: property-story-view.tsx already exists, dev server running, lint clean
+- Verified no "Sanctuary" references remain in codebase
+- Identified active state gap: "Hire a Pro" (scroll-type link) never turned turquoise because getNavLinkClasses didn't handle scroll actions
+- Fixed getNavLinkClasses with 4-way branching: isTool → scroll → flyout → page
+- Cleaned up pageChildMap: removed redundant 'blog' entry (no standalone Blog link in nav)
+- Enhanced WhyUsFlyout component with currentPage prop and per-item active state indicators
+- Added Apple-style active item treatment: turquoise left indicator bar, "Current" badge, intensified icon bg
+- Passed currentPage prop to WhyUsFlyout at call site
+- Verified link routing: The Standard → page:'the-standard', Property Stories → page:'blog'
+
+Stage Summary:
+- Active State Matrix (✅ verified):
+  | Page | Check My Pro | Hire a Pro | The Standard | Why Us | Contact |
+  |------|-------------|------------|--------------|--------|---------|
+  | home | ✅ always    | ✅ turquoise | ❌ | ❌ | ❌ |
+  | the-standard | ✅ always | ❌ | ✅ | ✅ | ❌ |
+  | blog | ✅ always | ❌ | ❌ | ✅ | ❌ |
+  | property-story | ✅ always | ❌ | ❌ | ✅ | ❌ |
+  | contact | ✅ always | ❌ | ❌ | ❌ | ✅ |
+- Why Us flyout: glassmorphism (bg-[#1A1D2E]/85 backdrop-blur-2xl), animated entry/exit, active item indicators
+- No header height or CTA positioning changes (surgical update)
+- Lint clean, dev server running on port 3000

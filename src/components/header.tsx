@@ -24,7 +24,6 @@ import { motion, AnimatePresence } from 'framer-motion';
  * This enables parent-link highlighting when the user is on a sub-page.
  */
 const pageChildMap: Record<string, string[]> = {
-  blog: ['blog', 'property-story'],
   'why-us': ['the-standard', 'blog', 'property-story'],
 };
 
@@ -97,13 +96,22 @@ const dashboardNavLinks: NavLink[] = [
 
 function WhyUsFlyout({
   items,
+  currentPage,
   onNavigate,
   onClose,
 }: {
   items: FlyoutItem[];
+  currentPage: string;
   onNavigate: (page: PageView) => void;
   onClose: () => void;
 }) {
+  /** Check if a flyout item matches the current page or a child of it */
+  const isItemActive = (item: FlyoutItem): boolean => {
+    if (currentPage === item.page) return true;
+    if (item.page === 'blog' && currentPage === 'property-story') return true;
+    return false;
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: -8, scale: 0.97 }}
@@ -120,6 +128,7 @@ function WhyUsFlyout({
         <div className="p-3">
           {items.map((item, idx) => {
             const Icon = item.icon;
+            const active = isItemActive(item);
             return (
               <button
                 key={item.label}
@@ -129,25 +138,54 @@ function WhyUsFlyout({
                 }}
                 className={`
                   w-full flex items-start gap-4 rounded-xl p-4
-                  transition-all duration-200 text-left group
-                  hover:bg-white/[0.06]
+                  transition-all duration-200 text-left group relative
+                  ${active
+                    ? 'bg-[#3ED1B8]/[0.07]'
+                    : 'hover:bg-white/[0.06]'
+                  }
                   ${idx > 0 ? 'mt-1' : ''}
                 `}
               >
+                {/* Active indicator bar */}
+                {active && (
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-8 rounded-full bg-[#3ED1B8]" />
+                )}
+
                 {/* Icon */}
-                <div className="shrink-0 mt-0.5 h-11 w-11 rounded-xl bg-[#3ED1B8]/10 flex items-center justify-center group-hover:bg-[#3ED1B8]/15 transition-colors duration-200">
+                <div className={`
+                  shrink-0 mt-0.5 h-11 w-11 rounded-xl flex items-center justify-center transition-colors duration-200
+                  ${active
+                    ? 'bg-[#3ED1B8]/20'
+                    : 'bg-[#3ED1B8]/10 group-hover:bg-[#3ED1B8]/15'
+                  }
+                `}>
                   <Icon className="h-5 w-5 text-[#3ED1B8]" />
                 </div>
 
                 {/* Text content */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-3">
-                    <span className="text-sm font-semibold text-white group-hover:text-[#3ED1B8] transition-colors duration-200">
+                    <span className={`text-sm font-semibold transition-colors duration-200 ${
+                      active
+                        ? 'text-[#3ED1B8]'
+                        : 'text-white group-hover:text-[#3ED1B8]'
+                    }`}>
                       {item.label}
                     </span>
-                    <ArrowRight className="h-4 w-4 text-white/0 group-hover:text-[#3ED1B8] transition-all duration-200 translate-x-0 group-hover:translate-x-0.5" />
+                    {!active && (
+                      <ArrowRight className="h-4 w-4 text-white/0 group-hover:text-[#3ED1B8] transition-all duration-200 translate-x-0 group-hover:translate-x-0.5" />
+                    )}
+                    {active && (
+                      <span className="text-[11px] font-medium text-[#3ED1B8]/70 bg-[#3ED1B8]/10 px-2 py-0.5 rounded-full">
+                        Current
+                      </span>
+                    )}
                   </div>
-                  <p className="mt-1 text-[13px] leading-relaxed text-white/45 group-hover:text-white/60 transition-colors duration-200">
+                  <p className={`mt-1 text-[13px] leading-relaxed transition-colors duration-200 ${
+                    active
+                      ? 'text-white/55'
+                      : 'text-white/45 group-hover:text-white/60'
+                  }`}>
                     {item.subtext}
                   </p>
                 </div>
@@ -221,15 +259,31 @@ export function Header() {
   const getNavLinkClasses = (link: NavLink): string => {
     const base = 'px-3.5 py-2 text-[13px] font-medium rounded-lg transition-all duration-200 flex items-center gap-1.5';
 
+    // Tool links (Check My Pro) are always turquoise
     if (link.isTool) {
       return `${base} text-[#3ED1B8] hover:text-[#3ED1B8] bg-[#3ED1B8]/[0.08] hover:bg-[#3ED1B8]/[0.15]`;
     }
 
-    // For flyout links, check if any child page is active
-    const isActive = link.action === 'flyout'
-      ? isPageActive(currentPage, 'why-us')
-      : isPageActive(currentPage, link.page);
+    // Scroll links (Hire a Pro) are active on the home page
+    if (link.action === 'scroll') {
+      const isActive = currentPage === 'home';
+      if (isActive) {
+        return `${base} text-[#3ED1B8] hover:text-[#3ED1B8] bg-[#3ED1B8]/[0.08]`;
+      }
+      return `${base} text-white/60 hover:text-white hover:bg-white/[0.06]`;
+    }
 
+    // Flyout links (Why Us) — check if any child page is active
+    if (link.action === 'flyout') {
+      const isActive = isPageActive(currentPage, 'why-us');
+      if (isActive) {
+        return `${base} text-[#3ED1B8] hover:text-[#3ED1B8] bg-[#3ED1B8]/[0.08]`;
+      }
+      return `${base} text-white/60 hover:text-white hover:bg-white/[0.06]`;
+    }
+
+    // Page links (The Standard, Contact, etc.) — exact match or child pages
+    const isActive = isPageActive(currentPage, link.page);
     if (isActive) {
       return `${base} text-[#3ED1B8] hover:text-[#3ED1B8] bg-[#3ED1B8]/[0.08]`;
     }
@@ -298,6 +352,7 @@ export function Header() {
                       {flyoutOpen && (
                         <WhyUsFlyout
                           items={link.flyoutItems}
+                          currentPage={currentPage}
                           onNavigate={(page) => setCurrentPage(page)}
                           onClose={() => setFlyoutOpen(false)}
                         />
