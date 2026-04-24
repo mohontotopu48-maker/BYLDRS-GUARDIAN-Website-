@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ShieldCheck,
@@ -14,6 +14,16 @@ import {
   Lock,
   Users,
   Sparkles,
+  Shield,
+  Shovel,
+  Trash2,
+  CloudRain,
+  HardHat,
+  PackageCheck,
+  PenTool,
+  MessageSquare,
+  BadgeCheck,
+  UserCheck,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAppStore } from '@/lib/store';
@@ -38,6 +48,36 @@ const childFade = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
+/* ───────────────────────── all 20 points for unlock animation ────── */
+const allPoints = [
+  { num: 1, label: 'CSLB License Verification', section: 'Audit' },
+  { num: 2, label: 'Workers\' Comp Check', section: 'Audit' },
+  { num: 3, label: 'GL Insurance ($1M+)', section: 'Audit' },
+  { num: 4, label: 'Bond Verification', section: 'Audit' },
+  { num: 5, label: 'Complaint History Review', section: 'Audit' },
+  { num: 6, label: 'Background Check', section: 'Audit' },
+  { num: 7, label: 'Reference Verification', section: 'Audit' },
+  { num: 8, label: 'Vehicle & Uniform ID', section: 'Audit' },
+  { num: 9, label: 'Property Protection', section: 'Audit' },
+  { num: 10, label: 'Anti-Ghosting Guarantee', section: 'Audit' },
+  { num: 11, label: 'Property Shielding', section: 'Site' },
+  { num: 12, label: 'Utility Mapping (811)', section: 'Site' },
+  { num: 13, label: 'Debris Management', section: 'Site' },
+  { num: 14, label: 'Weather Preparedness', section: 'Site' },
+  { num: 15, label: 'Sub-Contractor Vetting', section: 'Site' },
+  { num: 16, label: 'Material Verification', section: 'Integrity' },
+  { num: 17, label: 'Change Order Protocol', section: 'Integrity' },
+  { num: 18, label: '24h Communication', section: 'Integrity' },
+  { num: 19, label: 'Permit Close-out', section: 'Integrity' },
+  { num: 20, label: 'Anti-Ghosting Guarantee', section: 'Integrity' },
+];
+
+const sectionColors: Record<string, string> = {
+  Audit: '#3257C2',
+  Site: '#F5A623',
+  Integrity: '#3ED1B8',
+};
+
 /* ───────────────────────── feature data ───────────────────────────── */
 const guideFeatures = [
   {
@@ -47,6 +87,7 @@ const guideFeatures = [
     description:
       'California Business & Professions Code §7159 caps your deposit at $1,000 — period. Learn the exact language to use when a Pro demands more, plus the legal recourse available to you.',
     accent: '#3257C2',
+    points: '1–10',
     items: [
       'Exact CA BPC §7159 statute text',
       'What to say when asked for 30-50% upfront',
@@ -61,6 +102,7 @@ const guideFeatures = [
     description:
       'The same 20-point checklist our auditors use to score every Pro. CSLB license, workers\' comp, GL insurance, complaint history — all verified in a structured repeatable process.',
     accent: '#3ED1B8',
+    points: '1–10',
     items: [
       '20-point Guardian verification scorecard',
       'CSLB real-time lookup instructions',
@@ -75,6 +117,7 @@ const guideFeatures = [
     description:
       'Never scramble for paperwork again. The Vault Organizer gives you a simple folder structure for the 4 essential documents every homeowner needs before, during, and after a project.',
     accent: '#F5A623',
+    points: '—',
     items: [
       'Signed contract + change orders',
       'Insurance certificates & bonds',
@@ -82,12 +125,44 @@ const guideFeatures = [
       'Final lien release & warranty docs',
     ],
   },
+  {
+    icon: Shield,
+    title: 'Site & Property Protection',
+    subtitle: 'Points 11–15: Keeping your home safe during work',
+    description:
+      'From mandatory drop cloths to daily magnetic sweeps, this section ensures your property is shielded at every stage. Covers utility mapping, debris protocols, weather prep, and sub-contractor insurance.',
+    accent: '#F5A623',
+    points: '11–15',
+    items: [
+      'Property shielding & dust barrier protocols',
+      'Utility mapping: "Call Before You Dig" (811)',
+      'Daily magnetic sweeps & hazardous disposal',
+      'Weather preparedness & tarping before 5 PM',
+      'Sub-contractor insurance vetting steps',
+    ],
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Project Integrity & Ethics',
+    subtitle: 'Points 16–20: No blind spots, no excuses',
+    description:
+      'Material verification, written-only change orders, guaranteed 24-hour response times, mandatory final inspections, and our ironclad anti-ghosting guarantee. This is where good enough isn\'t good enough.',
+    accent: '#3ED1B8',
+    points: '16–20',
+    items: [
+      'Material brand/grade match verification',
+      'Change order protocol (no verbal agreements)',
+      '24-hour guaranteed response time',
+      'Municipal permit close-out before final payment',
+      'Anti-ghosting: continuous on-site presence guarantee',
+    ],
+  },
 ];
 
 /* ───────────────────────── stat counters ──────────────────────────── */
 const stats = [
   { value: '20', suffix: '', label: 'Verification checkpoints', icon: ShieldCheck },
-  { value: '3', suffix: '', label: 'Core sections', icon: FileText },
+  { value: '5', suffix: '', label: 'Core sections', icon: FileText },
   { value: '100%', suffix: '', label: 'Free — no catch', icon: Lock },
   { value: '4.9', suffix: '/5', label: 'Homeowner rating', icon: Users },
 ];
@@ -97,100 +172,194 @@ export function ProtectionGuideDownloadView() {
   const { setCurrentPage } = useAppStore();
   const [downloading, setDownloading] = useState(false);
   const [downloadComplete, setDownloadComplete] = useState(false);
+  const [unlockProgress, setUnlockProgress] = useState(0);
+
+  // Animate unlock points one by one
+  useEffect(() => {
+    if (!downloading) return;
+    let current = 0;
+    const interval = setInterval(() => {
+      current++;
+      setUnlockProgress(current);
+      if (current >= 20) clearInterval(interval);
+    }, 100); // 20 points over ~2s
+    return () => clearInterval(interval);
+  }, [downloading]);
 
   const handleDownload = async () => {
     setDownloading(true);
+    setUnlockProgress(0);
 
-    // Simulate a brief preparation delay for dramatic effect
-    await new Promise((r) => setTimeout(r, 1200));
+    // Wait for unlock animation to finish
+    await new Promise((r) => setTimeout(r, 2500));
 
-    // Create a placeholder PDF content (simple text file for now)
     const content = `
-═══════════════════════════════════════════════════════════════
-          BYLDRS GUARDIAN — HOMEOWNER PROTECTION GUIDE
-═══════════════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════════
+       BYLDRS GUARDIAN — HOMEOWNER PROTECTION GUIDE
+       The Full 20-Point Shield: No Blind Spots
+       California Edition — Free Download
+═══════════════════════════════════════════════════════════════════
 
-The 20-Point Shield: Your Complete Homeowner Playbook
-California Edition — Free Download
+──────────────────────────────────────────────────────────────────────
+SECTION 1: CONTRACTOR LAW CHEAT SHEET (The $1,000 Deposit Limit)
+──────────────────────────────────────────────────────────────────────
 
-─────────────────────────────────────────────────────────────
-SECTION 1: CONTRACTOR LAW CHEAT SHEET
-─────────────────────────────────────────────────────────────
-
-  ⚖️  The $1,000 Deposit Limit (CA BPC §7159)
-
-  California law strictly limits the deposit a contractor may
-  request to $1,000 — regardless of project size. If a Pro
-  asks for more, they are breaking the law.
+  California Business & Professions Code §7159 caps your
+  upfront deposit at $1,000 — regardless of project size.
 
   Key protections:
   • Maximum upfront deposit: $1,000
-  • Milestone payments must be tied to completed work
-  • Change orders require written approval
-  • Final payment only after satisfactory completion
+  • Milestone payments must be tied to completed work stages
+  • All change orders require written, signed approval
+  • Final payment released only after satisfactory completion
+  • Mechanic's lien prevention documentation required
 
-─────────────────────────────────────────────────────────────
-SECTION 2: 30-DAY AUDIT CHECKLIST
-─────────────────────────────────────────────────────────────
+──────────────────────────────────────────────────────────────────────
+SECTION 2: 30-DAY AUDIT CHECKLIST (How to Verify Their Health Score)
+──────────────────────────────────────────────────────────────────────
 
-  🛡️  How to Verify Their Health Score
+  Every BYLDRS GUARDIAN Pro undergoes this audit every 30 days.
 
-  Every BYLDRS GUARDIAN Pro undergoes this 20-point audit
-  every 30 days. Here's what to check yourself:
+  POINT 1 — CSLB License Verification
+    Verify the Pro's CSLB license number at cslb.ca.gov.
+    Confirm it's active, in good standing, and matches the
+    trade classification for your project.
 
-  1. Active CSLB license (verify at cslb.ca.gov)
-  2. Workers' compensation insurance (active)
-  3. General liability insurance ($1M+ minimum)
-  4. Bond verification
-  5. Complaint history review
-  6. Background check status
-  7. Reference verification
-  8. Vehicle & uniform identification
-  9. Property protection protocols
-  10. Anti-ghosting guarantee
+  POINT 2 — Workers' Compensation Insurance
+    Cross-reference the Pro's workers' comp policy with the
+    California Department of Industrial Relations database.
+    Policy must be active and cover the specific trade.
 
-─────────────────────────────────────────────────────────────
-SECTION 3: THE VAULT ORGANIZER
-─────────────────────────────────────────────────────────────
+  POINT 3 — General Liability Insurance ($1M+)
+    Confirm minimum $1M general liability coverage.
+    Request a current Certificate of Insurance (COI).
 
-  📂  Where to Store Your 4 Core Documents
+  POINT 4 — Bond Verification
+    Verify the contractor's license bond is active and
+    meets state minimum requirements.
 
-  1. CONTRACT FOLDER
-     • Signed original contract
-     • All change orders (dated & signed)
-     • Scope of work document
-     • Payment schedule
+  POINT 5 — Complaint History Review
+    Review CSLB complaint records. Check for unresolved
+    complaints, citations, or disciplinary actions.
 
-  2. INSURANCE FOLDER
-     • Contractor's GL certificate
-     • Workers' comp certificate
-     • Bond documentation
-     • Your own homeowner's policy
+  POINT 6 — Background Check
+    Government-issued ID on file. No criminal history
+    that would pose a risk to homeowner safety.
 
-  3. PERMITS FOLDER
-     • Building permits (copies)
-     • Inspection reports
-     • Correction notices (if any)
-     • Final sign-off
+  POINT 7 — Reference Verification
+    Minimum 3 verified references with before/after photos
+    from completed projects within the last 12 months.
 
-  4. COMPLETION FOLDER
-     • Final lien release
-     • Warranty documentation
-     • Before/after photos
-     • Maintenance schedule
+  POINT 8 — Vehicle & Uniform Identification
+    Branded vehicles and uniforms. No mystery workers
+    at your door — every person on-site is identifiable.
 
-═══════════════════════════════════════════════════════════════
+  POINT 9 — Property Protection Protocols
+    Documented procedures for shielding landscaping,
+    hardscape, HVAC, and interior surfaces during work.
+
+  POINT 10 — Anti-Ghosting Guarantee
+    Guaranteed response within 24 hours. Continuous
+    on-site presence as scheduled until milestones are met.
+
+──────────────────────────────────────────────────────────────────────
+SECTION 3: THE VAULT ORGANIZER (Where to Store Your 4 Core Documents)
+──────────────────────────────────────────────────────────────────────
+
+  FOLDER 1 — CONTRACT
+    • Signed original contract
+    • All change orders (dated & signed)
+    • Scope of work document
+    • Payment schedule
+
+  FOLDER 2 — INSURANCE
+    • Contractor's GL certificate
+    • Workers' comp certificate
+    • Bond documentation
+    • Your homeowner's insurance policy
+
+  FOLDER 3 — PERMITS
+    • Building permits (copies)
+    • Inspection reports
+    • Correction notices (if any)
+    • Final municipal sign-off
+
+  FOLDER 4 — COMPLETION
+    • Final lien release
+    • Warranty documentation
+    • Before/after photos
+    • Maintenance schedule
+
+──────────────────────────────────────────────────────────────────────
+SECTION 4: SITE & PROPERTY PROTECTION (Points 11–15)
+──────────────────────────────────────────────────────────────────────
+
+  POINT 11 — Property Shielding
+    Mandatory use of drop cloths, floor runners, and zip-wall
+    dust barriers before any work begins. Your home is not a
+    job site — it's your property.
+
+  POINT 12 — Utility Mapping
+    Verification of "Call Before You Dig" (811) compliance
+    and internal line marking before excavation or heavy
+    equipment work.
+
+  POINT 13 — Debris Management
+    Daily magnetic sweeps for nails and screws. Safe disposal
+    of hazardous materials per EPA and local regulations.
+    Site must be broom-clean before crew departs.
+
+  POINT 14 — Weather Preparedness
+    All open projects (roofs, foundations, framing) must be
+    tarped and secured before 5:00 PM daily. No exceptions.
+
+  POINT 15 — Sub-Contractor Vetting
+    Every sub-contractor on-site must be covered under the
+    primary Pro's insurance policy. Verify COI for each
+    sub before they begin work.
+
+──────────────────────────────────────────────────────────────────────
+SECTION 5: PROJECT INTEGRITY & ETHICS (Points 16–20)
+──────────────────────────────────────────────────────────────────────
+
+  POINT 16 — Material Verification
+    Delivered materials must match the specific brand, grade,
+    and model listed in the contract. No substitutions without
+    documented written approval.
+
+  POINT 17 — Change Order Protocol
+    No verbal agreements — ever. All scope changes, material
+    substitutions, and timeline adjustments must be documented
+    in writing and signed by both parties BEFORE work begins.
+
+  POINT 18 — Communication Standard
+    Guaranteed 24-hour response time on all project updates,
+    questions, and concerns. If you reach out, they respond.
+
+  POINT 19 — Permit Close-Out
+    Mandatory final municipal inspection must be completed
+    and passed before the final payment is released. No
+    exceptions. No final check until the city signs off.
+
+  POINT 20 — Anti-Ghosting Guarantee
+    Continuous on-site presence as scheduled until all
+    project milestones are met. If the Pro disappears
+    mid-project, BYLDRS GUARDIAN intervenes immediately.
+
+═══════════════════════════════════════════════════════════════════
   This guide is provided free of charge by BYLDRS GUARDIAN.
+  Print it. Bring it to every bid. Hold every Pro accountable.
+
   For the most up-to-date version, visit:
   https://byldersguardian.com/the-standard
-═══════════════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════════
 `.trim();
 
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'BYLDRS_GUARDIAN_Protection_Guide.txt';
+    a.download = 'BYLDRS_GUARDIAN_20_Point_Protection_Guide.txt';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -227,7 +396,7 @@ SECTION 3: THE VAULT ORGANIZER
               <motion.div variants={fadeUp} custom={0} className="mb-6">
                 <span className="inline-flex items-center gap-2 rounded-full bg-[#3ED1B8]/[0.08] border border-[#3ED1B8]/20 px-5 py-2 text-xs font-bold tracking-widest uppercase text-[#3ED1B8]/80">
                   <Sparkles className="h-3.5 w-3.5" />
-                  Your guide is ready — free forever
+                  20 points — fully expanded
                 </span>
               </motion.div>
 
@@ -237,10 +406,10 @@ SECTION 3: THE VAULT ORGANIZER
                 custom={1}
                 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-extrabold tracking-tight text-white leading-[1.08] mb-5"
               >
-                Your 20-Point
+                The Full 20-Point Shield:
                 <br />
-                <span className="bg-gradient-to-r from-[#3ED1B8] via-[#3ED1B8] to-[#3257C2] bg-clip-text text-transparent">
-                  Shield is Ready.
+                <span className="bg-gradient-to-r from-[#3ED1B8] via-[#3257C2] to-[#3ED1B8] bg-clip-text text-transparent">
+                  No Blind Spots.
                 </span>
               </motion.h1>
 
@@ -250,16 +419,15 @@ SECTION 3: THE VAULT ORGANIZER
                 custom={2}
                 className="text-base sm:text-lg text-white/40 leading-relaxed mb-8 max-w-lg mx-auto lg:mx-0"
               >
-                The complete Homeowner Protection Guide — from contractor law to audit
-                checklists to document vaults. Download it, print it, and bring it to
-                every bid.
+                Contractor law, audit checklists, site protection, project integrity, and
+                document vaults — all 20 verification points in one complete playbook.
               </motion.p>
 
               {/* Quick stats row */}
               <motion.div
                 variants={fadeUp}
                 custom={3}
-                className="flex flex-wrap justify-center lg:justify-start gap-6 mb-10"
+                className="flex flex-wrap justify-center lg:justify-start gap-5 sm:gap-6 mb-10"
               >
                 {stats.map((stat) => {
                   const StatIcon = stat.icon;
@@ -281,10 +449,98 @@ SECTION 3: THE VAULT ORGANIZER
                 })}
               </motion.div>
 
-              {/* Primary CTA — Download */}
+              {/* Primary CTA — Download / Unlock Animation */}
               <motion.div variants={fadeUp} custom={4}>
                 <AnimatePresence mode="wait">
-                  {!downloadComplete ? (
+                  {/* ── DOWNLOADING: 20-Point Unlock Animation ── */}
+                  {downloading && (
+                    <motion.div
+                      key="unlocking"
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.4 }}
+                      className="max-w-md mx-auto lg:mx-0"
+                    >
+                      {/* Progress header */}
+                      <div className="flex items-center justify-between mb-4">
+                        <span className="text-sm font-bold text-white flex items-center gap-2">
+                          <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
+                            className="h-4 w-4 border-2 border-[#3ED1B8]/30 border-t-[#3ED1B8] rounded-full"
+                          />
+                          Unlocking your shield...
+                        </span>
+                        <span className="text-sm font-bold text-[#3ED1B8]">
+                          {unlockProgress}/20
+                        </span>
+                      </div>
+
+                      {/* Progress bar */}
+                      <div className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden mb-5">
+                        <motion.div
+                          className="h-full rounded-full bg-gradient-to-r from-[#3257C2] via-[#3ED1B8] to-[#3257C2]"
+                          initial={{ width: '0%' }}
+                          animate={{ width: `${(unlockProgress / 20) * 100}%` }}
+                          transition={{ duration: 0.15, ease: 'easeOut' }}
+                        />
+                      </div>
+
+                      {/* Scrolling point cards */}
+                      <div className="grid grid-cols-2 sm:grid-cols-2 gap-1.5 max-h-[280px] overflow-hidden">
+                        {allPoints.map((point, idx) => {
+                          const unlocked = idx < unlockProgress;
+                          const color = sectionColors[point.section];
+                          return (
+                            <motion.div
+                              key={point.num}
+                              initial={{ opacity: 0.15, scale: 0.95 }}
+                              animate={{
+                                opacity: unlocked ? 1 : 0.2,
+                                scale: unlocked ? 1 : 0.95,
+                              }}
+                              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                              className="flex items-center gap-2 rounded-lg px-2.5 py-2 border transition-colors duration-300"
+                              style={{
+                                backgroundColor: unlocked ? `${color}08` : 'transparent',
+                                borderColor: unlocked ? `${color}20` : 'rgba(255,255,255,0.04)',
+                              }}
+                            >
+                              <motion.div
+                                initial={false}
+                                animate={{
+                                  backgroundColor: unlocked ? color : 'rgba(255,255,255,0.06)',
+                                }}
+                                className="flex items-center justify-center h-5 w-5 rounded-md shrink-0"
+                              >
+                                {unlocked ? (
+                                  <motion.div
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+                                  >
+                                    <CheckCircle2 className="h-3.5 w-3.5 text-[#0A0D14]" />
+                                  </motion.div>
+                                ) : (
+                                  <span className="text-[9px] font-bold text-white/30">{point.num}</span>
+                                )}
+                              </motion.div>
+                              <span
+                                className="text-[11px] font-semibold leading-tight truncate"
+                                style={{ color: unlocked ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.2)' }}
+                              >
+                                {point.label}
+                              </span>
+                            </motion.div>
+                          );
+                        })}
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* ── DEFAULT: Download Button ── */}
+                  {!downloading && !downloadComplete && (
                     <motion.div
                       key="download-btn"
                       initial={{ opacity: 1 }}
@@ -293,32 +549,21 @@ SECTION 3: THE VAULT ORGANIZER
                     >
                       <Button
                         onClick={handleDownload}
-                        disabled={downloading}
                         size="lg"
-                        className="h-14 px-8 sm:px-10 rounded-xl bg-[#3ED1B8] hover:bg-[#34b9a2] text-[#0A0D14] font-bold text-sm shadow-xl shadow-[#3ED1B8]/20 hover:shadow-[#3ED1B8]/30 transition-all duration-300 group disabled:opacity-70 disabled:cursor-not-allowed"
+                        className="h-14 px-8 sm:px-10 rounded-xl bg-[#3ED1B8] hover:bg-[#34b9a2] text-[#0A0D14] font-bold text-sm shadow-xl shadow-[#3ED1B8]/20 hover:shadow-[#3ED1B8]/30 transition-all duration-300 group"
                       >
-                        {downloading ? (
-                          <>
-                            <motion.div
-                              animate={{ rotate: 360 }}
-                              transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                              className="mr-2 h-5 w-5 border-2 border-[#0A0D14]/20 border-t-[#0A0D14] rounded-full"
-                            />
-                            Preparing your guide...
-                          </>
-                        ) : (
-                          <>
-                            <Download className="mr-2 h-5 w-5" />
-                            Download the Free Guide
-                            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                          </>
-                        )}
+                        <Download className="mr-2 h-5 w-5" />
+                        Download the Free Guide
+                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                       </Button>
                       <p className="mt-4 text-[11px] text-white/20">
-                        Instant download &middot; No email required &middot; TXT format (placeholder)
+                        Instant download &middot; No email required &middot; All 20 points included
                       </p>
                     </motion.div>
-                  ) : (
+                  )}
+
+                  {/* ── COMPLETE: Success State ── */}
+                  {downloadComplete && (
                     <motion.div
                       key="success"
                       initial={{ opacity: 0, scale: 0.9 }}
@@ -326,32 +571,31 @@ SECTION 3: THE VAULT ORGANIZER
                       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                       className="flex flex-col items-center lg:items-start gap-4"
                     >
-                      {/* Success Animation */}
+                      {/* Verified checkmark with ring pulse */}
                       <motion.div
                         initial={{ scale: 0, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ delay: 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                         className="relative"
                       >
-                        {/* Ring pulse */}
                         <motion.div
                           initial={{ scale: 0.8, opacity: 0 }}
-                          animate={{ scale: [0.8, 1.6], opacity: [0.6, 0] }}
+                          animate={{ scale: [0.8, 1.8], opacity: [0.5, 0] }}
                           transition={{ delay: 0.3, duration: 0.8, ease: 'easeOut' }}
                           className="absolute inset-0 rounded-full bg-[#3ED1B8]/20"
-                          style={{ margin: '-8px' }}
+                          style={{ margin: '-10px' }}
                         />
                         <motion.div
                           initial={{ scale: 0.8, opacity: 0 }}
-                          animate={{ scale: [0.8, 2], opacity: [0.4, 0] }}
+                          animate={{ scale: [0.8, 2.2], opacity: [0.3, 0] }}
                           transition={{ delay: 0.5, duration: 0.8, ease: 'easeOut' }}
-                          className="absolute inset-0 rounded-full bg-[#3ED1B8]/10"
-                          style={{ margin: '-8px' }}
+                          className="absolute inset-0 rounded-full bg-[#3257C2]/10"
+                          style={{ margin: '-10px' }}
                         />
                         <div className="relative flex items-center justify-center h-16 w-16 rounded-full bg-[#3ED1B8]/15 border-2 border-[#3ED1B8]/30">
                           <motion.div
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
+                            initial={{ scale: 0, rotate: -45 }}
+                            animate={{ scale: 1, rotate: 0 }}
                             transition={{ delay: 0.2, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                           >
                             <CheckCircle2 className="h-8 w-8 text-[#3ED1B8]" />
@@ -365,17 +609,40 @@ SECTION 3: THE VAULT ORGANIZER
                         transition={{ delay: 0.4, duration: 0.4 }}
                       >
                         <p className="text-lg font-bold text-white">
-                          Guide downloaded successfully!
+                          All 20 points unlocked!
                         </p>
                         <p className="text-sm text-white/40 mt-1">
                           Check your downloads folder. Print it and bring it to every bid.
                         </p>
                       </motion.div>
 
+                      {/* Mini 20-point summary */}
                       <motion.div
                         initial={{ opacity: 0, y: 8 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.6, duration: 0.4 }}
+                        className="flex items-center gap-2 flex-wrap"
+                      >
+                        {['Contractor Law', 'Audit Checklist', 'Vault Organizer', 'Site Protection', 'Project Ethics'].map((tag, i) => (
+                          <span
+                            key={tag}
+                            className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-semibold border"
+                            style={{
+                              color: ['#3257C2', '#3ED1B8', '#F5A623', '#F5A623', '#3ED1B8'][i],
+                              backgroundColor: `${['#3257C2', '#3ED1B8', '#F5A623', '#F5A623', '#3ED1B8'][i]}10`,
+                              borderColor: `${['#3257C2', '#3ED1B8', '#F5A623', '#F5A623', '#3ED1B8'][i]}20`,
+                            }}
+                          >
+                            <CheckCircle2 className="h-2.5 w-2.5" />
+                            {tag}
+                          </span>
+                        ))}
+                      </motion.div>
+
+                      <motion.div
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.8, duration: 0.4 }}
                         className="flex items-center gap-3"
                       >
                         <Button
@@ -432,9 +699,21 @@ SECTION 3: THE VAULT ORGANIZER
                     <ShieldCheck className="h-4 w-4 text-[#3ED1B8]" />
                   </div>
                   <div>
-                    <span className="text-xs font-bold text-white block">Guardian Verified</span>
+                    <span className="text-xs font-bold text-white block">20 Points Complete</span>
                     <span className="text-[10px] text-white/30">Updated 2025</span>
                   </div>
+                </motion.div>
+                {/* Top-right: New badge */}
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8, duration: 0.4 }}
+                  className="absolute -top-3 -right-3 sm:-right-6 z-20 flex items-center gap-1.5 rounded-lg bg-[#F5A623]/90 backdrop-blur-xl px-3 py-2 shadow-lg"
+                >
+                  <Sparkles className="h-3.5 w-3.5 text-[#0A0D14]" />
+                  <span className="text-[10px] font-bold text-[#0A0D14] tracking-wide uppercase">
+                    Now Expanded
+                  </span>
                 </motion.div>
               </div>
             </motion.div>
@@ -446,7 +725,7 @@ SECTION 3: THE VAULT ORGANIZER
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════
-          FEATURES — What's Inside the Guide
+          FEATURES — What's Inside the Guide (5 Sections)
           ═══════════════════════════════════════════════════════════════ */}
       <div className="bg-[#0F1219]">
         {/* Section header */}
@@ -459,7 +738,7 @@ SECTION 3: THE VAULT ORGANIZER
             className="mx-auto max-w-2xl text-center"
           >
             <span className="inline-flex items-center gap-2 rounded-full bg-white/[0.05] border border-white/[0.08] px-4 py-1.5 mb-5 text-xs font-bold tracking-widest uppercase text-white/40">
-              What&apos;s Inside
+              5 Sections &middot; 20 Points &middot; Zero Blind Spots
             </span>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight">
               Everything you need to
@@ -493,12 +772,26 @@ SECTION 3: THE VAULT ORGANIZER
 
                 <div className="relative p-6 sm:p-8 lg:p-10">
                   <div className="flex flex-col lg:flex-row lg:items-start gap-6 lg:gap-8">
-                    {/* Icon */}
-                    <div
-                      className="shrink-0 flex items-center justify-center h-14 w-14 rounded-xl"
-                      style={{ backgroundColor: `${feature.accent}12` }}
-                    >
-                      <FeatureIcon className="h-7 w-7" style={{ color: feature.accent }} />
+                    {/* Icon + Points badge */}
+                    <div className="shrink-0 flex items-start gap-3">
+                      <div
+                        className="flex items-center justify-center h-14 w-14 rounded-xl"
+                        style={{ backgroundColor: `${feature.accent}12` }}
+                      >
+                        <FeatureIcon className="h-7 w-7" style={{ color: feature.accent }} />
+                      </div>
+                      {feature.points !== '—' && (
+                        <span
+                          className="mt-1 text-[10px] font-extrabold tracking-widest uppercase px-2 py-0.5 rounded-md border"
+                          style={{
+                            color: feature.accent,
+                            backgroundColor: `${feature.accent}08`,
+                            borderColor: `${feature.accent}20`,
+                          }}
+                        >
+                          Pts {feature.points}
+                        </span>
+                      )}
                     </div>
 
                     {/* Content */}
@@ -552,9 +845,62 @@ SECTION 3: THE VAULT ORGANIZER
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════
+          20-POINT QUICK REFERENCE STRIP
+          ═══════════════════════════════════════════════════════════════ */}
+      <div className="bg-[#0A0D14]">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-10"
+          >
+            <h3 className="text-xl sm:text-2xl font-extrabold text-white">
+              The Complete 20-Point Shield
+            </h3>
+            <p className="text-sm text-white/30 mt-2">
+              Every checkpoint — at a glance.
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={stagger}
+            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5"
+          >
+            {allPoints.map((point, idx) => {
+              const color = sectionColors[point.section];
+              return (
+                <motion.div
+                  key={point.num}
+                  variants={childFade}
+                  className="flex items-center gap-2.5 rounded-xl px-3.5 py-3 border border-white/[0.04] bg-white/[0.015] hover:bg-white/[0.03] transition-colors duration-200"
+                >
+                  <div
+                    className="flex items-center justify-center h-6 w-6 rounded-md shrink-0"
+                    style={{ backgroundColor: `${color}15` }}
+                  >
+                    <span className="text-[10px] font-bold" style={{ color }}>
+                      {point.num}
+                    </span>
+                  </div>
+                  <span className="text-[12px] font-medium text-white/50 leading-tight">
+                    {point.label}
+                  </span>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+        </div>
+      </div>
+
+      {/* ═══════════════════════════════════════════════════════════════
           FINAL CTA — Download Again + Check My Pro
           ═══════════════════════════════════════════════════════════════ */}
-      <div className="bg-[#0A0D14] px-4 sm:px-6 lg:px-8 py-20 sm:py-28">
+      <div className="bg-[#0F1219] px-4 sm:px-6 lg:px-8 py-20 sm:py-28">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -575,7 +921,7 @@ SECTION 3: THE VAULT ORGANIZER
             Now put the guide to work.
           </h3>
           <p className="text-white/35 text-sm sm:text-base mb-10 max-w-md mx-auto leading-relaxed">
-            You have the protection playbook. Now check any Pro&apos;s Guardian Risk
+            You have the complete 20-point playbook. Now check any Pro&apos;s Guardian Risk
             Report — free, in seconds.
           </p>
 
@@ -586,7 +932,7 @@ SECTION 3: THE VAULT ORGANIZER
               className="h-13 px-8 rounded-xl bg-[#3ED1B8] hover:bg-[#34b9a2] text-[#0A0D14] font-bold text-sm shadow-lg shadow-[#3ED1B8]/20 hover:shadow-xl transition-all duration-300 group"
             >
               <Download className="mr-2 h-4 w-4" />
-              Download the Guide Again
+              Download the Full Guide
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
             <Button

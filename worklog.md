@@ -591,3 +591,28 @@ Stage Summary:
 - Download triggers a real TXT file download with guide content
 - Success animation plays after download completes
 - No changes to homepage or Why Us page
+---
+Task ID: 3
+Agent: Main Agent
+Task: Expand 20-Point Shield to include full 20 points with unlock animation
+
+Work Log:
+- Updated hero headline to "The Full 20-Point Shield: No Blind Spots."
+- Added Section 4: Site & Property Protection (Points 11-15) — Property Shielding, Utility Mapping, Debris Management, Weather Preparedness, Sub-Contractor Vetting
+- Added Section 5: Project Integrity & Ethics (Points 16-20) — Material Verification, Change Order Protocol, 24h Communication, Permit Close-out, Anti-Ghosting Guarantee
+- Updated stats from "3 Core sections" to "5 Core sections"
+- Built 20-point unlock animation: when user clicks Download, all 20 points animate sequentially in a 2-column grid, each lighting up with section-colored checkmarks (blue for Audit, amber for Site, turquoise for Integrity)
+- Progress bar fills as points unlock; counter shows "X/20" during animation
+- After unlock completes, document downloads with full 20-point content
+- Success state shows "All 20 points unlocked!" with section tags
+- Added "Complete 20-Point Shield" quick reference strip section showing all 20 points in a 4-column grid
+- Updated downloadable TXT document with all 5 sections and full 20-point detail
+- Added "Now Expanded" badge on book mockup, updated badge to "20 Points Complete"
+- Updated "Pts 11-15" and "Pts 16-20" labels on new feature cards
+- ESLint clean, dev server Ready in 919ms, GET / 200
+
+Stage Summary:
+- Protection guide page now covers all 20 verification points across 5 sections
+- Download triggers a sequential 20-point unlock animation (~2s)
+- Downloaded document contains comprehensive content for all 20 points
+- Visual continuity maintained: dark theme, turquoise accents, gradient orbs
