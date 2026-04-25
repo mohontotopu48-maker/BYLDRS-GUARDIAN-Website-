@@ -12,6 +12,7 @@ import {
   BookOpen,
   ClipboardCheck,
   ArrowRight,
+  BarChart3,
 } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
 import type { PageView } from '@/lib/store';
@@ -41,6 +42,7 @@ interface FlyoutItem {
   subtext: string;
   icon: React.ComponentType<{ className?: string }>;
   page: PageView;
+  scrollTo?: string;
 }
 
 interface NavLink {
@@ -54,10 +56,17 @@ interface NavLink {
 
 const standardFlyoutItems: FlyoutItem[] = [
   {
-    label: 'The Protection Guide',
-    subtext: 'Learn about our 30-day recurring audit process.',
-    icon: ClipboardCheck,
+    label: 'The 20-Point Shield',
+    subtext: 'Our complete Pro verification standard — every point explained.',
+    icon: ShieldCheck,
     page: 'the-standard',
+  },
+  {
+    label: 'How We Rank',
+    subtext: 'Discover how Pros earn Guardian tiers through our 30-day audit cycle.',
+    icon: BarChart3,
+    page: 'home' as PageView,
+    scrollTo: '#how-we-rank',
   },
   {
     label: 'Property Stories',
@@ -107,6 +116,7 @@ function StandardFlyout({
 }) {
   /** Check if a flyout item matches the current page or a child of it */
   const isItemActive = (item: FlyoutItem): boolean => {
+    if (item.scrollTo) return false;
     if (currentPage === item.page) return true;
     if (item.page === 'blog' && currentPage === 'property-story') return true;
     return false;
@@ -135,6 +145,11 @@ function StandardFlyout({
                 onClick={() => {
                   onNavigate(item.page);
                   onClose();
+                  if (item.scrollTo) {
+                    setTimeout(() => {
+                      document.querySelector(item.scrollTo)?.scrollIntoView({ behavior: 'smooth' });
+                    }, 200);
+                  }
                 }}
                 className={`
                   w-full flex items-start gap-4 rounded-xl p-4

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -41,6 +41,36 @@ const tierColors: Record<string, string> = {
   vetted: 'bg-[#9CA3AF]',
   verified: 'bg-[#CD7F32]',
 };
+
+/* ─── Audit Countdown Hook ────────────────────────────────── */
+function useAuditCountdown(nextAuditDate: string) {
+  const parseDate = (dateStr: string): Date | null => {
+    const match = dateStr.match(/(\w{3})\s+(\d{1,2}),\s+(\d{4})/);
+    if (!match) return null;
+    const date = new Date(`${match[1]} ${match[2]}, ${match[3]}`);
+    return isNaN(date.getTime()) ? null : date;
+  };
+
+  const [daysLeft, setDaysLeft] = useState(() => {
+    const target = parseDate(nextAuditDate);
+    if (!target) return 30;
+    const diff = Math.ceil((target.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+    return Math.max(0, diff);
+  });
+
+  useEffect(() => {
+    const target = parseDate(nextAuditDate);
+    if (!target) return;
+
+    const interval = setInterval(() => {
+      const diff = Math.ceil((target.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+      setDaysLeft(Math.max(0, diff));
+    }, 60000);
+    return () => clearInterval(interval);
+  }, [nextAuditDate]);
+
+  return daysLeft;
+}
 
 function useLiveStats(zip: string, category: string) {
   return useMemo(() => {
@@ -157,6 +187,7 @@ function GuardianChoiceCard({ pro }: { pro: ProProfile }) {
 function ProCard({ pro, index }: { pro: ProProfile; index: number }) {
   const { setCurrentPage, setSelectedProId } = useAppStore();
   const config = tierConfig[pro.tier];
+  const daysLeft = useAuditCountdown(pro.nextAuditDate);
   const handleViewProfile = () => {
     setSelectedProId(pro.id);
     setCurrentPage('pro-profile');
@@ -204,12 +235,24 @@ function ProCard({ pro, index }: { pro: ProProfile; index: number }) {
           <span className="text-xs text-[#1A1D2E]/40">({pro.reviewCount})</span>
         </div>
         <div className="flex items-center justify-between mb-4">
-          {pro.verified && (
-            <div className="flex items-center gap-1.5">
-              <CheckCircle2 className="h-3.5 w-3.5 text-[#3ED1B8]" />
-              <span className="text-[11px] font-medium text-[#3ED1B8]">Audited & Verified</span>
+          <div className="flex items-center gap-2">
+            {pro.verified && (
+              <div className="flex items-center gap-1.5">
+                <CheckCircle2 className="h-3.5 w-3.5 text-[#3ED1B8]" />
+                <span className="text-[11px] font-medium text-[#3ED1B8]">Audited</span>
+              </div>
+            )}
+            <div className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold border ${
+              daysLeft <= 7
+                ? 'bg-red-50 text-red-600 border-red-200'
+                : daysLeft <= 14
+                  ? 'bg-amber-50 text-amber-600 border-amber-200'
+                  : 'bg-green-50 text-green-600 border-green-200'
+            }`}>
+              <Shield className="h-3 w-3" />
+              {daysLeft <= 7 ? `${daysLeft}d left` : `${daysLeft}d`}
             </div>
-          )}
+          </div>
           <div className="flex items-center gap-1">
             <Shield className="h-3 w-3 text-[#1A1D2E]/30" />
             <span className="text-[11px] font-bold text-[#1A1D2E]/50">{pro.propertyScore}</span>

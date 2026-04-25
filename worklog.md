@@ -787,3 +787,23 @@ Stage Summary:
 - vault-view.tsx: +23 lines (vault sync useEffect + processedBidIds ref)
 - Full audit flow: Form → 5-step animated progress → Guardian Risk Report (Health Score, 20-Point Shield, Action Items, Professional Opinion, Meet Verified Pro) → Vault sync notification → Open Vault with auto-populated Contracts folder
 - All pages share footer.tsx with VSUALdigitalmedia.com credit verified
+---
+Task ID: 1
+Agent: Main Agent
+Task: Phase 2 "Live & Urgent" Updates — Ticker, Countdown, SMS, Footer, Navigation
+
+Work Log:
+- Read hero-section.tsx, header.tsx, pro-grid.tsx, audit-engine.tsx, footer.tsx
+- Added Live Audit Ticker to hero-section.tsx: 8 cycling events (Shield Verified, Risk Alert, New Enrollment, Vault Secured), auto-rotates every 4s, pill-style ticker with icon badges (green check, red shield, blue bell), dot pagination, AnimatePresence transitions
+- Added Audit Countdown Timer to pro-grid.tsx: custom `useAuditCountdown` hook parsing nextAuditDate strings, ProCard now shows "Shield Status" badge next to "Audited" label with color-coded countdown (green ≤28d, amber ≤14d, red ≤7d)
+- Added SMS Phone field to audit-engine.tsx: full-width input between Email/Bid Amount and Upload sections, red-accented label "SMS for Urgent Red-Flag Alerts", red border styling, Lock icon + subtext explaining alerts for illegal deposits/expired licenses
+- Updated header.tsx "The Standard" dropdown: replaced 2 items with 3 — "The 20-Point Shield" (→ the-standard), "How We Rank" (→ home + scroll #how-we-rank), "Property Stories" (→ blog). Added BarChart3 icon import, scrollTo field to FlyoutItem interface, scroll handling in StandardFlyout click handler
+- Verified VSUALdigitalmedia.com footer credit on all pages (footer.tsx shared globally via page.tsx)
+
+Stage Summary:
+- hero-section.tsx: +45 lines (ticker data + state + useEffect + ticker UI)
+- pro-grid.tsx: +30 lines (useAuditCountdown hook + Shield Status badge)
+- audit-engine.tsx: +20 lines (SMS phone field + red-flag alert subtext)
+- header.tsx: +12 lines (BarChart3 import, FlyoutItem.scrollTo, 3 dropdown items, scroll handler)
+- Zero ESLint errors, clean dev server compilation
+- All 5 features fully functional and verified

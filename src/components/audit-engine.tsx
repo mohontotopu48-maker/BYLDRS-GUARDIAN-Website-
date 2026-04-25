@@ -975,6 +975,31 @@ export function AuditEngine() {
                   </div>
                 </div>
 
+                {/* Row 3b: Your Phone for SMS Alerts */}
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="sms-phone"
+                    className="text-xs font-semibold text-gray-700 uppercase tracking-wider"
+                  >
+                    <Phone className="size-3.5 mr-1 inline text-[#EF4444]" />
+                    <span className="text-[#EF4444]">SMS for Urgent Red-Flag Alerts</span>
+                  </Label>
+                  <Input
+                    id="sms-phone"
+                    type="tel"
+                    placeholder="(555) 000-0000"
+                    value={formData.phone}
+                    onChange={(e) =>
+                      handleInputChange('phone', e.target.value)
+                    }
+                    className="h-10 border-[#EF4444]/20 focus:border-[#EF4444]/40 focus:ring-[#EF4444]/10"
+                  />
+                  <p className="text-[10px] text-gray-400 flex items-center gap-1">
+                    <Lock className="size-3 text-gray-300" />
+                    Get instant SMS alerts if we detect illegal deposits, expired licenses, or other critical risks.
+                  </p>
+                </div>
+
                 {/* Row 4: Upload Bid Document */}
                 <div className="space-y-2">
                   <Label className="text-xs font-semibold text-gray-700 uppercase tracking-wider">

@@ -22,6 +22,9 @@ import {
   Sun,
   Fence,
   ShieldCheck,
+  Shield,
+  Bell,
+  CheckCircle2,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
@@ -65,8 +68,21 @@ const top20Services = [
   'Fencing',
 ];
 
+/* ─── Live Audit Ticker Data ──────────────────────────────── */
+const TICKER_EVENTS = [
+  { event: 'Shield Verified: Chen Plumbing (San Diego) • Audit Health: 98%', type: 'success' },
+  { event: 'Risk Alert: Unlicensed contractor blocked in zip 90210', type: 'alert' },
+  { event: 'New Enrollment: Homeowner activated Shield in zip 92612', type: 'info' },
+  { event: 'Shield Verified: Rivera Roofing (Los Angeles) • Audit Health: 96%', type: 'success' },
+  { event: 'Vault Secured: 3 contracts uploaded for audit review', type: 'info' },
+  { event: 'Risk Alert: $3,500 deposit flagged in zip 90001', type: 'alert' },
+  { event: 'Shield Verified: Okafor Electrical (San Francisco) • Audit Health: 94%', type: 'success' },
+  { event: 'New Enrollment: Property owner joined from zip 95814', type: 'info' },
+];
+
 export function HeroSection() {
   const [selectedService, setSelectedService] = useState('');
+  const [tickerIndex, setTickerIndex] = useState(0);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showOtherInput, setShowOtherInput] = useState(false);
   const [otherValue, setOtherValue] = useState('');
@@ -79,6 +95,14 @@ export function HeroSection() {
     setHasSearched,
     setCurrentPage,
   } = useAppStore();
+
+  // Live Audit Ticker auto-rotation
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTickerIndex((prev) => (prev + 1) % TICKER_EVENTS.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -305,6 +329,54 @@ export function HeroSection() {
                 Search Verified Pros
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* ─── Live Audit Ticker ──────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.55 }}
+          className="mt-8 max-w-2xl mx-auto"
+        >
+          <div className="flex items-center gap-2.5 rounded-full bg-[#F4F7F9] border border-[#E5E7EB] px-4 py-2 shadow-sm">
+            <div className="relative flex items-center justify-center">
+              <Bell className="h-4 w-4 text-[#3257C2]" />
+              <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-[#3ED1B8] animate-pulse" />
+            </div>
+            <div className="flex-1 overflow-hidden">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={tickerIndex}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.35 }}
+                  className="flex items-center gap-2 whitespace-nowrap"
+                >
+                  {TICKER_EVENTS[tickerIndex].type === 'success' && <CheckCircle2 className="h-3.5 w-3.5 text-green-500 shrink-0" />}
+                  {TICKER_EVENTS[tickerIndex].type === 'alert' && <Shield className="h-3.5 w-3.5 text-red-500 shrink-0" />}
+                  {TICKER_EVENTS[tickerIndex].type === 'info' && <Bell className="h-3.5 w-3.5 text-[#3257C2] shrink-0" />}
+                  <span className="text-xs font-medium text-[#1A1D2E]/60 truncate">
+                    {TICKER_EVENTS[tickerIndex].event}
+                  </span>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+            <div className="flex gap-0.5 shrink-0">
+              {TICKER_EVENTS.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setTickerIndex(i)}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    i === tickerIndex
+                      ? 'w-4 bg-[#3257C2]'
+                      : 'w-1.5 bg-[#1A1D2E]/15 hover:bg-[#1A1D2E]/25'
+                  }`}
+                  aria-label={`Event ${i + 1}`}
+                />
+              ))}
             </div>
           </div>
         </motion.div>
