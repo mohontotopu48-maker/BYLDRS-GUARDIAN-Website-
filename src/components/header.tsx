@@ -387,10 +387,7 @@ export function Header() {
                   Join as a Pro
                 </Button>
                 <Button
-                  onClick={() => {
-                    useAppStore.getState().login('homeowner');
-                    setCurrentPage('dashboard');
-                  }}
+                  onClick={() => setCurrentPage('enroll-shield')}
                   className="rounded-lg bg-[#3257C2] hover:bg-[#2a49a8] text-white font-semibold text-sm px-5 py-2.5 shadow-lg shadow-[#3257C2]/25 hover:shadow-[#3257C2]/40 transition-all duration-200"
                 >
                   Join as a Property Owner
@@ -541,8 +538,7 @@ export function Header() {
                     </Button>
                     <Button
                       onClick={() => {
-                        useAppStore.getState().login('homeowner');
-                        setCurrentPage('dashboard');
+                        setCurrentPage('enroll-shield');
                         setMobileOpen(false);
                       }}
                       className="w-full rounded-lg bg-[#3257C2] hover:bg-[#2a49a8] text-white font-semibold text-sm"

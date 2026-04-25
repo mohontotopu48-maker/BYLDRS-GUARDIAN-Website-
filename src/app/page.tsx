@@ -22,6 +22,7 @@ import { PropertyStoryView } from '@/components/property-story-view';
 import { WhyUsView } from '@/components/why-us-view';
 import { ProtectionGuideDownloadView } from '@/components/protection-guide-download-view';
 import { VaultView } from '@/components/vault-view';
+import { EnrollShieldView } from '@/components/enroll-shield-view';
 import { Footer } from '@/components/footer';
 import { useAppStore } from '@/lib/store';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -70,6 +71,8 @@ function PageView({ page }: { page: string }) {
       return <ProtectionGuideDownloadView />;
     case 'vault':
       return <VaultView />;
+    case 'enroll-shield':
+      return <EnrollShieldView />;
     default:
       return <HomePage />;
   }

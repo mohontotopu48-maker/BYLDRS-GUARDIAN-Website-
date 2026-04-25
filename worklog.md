@@ -697,3 +697,38 @@ Stage Summary:
 - Storage progress bar with animated gradient fill
 - "Open Your Vault" button in homepage vault section now navigates to dedicated vault page
 - Global footer branding (VSUALdigitalmedia.com) visible via shared Footer component
+
+---
+Task ID: 5
+Agent: Main Agent
+Task: BYLDRS GUARDIAN – Homeowner Enrollment Funnel (/enroll-shield)
+
+Work Log:
+- Updated `src/lib/store.ts` — Added 'enroll-shield' to PageView, added `showEnrollSuccess` + `setShowEnrollSuccess` state for cross-page notification
+- Created `src/components/enroll-shield-view.tsx` — Full enrollment page:
+  - Dark Glassmorphism theme (#0A0D14 bg, backdrop-blur-xl cards, decorative gradient orbs)
+  - Left panel (desktop): Shield icon with gradient, headline "Activate Your 20-Point Shield Protection", description, 4 benefit items (Shield access, Encrypted Vault, Check My Pro, Shield playbook), trust signals (256-bit Encrypted, CSLB Verified)
+  - Right panel: Glassmorphism form card with gradient top accent line
+  - Form fields: Full Name (User icon), Email Address (Mail icon), ZIP Code (MapPin icon) — all with dark glassmorphism input styling and focus ring in turquoise
+  - Client-side validation: required fields, email regex, ZIP format (5 or 5+4 digits), red error states
+  - CTA button: Large Turquoise (#3ED1B8) "Unlock My Shield & Vault" with ShieldCheck icon, loading spinner state
+  - Post-submit: simulates 1.8s enrollment, then calls login('homeowner'), setShowEnrollSuccess(true), setCurrentPage('vault')
+  - Mobile: Responsive layout with centered form, mobile headline above card
+  - Footer disclaimer: "Your data is encrypted and never shared"
+- Updated `src/components/academy-section.tsx` — Wired "Enroll in the Full 20-Point Shield — Free" button onClick → setCurrentPage('enroll-shield')
+- Updated `src/components/header.tsx` — Both desktop (line 390) and mobile (line 541) "Join as a Property Owner" buttons now navigate to 'enroll-shield' instead of login+dashboard
+- Updated `src/components/vault-view.tsx` — Added success toast notification:
+  - Sparkles icon + "Welcome to the Guardian Standard" headline + "Your Vault is now active" message
+  - Glassmorphism toast card (bg-[#0F1219]/95 backdrop-blur-2xl), fixed top-20, z-[100]
+  - Auto-dismisses after 5 seconds, close button available
+  - Framer Motion entrance/exit animations
+- Updated `src/app/page.tsx` — Added EnrollShieldView import and 'enroll-shield' route case
+- VSUAL branding: Both /enroll-shield and /vault pages use shared Footer component with restored "managed by VSUALdigitalmedia.com" credit
+- ESLint: CLEAN (0 errors), Compilation: SUCCESS
+
+Stage Summary:
+- Complete enrollment funnel: Header/Hero "Join as a Property Owner" + Academy "Enroll" button → /enroll-shield → form submission → redirect to /vault
+- Enrollment page: dark Glassmorphism design, 3-field form (Name/Email/ZIP), validation, loading state
+- Post-enrollment: auto-redirect to Vault + success toast "Welcome to the Guardian Standard. Your Vault is now active."
+- Both enrollment and vault pages feature VSUALdigitalmedia.com footer credit
+- All buttons active on desktop and mobile

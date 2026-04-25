@@ -11,6 +11,7 @@ import {
   PlayCircle,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useAppStore } from '@/lib/store';
 
 interface ProtocolLesson {
   id: string;
@@ -122,6 +123,8 @@ const pillars: Pillar[] = [
 ];
 
 export function AcademySection() {
+  const { setCurrentPage } = useAppStore();
+
   return (
     <section id="academy" className="relative bg-[#F4F7F9] py-16 lg:py-24">
       {/* Background */}
@@ -270,7 +273,7 @@ export function AcademySection() {
 
         {/* Bottom CTA */}
         <div className="text-center mt-12">
-          <button className="inline-flex items-center gap-2 rounded-lg bg-[#3257C2] hover:bg-[#2a49a8] text-white font-semibold px-7 py-3 text-sm shadow-lg shadow-[#3257C2]/20 hover:shadow-xl hover:shadow-[#3257C2]/30 transition-all duration-300 group">
+          <button onClick={() => setCurrentPage('enroll-shield')} className="inline-flex items-center gap-2 rounded-lg bg-[#3257C2] hover:bg-[#2a49a8] text-white font-semibold px-7 py-3 text-sm shadow-lg shadow-[#3257C2]/20 hover:shadow-xl hover:shadow-[#3257C2]/30 transition-all duration-300 group cursor-pointer">
             Enroll in the Full 20-Point Shield — Free
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </button>

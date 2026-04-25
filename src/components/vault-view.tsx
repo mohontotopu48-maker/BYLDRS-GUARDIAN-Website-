@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import {
   Shield,
   Lock,
@@ -20,6 +20,7 @@ import {
   ShieldCheck,
   ClipboardCheck,
   Award,
+  Sparkles,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
@@ -107,11 +108,26 @@ const fadeUp = {
 };
 
 export function VaultView() {
-  const { setCurrentPage } = useAppStore();
+  const { setCurrentPage, showEnrollSuccess, setShowEnrollSuccess } = useAppStore();
   const [folders, setFolders] = useState<VaultFolder[]>(initialFolders);
   const [expandedFolder, setExpandedFolder] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
   const [uploadingId, setUploadingId] = useState<string | null>(null);
+  const [showSuccessToast, setShowSuccessToast] = useState(showEnrollSuccess);
+
+  // Sync enrollment success flag — clear it on first read
+  useEffect(() => {
+    if (showEnrollSuccess) {
+      setShowEnrollSuccess(false);
+    }
+  }, [showEnrollSuccess, setShowEnrollSuccess]);
+
+  // Auto-dismiss the success toast
+  useEffect(() => {
+    if (!showSuccessToast) return;
+    const timer = setTimeout(() => setShowSuccessToast(false), 5000);
+    return () => clearTimeout(timer);
+  }, [showSuccessToast]);
 
   const totalDocs = folders.reduce((sum, f) => sum + f.documents.length, 0);
   const totalSize = '8.9 MB';
@@ -185,6 +201,39 @@ export function VaultView() {
 
   return (
     <div className="min-h-screen bg-[#0A0D14] text-white">
+      {/* ─── Enrollment Success Toast ──────────────────────── */}
+      <AnimatePresence>
+        {showSuccessToast && (
+          <motion.div
+            initial={{ opacity: 0, y: -40, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -40, scale: 0.95 }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] w-[90vw] max-w-md"
+          >
+            <div className="rounded-2xl border border-[#3ED1B8]/20 bg-[#0F1219]/95 backdrop-blur-2xl shadow-2xl shadow-[#3ED1B8]/10 p-4 flex items-start gap-3.5">
+              <div className="flex-shrink-0 h-10 w-10 rounded-xl bg-[#3ED1B8]/15 flex items-center justify-center">
+                <Sparkles className="h-5 w-5 text-[#3ED1B8]" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-white mb-0.5">
+                  Welcome to the Guardian Standard
+                </p>
+                <p className="text-xs text-white/50 leading-relaxed">
+                  Your Vault is now active. Start uploading your contracts, permits, and insurance documents.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowSuccessToast(false)}
+                className="flex-shrink-0 h-7 w-7 rounded-lg hover:bg-white/[0.06] flex items-center justify-center transition-colors"
+              >
+                <X className="h-4 w-4 text-white/30 hover:text-white/60" />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* ─── Decorative Background ────────────────────────────── */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-1/4 w-[600px] h-[600px] rounded-full bg-[#3257C2]/[0.06] blur-[120px]" />

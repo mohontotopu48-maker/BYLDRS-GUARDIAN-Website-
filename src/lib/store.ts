@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type PageView = 'home' | 'dashboard' | 'pro-onboarding' | 'blog' | 'contact' | 'check-my-pro' | 'the-standard' | 'why-us' | 'pro-profile' | 'tier-2' | 'tier-3' | 'property-story' | 'protection-guide-download' | 'vault';
+export type PageView = 'home' | 'dashboard' | 'pro-onboarding' | 'blog' | 'contact' | 'check-my-pro' | 'the-standard' | 'why-us' | 'pro-profile' | 'tier-2' | 'tier-3' | 'property-story' | 'protection-guide-download' | 'vault' | 'enroll-shield';
 
 interface AppStore {
   currentPage: PageView;
@@ -19,6 +19,8 @@ interface AppStore {
   setHasSearched: (searched: boolean) => void;
   selectedArticleId: number | null;
   setSelectedArticleId: (id: number | null) => void;
+  showEnrollSuccess: boolean;
+  setShowEnrollSuccess: (show: boolean) => void;
 }
 
 export const useAppStore = create<AppStore>((set) => ({
@@ -41,4 +43,6 @@ export const useAppStore = create<AppStore>((set) => ({
   setHasSearched: (searched) => set({ hasSearched: searched }),
   selectedArticleId: null,
   setSelectedArticleId: (id) => set({ selectedArticleId: id }),
+  showEnrollSuccess: false,
+  setShowEnrollSuccess: (show) => set({ showEnrollSuccess: show }),
 }));
