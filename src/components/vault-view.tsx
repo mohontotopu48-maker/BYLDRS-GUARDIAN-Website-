@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import {
   Shield,
   Lock,
@@ -108,12 +108,37 @@ const fadeUp = {
 };
 
 export function VaultView() {
-  const { setCurrentPage, showEnrollSuccess, setShowEnrollSuccess } = useAppStore();
+  const { setCurrentPage, showEnrollSuccess, setShowEnrollSuccess, vaultSyncedBids } = useAppStore();
   const [folders, setFolders] = useState<VaultFolder[]>(initialFolders);
+  const processedBidIds = useRef<Set<string>>(new Set());
   const [expandedFolder, setExpandedFolder] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
   const [uploadingId, setUploadingId] = useState<string | null>(null);
   const [showSuccessToast, setShowSuccessToast] = useState(showEnrollSuccess);
+
+  // Auto-sync bids from Check My Pro audit
+  useEffect(() => {
+    const newBids = vaultSyncedBids.filter((b) => !processedBidIds.current.has(b.id));
+    if (newBids.length > 0) {
+      newBids.forEach((bid) => processedBidIds.current.add(bid.id));
+      const newDocs: VaultDocument[] = newBids.map((bid) => ({
+        id: bid.id,
+        name: `RiskReport_${bid.proName.replace(/\s+/g, '_')}_${bid.reportId}.pdf`,
+        size: '1.2 MB',
+        uploadedAt: bid.syncedAt,
+        type: 'pdf',
+      }));
+      setFolders((prev) =>
+        prev.map((f) =>
+          f.id === 'contracts'
+            ? { ...f, documents: [...newDocs, ...f.documents] }
+            : f
+        )
+      );
+      // Auto-expand contracts folder to show synced bids
+      setExpandedFolder('contracts');
+    }
+  }, [vaultSyncedBids]);
 
   // Sync enrollment success flag — clear it on first read
   useEffect(() => {

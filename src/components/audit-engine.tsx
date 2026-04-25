@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Shield,
+  ShieldCheck,
   CheckCircle2,
   XCircle,
   AlertTriangle,
@@ -17,10 +18,17 @@ import {
   Hash,
   Wrench,
   MessageSquare,
-  ChevronDown,
   Download,
   Calendar,
   Fingerprint,
+  ArrowRight,
+  Lock,
+  Star,
+  FolderOpen,
+  BadgeCheck,
+  Clock,
+  Sparkles,
+  Zap,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -34,6 +42,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useAppStore } from '@/lib/store';
+import { proProfiles, type ProProfile, tierConfig } from '@/lib/pro-data';
 
 // ─── Color Constants ───────────────────────────────────────────────
 const TURQUOISE = '#3ED1B8';
@@ -54,6 +64,15 @@ const TRADE_CATEGORIES = [
   'Remodeling',
   'Landscaping',
   'Other',
+];
+
+// ─── Audit Steps ───────────────────────────────────────────────────
+const AUDIT_STEPS = [
+  { label: 'Verifying CSLB License & Standing...', icon: Shield },
+  { label: "Checking Insurance, Bond & Workers' Comp...", icon: ShieldCheck },
+  { label: 'Analyzing 20-Point Shield Compliance...', icon: ClipboardCheck },
+  { label: 'Cross-referencing Complaint History...', icon: Fingerprint },
+  { label: 'Generating Guardian Risk Report...', icon: FileText },
 ];
 
 // ─── 20-Point Shield Data ────────────────────────────────────
@@ -95,7 +114,7 @@ const ACTION_ITEMS = [
   },
   {
     severity: 'CAUTION',
-    text: 'Deposit of $3,500 exceeds the $1,000 legal limit (CA BPC \u00a77159).',
+    text: 'Deposit of $3,500 exceeds the $1,000 legal limit (CA BPC §7159).',
   },
   {
     severity: 'ALERT',
@@ -150,7 +169,6 @@ function RiskScoreCircle({ score }: { score: number }) {
     <div className="flex flex-col items-center gap-3">
       <div className="relative">
         <svg width="180" height="180" viewBox="0 0 180 180">
-          {/* Background circle */}
           <circle
             cx="90"
             cy="90"
@@ -159,7 +177,6 @@ function RiskScoreCircle({ score }: { score: number }) {
             stroke="rgba(0,0,0,0.06)"
             strokeWidth="10"
           />
-          {/* Score arc */}
           <motion.circle
             cx="90"
             cy="90"
@@ -175,7 +192,6 @@ function RiskScoreCircle({ score }: { score: number }) {
             transform="rotate(-90 90 90)"
           />
         </svg>
-        {/* Score text */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <motion.span
             className="text-4xl font-bold"
@@ -193,9 +209,423 @@ function RiskScoreCircle({ score }: { score: number }) {
   );
 }
 
+// ─── Audit in Progress Panel ───────────────────────────────────────
+function AuditProgressPanel({ currentStep }: { currentStep: number }) {
+  const progressPercent = ((currentStep + 1) / AUDIT_STEPS.length) * 100;
+
+  return (
+    <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden h-full min-h-[400px] flex flex-col">
+      {/* Header */}
+      <div
+        className="px-6 py-5"
+        style={{
+          background: `linear-gradient(135deg, ${DARK} 0%, ${TRUE_BLUE} 100%)`,
+        }}
+      >
+        <div className="flex items-center gap-3">
+          <motion.div
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          >
+            <Shield className="size-7 text-white" />
+          </motion.div>
+          <div>
+            <h3 className="text-lg font-bold text-white tracking-wide">
+              AUDIT IN PROGRESS
+            </h3>
+            <p className="text-xs text-white/60 mt-0.5">
+              Running 20-Point Shield Analysis
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Steps */}
+      <div className="flex-1 p-6 flex flex-col justify-center">
+        <div className="space-y-4">
+          {AUDIT_STEPS.map((step, idx) => {
+            const StepIcon = step.icon;
+            const isActive = idx === currentStep;
+            const isComplete = idx < currentStep;
+
+            return (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3, delay: idx * 0.05 }}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
+                  isActive
+                    ? 'border-2 shadow-md'
+                    : isComplete
+                      ? 'bg-green-50 border border-green-100'
+                      : 'bg-gray-50 border border-gray-100 opacity-40'
+                }`}
+                style={isActive ? { borderColor: TURQUOISE, backgroundColor: `${TURQUOISE}08` } : undefined}
+              >
+                {isComplete ? (
+                  <div className="flex items-center justify-center size-8 rounded-lg bg-green-100">
+                    <CheckCircle2 className="size-4 text-green-600" />
+                  </div>
+                ) : isActive ? (
+                  <div className="flex items-center justify-center size-8 rounded-lg" style={{ backgroundColor: `${TURQUOISE}20` }}>
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                    >
+                      <StepIcon className="size-4" style={{ color: TURQUOISE }} />
+                    </motion.div>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center size-8 rounded-lg bg-gray-200">
+                    <StepIcon className="size-4 text-gray-400" />
+                  </div>
+                )}
+                <span
+                  className={`text-sm font-medium ${
+                    isActive ? 'font-bold' : isComplete ? 'text-green-700' : 'text-gray-400'
+                  }`}
+                  style={isActive ? { color: TRUE_BLUE } : undefined}
+                >
+                  {step.label}
+                </span>
+                {isComplete && (
+                  <CheckCircle2 className="size-4 text-green-500 ml-auto" />
+                )}
+                {isActive && (
+                  <motion.div
+                    className="ml-auto size-2 rounded-full"
+                    style={{ backgroundColor: TURQUOISE }}
+                    animate={{ opacity: [1, 0.3, 1] }}
+                    transition={{ duration: 0.8, repeat: Infinity }}
+                  />
+                )}
+              </motion.div>
+            );
+          })}
+        </div>
+
+        {/* Progress Bar */}
+        <motion.div className="mt-6">
+          <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
+            <motion.div
+              className="h-full rounded-full"
+              style={{ backgroundColor: TURQUOISE }}
+              initial={{ width: 0 }}
+              animate={{ width: `${progressPercent}%` }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
+            />
+          </div>
+          <div className="flex justify-between mt-2">
+            <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">
+              Scanning...
+            </span>
+            <span className="text-[10px] font-bold" style={{ color: TRUE_BLUE }}>
+              {Math.round(progressPercent)}%
+            </span>
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Professional Opinion Section ──────────────────────────────────
+function ProfessionalOpinion({
+  score,
+  failedPoints,
+}: {
+  score: number;
+  failedPoints: ProtocolPoint[];
+}) {
+  const riskLabel =
+    score > 80 ? 'LOW RISK' : score >= 60 ? 'MODERATE RISK' : 'HIGH RISK';
+  const riskColor =
+    score > 80 ? '#22C55E' : score >= 60 ? GOLD : RED;
+  const riskBg =
+    score > 80 ? 'rgba(34,197,94,0.08)' : score >= 60 ? 'rgba(245,166,35,0.08)' : 'rgba(239,68,68,0.08)';
+  const riskBorder =
+    score > 80 ? 'rgba(34,197,94,0.2)' : score >= 60 ? 'rgba(245,166,35,0.2)' : 'rgba(239,68,68,0.2)';
+
+  // Build dynamic assessment
+  const hasWorkersComp = !failedPoints.find((p) => p.id === 3);
+  const hasDepositIssue = failedPoints.find((p) => p.id === 6);
+  const hasRefIssue = failedPoints.find((p) => p.id === 9);
+  const hasChangeOrderIssue = failedPoints.find((p) => p.id === 16);
+
+  let verdict: string;
+  let bulletPoints: string[];
+
+  if (score > 80) {
+    verdict = 'This Pro demonstrates strong compliance with the 20-Point Shield standard. The minor items noted should be addressed, but overall this contractor meets Guardian standards for safe engagement.';
+    bulletPoints = failedPoints.length > 0
+      ? failedPoints.map((p) => `Minor: ${p.label}${p.detail ? ` (${p.detail})` : ''}`)
+      : ['All 20 points passed — exceptional compliance.'];
+  } else if (score >= 60) {
+    verdict = 'This Pro shows moderate risk. We identified critical red flags that require immediate attention before signing any contract or making a payment.';
+    bulletPoints = [];
+    if (!hasWorkersComp) bulletPoints.push("CRITICAL: Worker's Comp is expired — creates legal liability for you if a worker is injured on your property.");
+    if (hasDepositIssue) bulletPoints.push('CRITICAL: Deposit exceeds California\'s $1,000 legal limit (CA BPC §7159). This is a red flag for potential fraud.');
+    if (hasRefIssue) bulletPoints.push('WARNING: Insufficient verified references — reliability unconfirmed.');
+    if (hasChangeOrderIssue) bulletPoints.push('WARNING: No change order policy — leaves you unprotected against scope creep.');
+  } else {
+    verdict = 'HIGH RISK. This Pro fails multiple critical Shield points. We strongly recommend against proceeding with this contractor. See verified alternatives below.';
+    bulletPoints = failedPoints.map((p) => `FAILED: ${p.label}${p.detail ? ` — ${p.detail}` : ''}`);
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 1.4 }}
+      className="rounded-xl border p-5"
+      style={{ backgroundColor: riskBg, borderColor: riskBorder }}
+    >
+      <div className="flex items-center gap-2.5 mb-3">
+        <ClipboardCheck className="size-4" style={{ color: riskColor }} />
+        <h4 className="text-sm font-bold uppercase tracking-wider" style={{ color: riskColor }}>
+          Professional Opinion
+        </h4>
+        <Badge
+          className="ml-auto px-2.5 py-0.5 text-[10px] font-bold tracking-wider rounded-full"
+          style={{
+            backgroundColor: riskBg,
+            color: riskColor,
+            borderColor: riskBorder,
+            borderWidth: '1px',
+          }}
+        >
+          {riskLabel}
+        </Badge>
+      </div>
+      <p className="text-sm text-gray-700 leading-relaxed mb-3">
+        {verdict}
+      </p>
+      {bulletPoints.length > 0 && (
+        <ul className="space-y-1.5 mb-3">
+          {bulletPoints.map((point, idx) => (
+            <motion.li
+              key={idx}
+              custom={idx}
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              className="flex items-start gap-2 text-xs leading-relaxed"
+            >
+              {point.startsWith('CRITICAL') || point.startsWith('FAILED') ? (
+                <XCircle className="size-3.5 mt-0.5 shrink-0" style={{ color: RED }} />
+              ) : (
+                <AlertTriangle className="size-3.5 mt-0.5 shrink-0" style={{ color: GOLD }} />
+              )}
+              <span className={point.startsWith('CRITICAL') || point.startsWith('FAILED') ? 'text-red-700 font-medium' : 'text-gray-600'}>
+                {point}
+              </span>
+            </motion.li>
+          ))}
+        </ul>
+      )}
+      <div className="flex items-center gap-1.5 pt-2 border-t" style={{ borderColor: riskBorder }}>
+        <Lock className="size-3" style={{ color: riskColor }} />
+        <span className="text-[10px] font-medium" style={{ color: `${riskColor}99` }}>
+          Assessment based on the BYLDRS GUARDIAN 20-Point Shield Standard
+        </span>
+      </div>
+    </motion.div>
+  );
+}
+
+// ─── Meet a Verified Pro Section ───────────────────────────────────
+function MeetVerifiedPro({
+  tradeCategory,
+  onViewPro,
+}: {
+  tradeCategory: string;
+  onViewPro: (id: number) => void;
+}) {
+  // Map audit form categories to pro-data categories
+  const categoryMap: Record<string, string[]> = {
+    'Roofing': ['Roofing'],
+    'Plumbing': ['Plumbing'],
+    'Electrical': ['Electrical'],
+    'HVAC': ['HVAC'],
+    'General': ['General Contractor'],
+    'Solar': ['Roofing'],
+    'Remodeling': ['Remodeling'],
+    'Landscaping': ['Landscaping'],
+    'Other': [],
+  };
+
+  const matchingCategories = categoryMap[tradeCategory] || [];
+  const verifiedPros = proProfiles
+    .filter((p) => p.workersComp && p.propertyScore >= 70)
+    .sort((a, b) => {
+      // Prioritize matching category
+      const aMatch = matchingCategories.includes(a.category) ? 1 : 0;
+      const bMatch = matchingCategories.includes(b.category) ? 1 : 0;
+      if (bMatch !== aMatch) return bMatch - aMatch;
+      return b.propertyScore - a.propertyScore;
+    })
+    .slice(0, 3);
+
+  if (verifiedPros.length === 0) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 1.6 }}
+    >
+      <h4 className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-3 flex items-center gap-2">
+        <Star className="size-4" style={{ color: GOLD }} />
+        Meet a Guardian Verified Pro
+      </h4>
+      <p className="text-xs text-gray-500 mb-4 leading-relaxed">
+        Your current quote shows red flags. Here are Guardian-verified Pros who pass all 20 protection points and are ready to bid on your project:
+      </p>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        {verifiedPros.map((pro, idx) => {
+          const tier = tierConfig[pro.tier];
+          return (
+            <motion.div
+              key={pro.id}
+              custom={idx}
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow overflow-hidden"
+            >
+              {/* Pro card header */}
+              <div
+                className="px-4 py-3"
+                style={{
+                  background: `linear-gradient(135deg, ${DARK} 0%, ${TRUE_BLUE}80 100%)`,
+                }}
+              >
+                <div className="flex items-center gap-2.5">
+                  <div
+                    className="flex items-center justify-center size-9 rounded-lg text-xs font-bold text-white"
+                    style={{ backgroundColor: `${TURQUOISE}30` }}
+                  >
+                    {pro.avatar}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-bold text-white truncate">{pro.name}</p>
+                    <p className="text-[10px] text-white/60 truncate">{pro.category}</p>
+                  </div>
+                </div>
+              </div>
+              {/* Pro card body */}
+              <div className="p-3.5 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1">
+                    <Star className="size-3.5 fill-[#F5A623] text-[#F5A623]" />
+                    <span className="text-xs font-bold text-gray-800">{pro.rating}</span>
+                    <span className="text-[10px] text-gray-400">({pro.reviewCount})</span>
+                  </div>
+                  <Badge
+                    className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${tier.bg} ${tier.text} border ${tier.border}`}
+                  >
+                    {tier.label}
+                  </Badge>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <ShieldCheck className="size-3" style={{ color: TURQUOISE }} />
+                  <span className="text-[10px] text-gray-500">
+                    Shield Score: <span className="font-bold" style={{ color: TRUE_BLUE }}>{pro.propertyScore}/100</span>
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <CheckCircle2 className="size-3 text-green-500" />
+                  <span className="text-[10px] text-gray-500">Workers&apos; Comp: <span className="font-semibold text-green-600">Active</span></span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <BadgeCheck className="size-3" style={{ color: TURQUOISE }} />
+                  <span className="text-[10px] text-gray-500">{pro.location}</span>
+                </div>
+                <button
+                  onClick={() => onViewPro(pro.id)}
+                  className="w-full mt-1 h-8 rounded-lg text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all duration-200 hover:shadow-sm"
+                  style={{ backgroundColor: `${TRUE_BLUE}10`, color: TRUE_BLUE }}
+                >
+                  View Profile
+                  <ArrowRight className="size-3" />
+                </button>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+    </motion.div>
+  );
+}
+
+// ─── Vault Sync Toast ──────────────────────────────────────────────
+function VaultSyncToast({
+  proName,
+  reportId,
+  onOpenVault,
+}: {
+  proName: string;
+  reportId: string;
+  onOpenVault: () => void;
+}) {
+  const [visible, setVisible] = useState(true);
+
+  if (!visible) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 20, scale: 0.95 }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      className="rounded-xl border-2 p-4"
+      style={{ backgroundColor: `${TURQUOISE}08`, borderColor: `${TURQUOISE}25` }}
+    >
+      <button
+        onClick={() => setVisible(false)}
+        className="absolute top-2 right-2 size-6 rounded-md hover:bg-black/5 flex items-center justify-center transition-colors"
+      >
+        <XCircle className="size-3.5 text-gray-400" />
+      </button>
+      <div className="flex items-start gap-3">
+        <div
+          className="flex items-center justify-center size-10 rounded-xl shrink-0"
+          style={{ backgroundColor: `${TURQUOISE}15` }}
+        >
+          <FolderOpen className="size-5" style={{ color: TURQUOISE }} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <Lock className="size-3.5" style={{ color: TURQUOISE }} />
+            <span className="text-sm font-bold" style={{ color: TRUE_BLUE }}>
+              Bid Secured in Your Vault
+            </span>
+          </div>
+          <p className="text-xs text-gray-600 leading-relaxed mb-3">
+            Your quote from <span className="font-semibold text-gray-800">{proName}</span> has been saved to your Contracts folder. Our auditors will review and add their professional rating to your report ({reportId}).
+          </p>
+          <button
+            onClick={onOpenVault}
+            className="inline-flex items-center gap-1.5 text-xs font-bold rounded-lg px-3 py-1.5 transition-all duration-200 hover:shadow-sm"
+            style={{ backgroundColor: TURQUOISE, color: DARK }}
+          >
+            Open Your Vault
+            <ArrowRight className="size-3" />
+          </button>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 // ─── Main Component ────────────────────────────────────────────────
 export function AuditEngine() {
+  const { setCurrentPage, setSelectedProId, addVaultSyncedBid } = useAppStore();
   const [submitted, setSubmitted] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [auditStep, setAuditStep] = useState(0);
+  const [showVaultToast, setShowVaultToast] = useState(false);
   const [formData, setFormData] = useState({
     contractorName: '',
     licenseNumber: '',
@@ -207,7 +637,7 @@ export function AuditEngine() {
   });
   const [isDragOver, setIsDragOver] = useState(false);
   const [fileName, setFileName] = useState('');
-  const [isGenerating, setIsGenerating] = useState(false);
+  const auditTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const reportId = `GR-${Date.now().toString(36).toUpperCase()}`;
   const reportDate = new Date().toLocaleDateString('en-US', {
@@ -215,6 +645,44 @@ export function AuditEngine() {
     month: 'long',
     day: 'numeric',
   });
+
+  // Audit step progression
+  useEffect(() => {
+    if (!isGenerating) return;
+    const stepDuration = 600;
+    const timer = setTimeout(() => {
+      if (auditStep < AUDIT_STEPS.length - 1) {
+        setAuditStep((prev) => prev + 1);
+      } else {
+        // Audit complete
+        setIsGenerating(false);
+        setSubmitted(true);
+        setAuditStep(0);
+
+        // Sync bid to vault
+        const bidFileName = fileName || `Bid_${formData.contractorName.replace(/\s+/g, '_')}.pdf`;
+        addVaultSyncedBid({
+          id: `bid-${Date.now()}`,
+          proName: formData.contractorName || 'Unknown Pro',
+          licenseNumber: formData.licenseNumber || 'N/A',
+          tradeCategory: formData.tradeCategory || 'General',
+          bidAmount: formData.bidAmount || '0',
+          healthScore: 72,
+          riskLevel: 'MODERATE',
+          fileName: bidFileName,
+          syncedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+          reportId,
+        });
+
+        // Show vault sync toast after a short delay
+        setTimeout(() => setShowVaultToast(true), 800);
+      }
+    }, stepDuration);
+    auditTimerRef.current = timer;
+    return () => {
+      if (auditTimerRef.current) clearTimeout(auditTimerRef.current);
+    };
+  }, [isGenerating, auditStep, addVaultSyncedBid, fileName, formData, reportId]);
 
   const handleInputChange = useCallback(
     (field: string, value: string) => {
@@ -256,17 +724,17 @@ export function AuditEngine() {
     (e: React.FormEvent) => {
       e.preventDefault();
       setIsGenerating(true);
-      // Simulate generation time
-      setTimeout(() => {
-        setIsGenerating(false);
-        setSubmitted(true);
-      }, 1800);
+      setAuditStep(0);
+      setShowVaultToast(false);
     },
     []
   );
 
   const handleReset = useCallback(() => {
     setSubmitted(false);
+    setIsGenerating(false);
+    setAuditStep(0);
+    setShowVaultToast(false);
     setFormData({
       contractorName: '',
       licenseNumber: '',
@@ -279,8 +747,23 @@ export function AuditEngine() {
     setFileName('');
   }, []);
 
+  const handleViewPro = useCallback(
+    (proId: number) => {
+      setSelectedProId(proId);
+      setCurrentPage('pro-profile');
+    },
+    [setCurrentPage, setSelectedProId]
+  );
+
+  const handleOpenVault = useCallback(() => {
+    setShowVaultToast(false);
+    setCurrentPage('vault');
+  }, [setCurrentPage]);
+
   const passedCount = PROTOCOL_POINTS.filter((p) => p.passed).length;
   const failedCount = PROTOCOL_POINTS.filter((p) => !p.passed).length;
+  const failedPoints = PROTOCOL_POINTS.filter((p) => !p.passed);
+  const healthScore = 72;
 
   return (
     <section
@@ -578,10 +1061,10 @@ export function AuditEngine() {
                 {/* Submit Button */}
                 <Button
                   type="submit"
-                  disabled={isGenerating}
+                  disabled={isGenerating || submitted}
                   className="w-full h-12 text-base font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
                   style={{
-                    backgroundColor: TURQUOISE,
+                    backgroundColor: submitted ? '#22C55E' : TURQUOISE,
                     color: DARK,
                   }}
                 >
@@ -596,7 +1079,12 @@ export function AuditEngine() {
                           ease: 'linear',
                         }}
                       />
-                      Generating Report...
+                      Auditing in Progress...
+                    </>
+                  ) : submitted ? (
+                    <>
+                      <CheckCircle2 className="size-5" />
+                      Audit Complete — View Report
                     </>
                   ) : (
                     <>
@@ -609,7 +1097,7 @@ export function AuditEngine() {
             </div>
           </motion.div>
 
-          {/* ── Right: Guardian Risk Report ────────────────────── */}
+          {/* ── Right: Report / Progress / Placeholder ─────────── */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -617,7 +1105,8 @@ export function AuditEngine() {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <AnimatePresence mode="wait">
-              {!submitted ? (
+              {/* ── State 1: Placeholder ──────────────────────── */}
+              {!isGenerating && !submitted && (
                 <motion.div
                   key="placeholder"
                   initial={{ opacity: 0 }}
@@ -628,7 +1117,7 @@ export function AuditEngine() {
                 >
                   <div
                     className="flex items-center justify-center size-20 rounded-full mb-5"
-                    style={{ backgroundColor: `${SOFT_GRAY}` }}
+                    style={{ backgroundColor: SOFT_GRAY }}
                   >
                     <Shield
                       className="size-10"
@@ -650,7 +1139,23 @@ export function AuditEngine() {
                     <span>Report will appear here after submission</span>
                   </div>
                 </motion.div>
-              ) : (
+              )}
+
+              {/* ── State 2: Audit in Progress ────────────────── */}
+              {isGenerating && (
+                <motion.div
+                  key="auditing"
+                  initial={{ opacity: 0, x: 30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <AuditProgressPanel currentStep={auditStep} />
+                </motion.div>
+              )}
+
+              {/* ── State 3: Full Report ──────────────────────── */}
+              {!isGenerating && submitted && (
                 <motion.div
                   key="report"
                   initial={{ opacity: 0, x: 30 }}
@@ -695,28 +1200,42 @@ export function AuditEngine() {
                     </div>
 
                     <div className="p-6 space-y-6">
-                      {/* Score + Risk Level */}
+                      {/* Health Score + Risk Level */}
                       <motion.div
                         className="flex flex-col items-center gap-4"
                         variants={containerStagger}
                         initial="hidden"
                         animate="visible"
                       >
-                        <RiskScoreCircle score={72} />
+                        <RiskScoreCircle score={healthScore} />
 
                         <motion.div variants={childFade}>
-                          <Badge
-                            className="px-5 py-1.5 text-sm font-bold tracking-wider rounded-full shadow-sm"
-                            style={{
-                              backgroundColor: `${GOLD}18`,
-                              color: GOLD,
-                              borderColor: `${GOLD}40`,
-                              borderWidth: '1px',
-                            }}
-                          >
-                            <AlertTriangle className="size-4 mr-1.5" />
-                            MODERATE RISK
-                          </Badge>
+                          <div className="flex items-center gap-2">
+                            <Badge
+                              className="px-5 py-1.5 text-sm font-bold tracking-wider rounded-full shadow-sm"
+                              style={{
+                                backgroundColor: `${GOLD}18`,
+                                color: GOLD,
+                                borderColor: `${GOLD}40`,
+                                borderWidth: '1px',
+                              }}
+                            >
+                              <AlertTriangle className="size-4 mr-1.5" />
+                              MODERATE RISK
+                            </Badge>
+                            <Badge
+                              className="px-3 py-1.5 text-[10px] font-bold tracking-wider rounded-full"
+                              style={{
+                                backgroundColor: `${TRUE_BLUE}10`,
+                                color: TRUE_BLUE,
+                                borderColor: `${TRUE_BLUE}20`,
+                                borderWidth: '1px',
+                              }}
+                            >
+                              <Zap className="size-3 mr-1" />
+                              HEALTH SCORE
+                            </Badge>
+                          </div>
                         </motion.div>
                       </motion.div>
 
@@ -867,6 +1386,15 @@ export function AuditEngine() {
                           ))}
                         </div>
                       </motion.div>
+
+                      {/* Professional Opinion */}
+                      <ProfessionalOpinion score={healthScore} failedPoints={failedPoints} />
+
+                      {/* Meet a Verified Pro */}
+                      <MeetVerifiedPro
+                        tradeCategory={formData.tradeCategory}
+                        onViewPro={handleViewPro}
+                      />
                     </div>
 
                     {/* Report Footer */}
@@ -880,6 +1408,17 @@ export function AuditEngine() {
                       </p>
                     </div>
                   </div>
+
+                  {/* Vault Sync Toast */}
+                  <AnimatePresence>
+                    {showVaultToast && (
+                      <VaultSyncToast
+                        proName={formData.contractorName || 'Unknown Pro'}
+                        reportId={reportId}
+                        onOpenVault={handleOpenVault}
+                      />
+                    )}
+                  </AnimatePresence>
 
                   {/* Action Buttons */}
                   <motion.div
@@ -902,6 +1441,14 @@ export function AuditEngine() {
                     >
                       <Download className="size-4 mr-2" />
                       Download Report
+                    </Button>
+                    <Button
+                      onClick={handleOpenVault}
+                      className="flex-1 h-11 rounded-xl font-semibold text-white"
+                      style={{ backgroundColor: TRUE_BLUE }}
+                    >
+                      <FolderOpen className="size-4 mr-2" />
+                      Open Vault
                     </Button>
                   </motion.div>
                 </motion.div>
