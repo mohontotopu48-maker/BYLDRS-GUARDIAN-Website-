@@ -807,3 +807,31 @@ Stage Summary:
 - header.tsx: +12 lines (BarChart3 import, FlyoutItem.scrollTo, 3 dropdown items, scroll handler)
 - Zero ESLint errors, clean dev server compilation
 - All 5 features fully functional and verified
+---
+Task ID: 1
+Agent: Main Agent
+Task: Global AI Agent Integration — Guardian AI sidebar assistant
+
+Work Log:
+- Read LLM skill documentation for z-ai-web-dev-sdk usage patterns
+- Created /api/guardian-ai/route.ts: POST (chat with streaming-style session management, in-memory Map store, trim to 20 messages max) + DELETE (clear session). Guardian system prompt includes: 20-Point Shield knowledge (all 20 points), CA BPC §7159 $1,000 deposit cap, Homeowner Vault (4 folders, AES-256), platform features (Check My Pro, Health Score, Audit Countdown, Vault Sync), tone guidelines, quick response patterns. Fallback response on AI failure.
+- Created src/components/guardian-ai.tsx: Complete sidebar AI assistant component
+  - Floating launcher: 14x14 turquoise button with animated glowing rings, hover tooltip "Guardian AI", spring animations
+  - Sidebar: Glassmorphism dark theme (rgba(15,18,25,0.92) + backdrop-blur-2xl), slides from right with spring physics
+  - Header: Gradient icon (teal-to-blue Bot), "Guardian AI" + "Your Project Protection Assistant", clear/reset buttons
+  - Chat messages: User (blue bubble, right-aligned) and Assistant (dark glass bubble, left-aligned) with timestamps, markdown bold parsing
+  - Loading state: 3-dot bounce animation with "Analyzing..." text
+  - Quick Actions: 5 suggested questions (deposit limit, 20-Point Shield, Vault usage, Check My Pro, Guardian tiers) shown when conversation is fresh
+  - Input: Auto-resizing textarea (24-120px), Enter to send, Shift+Enter for newline, send button
+  - Mobile: Full-screen overlay with backdrop, body scroll lock, close button instead of minimize
+  - Agency Credits: "Powered by NXLBYLDR AI | managed by VSUALdigitalmedia.com" — white, bold NXLBYLDR AI, bold VSUAL, regular digitalmedia.com
+  - Session management: sessionStorage-based session IDs, server-side session memory with Map
+- Integrated GuardianAI into layout.tsx (global render, all pages)
+
+Stage Summary:
+- /api/guardian-ai/route.ts: 120 lines (system prompt, session management, POST/DELETE handlers, error handling)
+- src/components/guardian-ai.tsx: 310 lines (complete self-contained component)
+- src/app/layout.tsx: +2 lines (import + render)
+- Zero ESLint errors, clean dev server compilation
+- Guardian AI trained on: CA deposit laws, 20-Point Shield, Vault system, platform features, Pro tiers
+- Mobile responsive: full-screen on <768px, side panel on desktop
