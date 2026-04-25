@@ -160,7 +160,7 @@ export function HeroSection() {
 
           <p className="mt-5 text-lg sm:text-xl text-[#1A1D2E]/55 leading-relaxed max-w-2xl mx-auto">
             Stop guessing. Every Pro below has passed our{' '}
-            <span className="font-semibold text-[#1A1D2E]">Homeowner Protection Guide</span>{' '}
+            <span className="font-semibold text-[#1A1D2E]">20-Point Shield</span>{' '}
             audit in the last{' '}
             <span className="font-semibold text-[#3ED1B8]">30 days</span>.
           </p>

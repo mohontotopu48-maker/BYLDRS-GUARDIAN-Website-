@@ -185,7 +185,7 @@ export function TheStandardView() {
               The Homeowner
               <br />
               <span className="bg-gradient-to-r from-[#3ED1B8] via-[#3ED1B8] to-[#3257C2] bg-clip-text text-transparent">
-                Protection Guide
+                20-Point Shield
               </span>
             </motion.h1>
 
@@ -207,7 +207,7 @@ export function TheStandardView() {
                 size="lg"
                 className="h-13 px-8 rounded-xl bg-[#3ED1B8] hover:bg-[#34b9a2] text-[#0A0D14] font-bold text-sm shadow-xl shadow-[#3ED1B8]/20 hover:shadow-[#3ED1B8]/30 transition-all duration-300 group"
               >
-                Get My Free Protection Guide
+                Download My 20-Point Shield
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
             </motion.div>
@@ -350,10 +350,10 @@ export function TheStandardView() {
               </div>
 
               <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-3 leading-tight">
-                Get the Full Guide — Free
+                Download My 20-Point Shield
               </h2>
               <p className="text-white/40 text-sm sm:text-base mb-8 max-w-md mx-auto leading-relaxed">
-                We&apos;ll send you the complete Homeowner Protection Guide as a
+                We&apos;ll send you the complete 20-Point Shield as a
                 downloadable PDF. Print it. Bring it to every bid. Hold every
                 Pro accountable.
               </p>
@@ -364,11 +364,11 @@ export function TheStandardView() {
                 className="h-13 px-8 rounded-xl bg-[#3ED1B8] hover:bg-[#34b9a2] text-[#0A0D14] font-bold text-sm shadow-lg shadow-[#3ED1B8]/20 hover:shadow-xl transition-all duration-300"
               >
                 <Download className="mr-2 h-4 w-4" />
-                Get My Free Protection Guide
+                Download My 20-Point Shield
               </Button>
 
               <p className="mt-5 text-[11px] text-white/20">
-                No spam. No upsell. Just the guide. Unsubscribe anytime.
+                No spam. No upsell. Just the Shield. Unsubscribe anytime.
               </p>
             </div>
           </div>
@@ -470,7 +470,7 @@ export function TheStandardView() {
             Now put it to use.
           </h3>
           <p className="text-[#1A1D2E]/40 text-sm mb-8 leading-relaxed">
-            You&apos;ve read the guide. Now check any Pro — free. Submit a bid
+            You&apos;ve read the Shield. Now check any Pro — free. Submit a bid
             and see their full Guardian Risk Report in seconds.
           </p>
           <Button

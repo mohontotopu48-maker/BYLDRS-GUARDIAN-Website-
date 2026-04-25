@@ -72,7 +72,7 @@ const articles: Record<number, ArticleData> = {
       },
       {
         heading: 'Milestone Payments: The Right Way',
-        body: 'Instead of large upfront deposits, the BYLDRS GUARDIAN Homeowner Protection Guide recommends milestone payments. Break the total into 3–4 payments tied to completed work stages. This keeps your money aligned with actual progress and gives you leverage if quality drops.\n\nExample for a $20,000 project: $1,000 deposit (legal max) → $6,000 after framing → $6,500 after plumbing/electrical rough-in → $6,500 at final inspection and walkthrough.',
+        body: 'Instead of large upfront deposits, the BYLDRS GUARDIAN 20-Point Shield recommends milestone payments. Break the total into 3–4 payments tied to completed work stages. This keeps your money aligned with actual progress and gives you leverage if quality drops.\n\nExample for a $20,000 project: $1,000 deposit (legal max) → $6,000 after framing → $6,500 after plumbing/electrical rough-in → $6,500 at final inspection and walkthrough.',
       },
       {
         heading: 'The Bottom Line',
@@ -99,7 +99,7 @@ const articles: Record<number, ArticleData> = {
       },
       {
         heading: 'How BYLDRS GUARDIAN Audits Workers\' Comp',
-        body: 'As part of our Homeowner Protection Guide, every Pro in the BYLDRS GUARDIAN system undergoes a 30-day recurring audit. One of the key checkpoints is workers\' compensation verification. We cross-reference the Pro\'s policy number with the California Department of Industrial Relations database to confirm the policy is active, current, and covers the specific trade (roofing).\n\nIf a Pro\'s workers\' comp lapses between audits, our system flags it immediately, and the Pro\'s Guardian status is suspended until the gap is resolved.',
+        body: 'As part of our 20-Point Shield, every Pro in the BYLDRS GUARDIAN system undergoes a 30-day recurring audit. One of the key checkpoints is workers\' compensation verification. We cross-reference the Pro\'s policy number with the California Department of Industrial Relations database to confirm the policy is active, current, and covers the specific trade (roofing).\n\nIf a Pro\'s workers\' comp lapses between audits, our system flags it immediately, and the Pro\'s Guardian status is suspended until the gap is resolved.',
       },
       {
         heading: 'What to Ask Your Roofer',
@@ -138,7 +138,7 @@ const articles: Record<number, ArticleData> = {
       },
       {
         heading: 'BYLDRS GUARDIAN Plumbing Standards',
-        body: 'Every plumbing Pro in the BYLDRS GUARDIAN system has passed our Homeowner Protection Guide checks: valid CSLB license (C-36), active workers\' compensation, general liability insurance of at least $1M, and a clean complaint history with the CSLB. Our 30-day recurring audits ensure these credentials stay current.\n\nWhen you hire a Guardian-vetted plumber, the deposit rule is not just followed — it is guaranteed.',
+        body: 'Every plumbing Pro in the BYLDRS GUARDIAN system has passed our 20-Point Shield checks: valid CSLB license (C-36), active workers\' compensation, general liability insurance of at least $1M, and a clean complaint history with the CSLB. Our 30-day recurring audits ensure these credentials stay current.\n\nWhen you hire a Guardian-vetted plumber, the deposit rule is not just followed — it is guaranteed.',
       },
     ],
   },
@@ -169,7 +169,7 @@ const articles: Record<number, ArticleData> = {
       },
       {
         heading: 'The BYLDRS GUARDIAN Electrical Standard',
-        body: 'BYLDRS GUARDIAN\'s Homeowner Protection Guide requires all electrical Pros to hold an active C-10 license, carry $1M+ general liability, maintain active workers\' comp, and pass our 30-day recurring audit. We verify permits are pulled for all work that requires them and that inspections are scheduled at every required milestone.',
+        body: 'BYLDRS GUARDIAN\'s 20-Point Shield requires all electrical Pros to hold an active C-10 license, carry $1M+ general liability, maintain active workers\' comp, and pass our 30-day recurring audit. We verify permits are pulled for all work that requires them and that inspections are scheduled at every required milestone.',
       },
     ],
   },
@@ -289,7 +289,7 @@ const articles: Record<number, ArticleData> = {
       },
       {
         heading: 'Inspection Milestones',
-        body: 'A typical pool project requires 4–6 inspections: pre-construction (grading/compaction), steel/rebar placement, plumbing rough-in, electrical rough-in, gunite/shotcrete application, and final. Each inspection must pass before the next phase begins.\n\nBYLDRS GUARDIAN\'s Homeowner Protection Guide tracks these milestones and alerts you if an inspection is skipped or overdue.',
+        body: 'A typical pool project requires 4–6 inspections: pre-construction (grading/compaction), steel/rebar placement, plumbing rough-in, electrical rough-in, gunite/shotcrete application, and final. Each inspection must pass before the next phase begins.\n\nBYLDRS GUARDIAN\'s 20-Point Shield tracks these milestones and alerts you if an inspection is skipped or overdue.',
       },
       {
         heading: 'The VGB Act and Safety Barriers',
@@ -588,7 +588,7 @@ export function PropertyStoryView() {
 
               <div className="space-y-2">
                 {[
-                  { label: 'Homeowner Protection Guide', page: 'the-standard' as const },
+                  { label: '20-Point Shield', page: 'the-standard' as const },
                   { label: 'All Property Stories', page: 'blog' as const },
                   { label: 'Check My Pro', page: 'check-my-pro' as const },
                 ].map((link) => (

@@ -52,7 +52,7 @@ const pillars = [
     icon: RefreshCw,
     title: '30-Day Recurring Audits',
     description:
-      "We don't verify once and forget. Every Pro is re-audited every 30 days against the full Homeowner Protection Guide.",
+      "We don't verify once and forget. Every Pro is re-audited every 30 days against the full 20-Point Shield.",
     color: 'text-[#F5A623]',
     bg: 'bg-[#F5A623]/[0.07]',
     border: 'hover:border-[#F5A623]/20',
@@ -88,7 +88,7 @@ const differentiators = [
   {
     icon: CheckCircle2,
     title: 'Contract Protection',
-    body: 'Every Pro in our system has agreed to our Homeowner Protection Guide — covering deposit limits, milestone payments, warranty requirements, and dispute resolution.',
+    body: 'Every Pro in our system has agreed to our 20-Point Shield — covering deposit limits, milestone payments, warranty requirements, and dispute resolution.',
   },
 ];
 
@@ -157,7 +157,7 @@ export function WhyUsView() {
               onClick={() => setCurrentPage('the-standard')}
               className="rounded-lg bg-[#3257C2] hover:bg-[#2a49a8] text-white font-semibold shadow-lg shadow-[#3257C2]/25"
             >
-              Read The Protection Guide
+              Read The 20-Point Shield
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
             <Button

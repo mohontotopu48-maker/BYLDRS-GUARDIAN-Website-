@@ -110,7 +110,7 @@ const tiers: TierDetail[] = [
       'Background check cleared',
       'Insurance & bond verification',
       'Performance tracking enabled',
-      'Initial Homeowner Protection Guide assessment',
+      'Initial 20-Point Shield assessment',
     ],
     perks: [
       'Standard profile listing in search',

@@ -391,7 +391,7 @@ export function ProProfileView() {
                   </h3>
                   <p className="text-sm text-white/40 mb-6 max-w-md mx-auto">
                     Get a free quote — backed by the Guardian Risk Report and
-                    full Homeowner Protection Guide compliance.
+                    full 20-Point Shield compliance.
                   </p>
                   <Button className="h-12 px-8 rounded-xl bg-[#3257C2] hover:bg-[#2a49a8] text-white font-bold text-sm shadow-xl shadow-[#3257C2]/30 hover:shadow-2xl transition-all duration-300 group">
                     Get a Quote from {pro.name.split(' ')[0]}

@@ -195,7 +195,7 @@ export function ProtectionGuideDownloadView() {
 
     const content = `
 ═══════════════════════════════════════════════════════════════════
-       BYLDRS GUARDIAN — HOMEOWNER PROTECTION GUIDE
+       BYLDRS GUARDIAN — THE 20-POINT SHIELD
        The Full 20-Point Shield: No Blind Spots
        California Edition — Free Download
 ═══════════════════════════════════════════════════════════════════
@@ -359,7 +359,7 @@ SECTION 5: PROJECT INTEGRITY & ETHICS (Points 16–20)
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'BYLDRS_GUARDIAN_20_Point_Protection_Guide.txt';
+    a.download = 'BYLDRS_GUARDIAN_20_Point_Shield.txt';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -553,7 +553,7 @@ SECTION 5: PROJECT INTEGRITY & ETHICS (Points 16–20)
                         className="h-14 px-8 sm:px-10 rounded-xl bg-[#3ED1B8] hover:bg-[#34b9a2] text-[#0A0D14] font-bold text-sm shadow-xl shadow-[#3ED1B8]/20 hover:shadow-[#3ED1B8]/30 transition-all duration-300 group"
                       >
                         <Download className="mr-2 h-5 w-5" />
-                        Download the Free Guide
+                        Download My 20-Point Shield
                         <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                       </Button>
                       <p className="mt-4 text-[11px] text-white/20">
@@ -685,7 +685,7 @@ SECTION 5: PROJECT INTEGRITY & ETHICS (Points 16–20)
               <div className="relative">
                 <img
                   src="/guide-book-mockup.png"
-                  alt="BYLDRS GUARDIAN Homeowner Protection Guide"
+                  alt="BYLDRS GUARDIAN 20-Point Shield"
                   className="relative z-10 w-[240px] sm:w-[280px] lg:w-[320px] rounded-lg shadow-2xl shadow-black/50"
                 />
                 {/* Floating badge */}
@@ -918,7 +918,7 @@ SECTION 5: PROJECT INTEGRITY & ETHICS (Points 16–20)
           </div>
 
           <h3 className="text-2xl sm:text-3xl font-extrabold text-white mb-3 leading-tight">
-            Now put the guide to work.
+            Now put the Shield to work.
           </h3>
           <p className="text-white/35 text-sm sm:text-base mb-10 max-w-md mx-auto leading-relaxed">
             You have the complete 20-point playbook. Now check any Pro&apos;s Guardian Risk
@@ -932,7 +932,7 @@ SECTION 5: PROJECT INTEGRITY & ETHICS (Points 16–20)
               className="h-13 px-8 rounded-xl bg-[#3ED1B8] hover:bg-[#34b9a2] text-[#0A0D14] font-bold text-sm shadow-lg shadow-[#3ED1B8]/20 hover:shadow-xl transition-all duration-300 group"
             >
               <Download className="mr-2 h-4 w-4" />
-              Download the Full Guide
+              Download My 20-Point Shield
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
             <Button

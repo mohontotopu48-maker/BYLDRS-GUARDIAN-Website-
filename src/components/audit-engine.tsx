@@ -56,7 +56,7 @@ const TRADE_CATEGORIES = [
   'Other',
 ];
 
-// ─── Homeowner Protection Guide Data ────────────────────────────────────
+// ─── 20-Point Shield Data ────────────────────────────────────
 interface ProtocolPoint {
   id: number;
   label: string;
@@ -643,7 +643,7 @@ export function AuditEngine() {
                   </h3>
                   <p className="text-sm text-gray-400 max-w-xs leading-relaxed">
                     Complete the Pro Safety Check form and submit to generate your
-                    comprehensive Homeowner Protection Guide Risk Report.
+                    comprehensive 20-Point Shield Risk Report.
                   </p>
                   <div className="flex items-center gap-2 mt-6 text-xs text-gray-400">
                     <FileText className="size-3.5" />
@@ -675,7 +675,7 @@ export function AuditEngine() {
                             GUARDIAN RISK REPORT
                           </h3>
                           <p className="text-xs text-white/70 mt-0.5">
-                            Homeowner Protection Guide Assessment
+                            20-Point Shield Assessment
                           </p>
                         </div>
                       </div>
@@ -720,7 +720,7 @@ export function AuditEngine() {
                         </motion.div>
                       </motion.div>
 
-                      {/* Homeowner Protection Guide Results */}
+                      {/* 20-Point Shield Results */}
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -728,7 +728,7 @@ export function AuditEngine() {
                       >
                         <h4 className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-3 flex items-center gap-2">
                           <ClipboardCheck className="size-4" style={{ color: TRUE_BLUE }} />
-                          Homeowner Protection Guide Results
+                          20-Point Shield Results
                         </h4>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
                           {PROTOCOL_POINTS.map((point, idx) => (
