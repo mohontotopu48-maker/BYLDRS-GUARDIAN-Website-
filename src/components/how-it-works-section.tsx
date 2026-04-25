@@ -166,13 +166,24 @@ export function HowItWorksSection() {
           ))}
         </div>
 
-        {/* CTA */}
-        <div className="text-center mt-12">
-          <button className="inline-flex items-center gap-2 rounded-lg bg-[#3257C2] hover:bg-[#2a49a8] text-white font-semibold px-7 py-3 text-sm shadow-lg shadow-[#3257C2]/20 hover:shadow-xl hover:shadow-[#3257C2]/30 transition-all duration-300 group">
+        {/* CTA — Start Your Search */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="text-center mt-12 lg:mt-16"
+        >
+          <button
+            onClick={() => {
+              document.querySelector('#search-pros')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="inline-flex items-center gap-2.5 rounded-xl bg-[#3257C2] hover:bg-[#2a49a8] text-white font-bold px-8 py-3.5 text-sm shadow-lg shadow-[#3257C2]/25 hover:shadow-xl hover:shadow-[#3257C2]/35 transition-all duration-300 group cursor-pointer"
+          >
             Start Your Search
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
           </button>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -197,10 +197,11 @@ export function HeroSection() {
 
         {/* ─── Command Center Search Bar ──────────────────────── */}
         <motion.div
+          id="search-pros"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.25 }}
-          className="max-w-3xl mx-auto"
+          className="max-w-3xl mx-auto scroll-mt-24"
         >
           <div className="bg-[#F8FAFB] rounded-2xl border border-[#E5E7EB] p-3 sm:p-4 shadow-lg shadow-[#1A1D2E]/[0.04]">
             <div className="flex flex-col sm:flex-row gap-3">
