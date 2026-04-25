@@ -860,3 +860,29 @@ Stage Summary:
 - Turquoise glow effect ensures visibility on dark background
 - Properly positioned above VSUAL/NXLBYLDR footer credits
 - Fully responsive: pill on desktop, circle on mobile (<600px)
+
+---
+Task ID: 2
+Agent: Main Agent
+Task: Convert Guardian AI floating pill into side-anchored vertical tab
+
+Work Log:
+- Replaced bottom-right floating pill button with right-edge vertical tab
+- Position: `fixed right-0 top-[40%]` — slightly above center, avoids thumb-zone on mobile
+- Shape: vertical rectangular tab with `rounded-l-xl` (12px left corners), flat right edge flush to browser wall
+- Content: White Shield icon at top → accent divider → vertical text below
+- Text uses `writing-mode: vertical-rl` for clean character stacking
+- Desktop (≥768px): Full "Ask Guardian AI" vertical label
+- Mobile (<768px): Shortened "Ask AI" vertical label
+- Hover animation: tab slides out 14px to the left via framer-motion `whileHover={{ x: -14 }}`
+- Turquoise glow intensifies on hover: dual blurred layers expand + opacity increases via `group-hover:` classes
+- Entry/exit animation: slides in/out from right (`x: '100%'` → `0`)
+- Verified VSUALdigitalmedia.com credit intact in chat sidebar footer (line 461)
+- ESLint: 0 errors, dev server: compiled successfully
+
+Stage Summary:
+- Guardian AI launcher transformed from floating pill to sleek right-edge vertical tab
+- Guardian Blue background with white Shield icon and bold vertical text
+- Turquoise glow aura on left edge intensifies on hover with 14px slide-out
+- Responsive: "Ask Guardian AI" on desktop, "Ask AI" on mobile
+- Chat sidebar credit: "managed by VSUALdigitalmedia.com" preserved
