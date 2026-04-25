@@ -183,30 +183,40 @@ export function GuardianAI() {
 
   return (
     <>
-      {/* ─── Floating Launcher Button ────────────────────────────── */}
+      {/* ─── Floating Launcher Pill Button ────────────────────────── */}
       <AnimatePresence>
         {!isOpen && (
           <motion.button
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
-            whileHover={{ scale: 1.08 }}
+            whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             onClick={toggleOpen}
-            className="fixed bottom-6 right-6 z-[200] group"
-            aria-label="Open Guardian AI Assistant"
+            className="fixed bottom-[40px] right-[30px] z-[200] group"
+            aria-label="Ask Guardian AI Assistant"
           >
-            {/* Glowing ring */}
-            <div className="absolute -inset-1 rounded-full bg-[#3ED1B8]/20 animate-pulse" />
-            <div className="absolute -inset-0.5 rounded-full bg-[#3ED1B8]/10 animate-pulse" />
-            {/* Button */}
-            <div className="relative h-14 w-14 rounded-full bg-[#3ED1B8] shadow-xl shadow-[#3ED1B8]/30 hover:shadow-[#3ED1B8]/50 flex items-center justify-center transition-shadow duration-300">
-              <Shield className="h-6 w-6 text-white" />
+            {/* Turquoise Glow Aura */}
+            <div className="absolute -inset-2 rounded-[28px] bg-[#3ED1B8]/15 animate-pulse blur-sm" />
+            <div className="absolute -inset-1 rounded-[26px] bg-[#3ED1B8]/10 animate-pulse" />
+            {/* Pill Button */}
+            <div
+              className="relative flex items-center gap-2.5 h-12 pl-4 pr-5 rounded-full bg-[#3257C2] shadow-xl shadow-[#3257C2]/40 hover:shadow-[#3257C2]/60 transition-shadow duration-300 max-[599px]:h-14 max-[599px]:w-14 max-[599px]:px-0 max-[599px]:justify-center max-[599px]:rounded-full"
+              style={{
+                boxShadow: '0 0 20px rgba(62, 209, 184, 0.25), 0 0 60px rgba(62, 209, 184, 0.1), 0 4px 20px rgba(50, 87, 194, 0.4)',
+              }}
+            >
+              {/* Shield Icon */}
+              <Shield className="h-5 w-5 text-white shrink-0 max-[599px]:h-6 max-[599px]:w-6" strokeWidth={2} />
+              {/* Text Label */}
+              <span className="font-bold text-white text-sm whitespace-nowrap tracking-wide max-[599px]:hidden">
+                Ask Guardian AI
+              </span>
             </div>
-            {/* Tooltip on hover */}
-            <div className="absolute bottom-full right-0 mb-3 px-3 py-1.5 rounded-lg bg-[#1A1D2E] shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
-              <p className="text-xs font-semibold text-white">Guardian AI</p>
+            {/* Tooltip on hover (mobile only — hidden on desktop since text is visible) */}
+            <div className="absolute bottom-full right-0 mb-3 px-3 py-1.5 rounded-lg bg-[#1A1D2E] shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap max-[599px]:block hidden">
+              <p className="text-xs font-semibold text-white">Ask Guardian AI</p>
             </div>
           </motion.button>
         )}
