@@ -6,13 +6,6 @@ import {
   Award,
   CheckCircle2,
   Star,
-  Video,
-  Users,
-  Clock,
-  BadgeCheck,
-  Building2,
-  Palette,
-  BarChart3,
   ArrowRight,
   Sparkles,
 } from 'lucide-react';
@@ -125,8 +118,6 @@ const tiers: TierDetail[] = [
     ],
   },
 ];
-
-const tierIcons = [Building2, Palette, BarChart3];
 
 export function HowWeRankSection() {
   return (

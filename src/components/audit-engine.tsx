@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Shield,
@@ -27,7 +27,6 @@ import {
   FolderOpen,
   BadgeCheck,
   Clock,
-  Sparkles,
   Zap,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -128,7 +127,7 @@ const fadeUp = {
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.05, duration: 0.4, ease: 'easeOut' },
+    transition: { delay: i * 0.05, duration: 0.4, ease: 'easeOut' as const },
   }),
 };
 
@@ -544,7 +543,7 @@ function MeetVerifiedPro({
                 </div>
                 <button
                   onClick={() => onViewPro(pro.id)}
-                  className="w-full mt-1 h-8 rounded-lg text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all duration-200 hover:shadow-sm"
+                  className="w-full mt-1 h-10 rounded-lg text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all duration-200 hover:shadow-sm"
                   style={{ backgroundColor: `${TRUE_BLUE}10`, color: TRUE_BLUE }}
                 >
                   View Profile
@@ -564,27 +563,26 @@ function VaultSyncToast({
   proName,
   reportId,
   onOpenVault,
+  onDismiss,
 }: {
   proName: string;
   reportId: string;
   onOpenVault: () => void;
+  onDismiss: () => void;
 }) {
-  const [visible, setVisible] = useState(true);
-
-  if (!visible) return null;
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 20, scale: 0.95 }}
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-      className="rounded-xl border-2 p-4"
+      className="relative rounded-xl border-2 p-4"
       style={{ backgroundColor: `${TURQUOISE}08`, borderColor: `${TURQUOISE}25` }}
     >
       <button
-        onClick={() => setVisible(false)}
-        className="absolute top-2 right-2 size-6 rounded-md hover:bg-black/5 flex items-center justify-center transition-colors"
+        onClick={onDismiss}
+        className="absolute top-2 right-2 size-8 rounded-md hover:bg-black/5 flex items-center justify-center transition-colors"
+        aria-label="Dismiss"
       >
         <XCircle className="size-3.5 text-gray-400" />
       </button>
@@ -634,12 +632,13 @@ export function AuditEngine() {
     email: '',
     bidAmount: '',
     concerns: '',
+    smsPhone: '',
   });
   const [isDragOver, setIsDragOver] = useState(false);
   const [fileName, setFileName] = useState('');
   const auditTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const reportId = `GR-${Date.now().toString(36).toUpperCase()}`;
+  const reportId = useMemo(() => `GR-${Date.now().toString(36).toUpperCase()}`, []);
   const reportDate = new Date().toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
@@ -743,6 +742,7 @@ export function AuditEngine() {
       email: '',
       bidAmount: '',
       concerns: '',
+      smsPhone: '',
     });
     setFileName('');
   }, []);
@@ -988,9 +988,9 @@ export function AuditEngine() {
                     id="sms-phone"
                     type="tel"
                     placeholder="(555) 000-0000"
-                    value={formData.phone}
+                    value={formData.smsPhone}
                     onChange={(e) =>
-                      handleInputChange('phone', e.target.value)
+                      handleInputChange('smsPhone', e.target.value)
                     }
                     className="h-10 border-[#EF4444]/20 focus:border-[#EF4444]/40 focus:ring-[#EF4444]/10"
                   />
@@ -1441,6 +1441,7 @@ export function AuditEngine() {
                         proName={formData.contractorName || 'Unknown Pro'}
                         reportId={reportId}
                         onOpenVault={handleOpenVault}
+                        onDismiss={() => setShowVaultToast(false)}
                       />
                     )}
                   </AnimatePresence>

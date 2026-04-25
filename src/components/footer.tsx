@@ -1,7 +1,9 @@
 'use client';
 
+import { toast } from 'sonner';
 import { Shield, Facebook, Instagram, Linkedin } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
+import type { PageView } from '@/lib/store';
 
 const footerLinks = {
   platform: [
@@ -39,9 +41,13 @@ const socialLinks = [
 export function Footer() {
   const { setCurrentPage } = useAppStore();
 
-  const handleLinkClick = (link: { action: string; href?: string; page?: string }) => {
+  const handleLinkClick = (link: { action: string; href?: string; page?: string; label?: string }) => {
+    if (link.action === 'none') {
+      toast.info(`${link.label} page coming soon.`);
+      return;
+    }
     if (link.action === 'page' && link.page) {
-      setCurrentPage(link.page as 'home' | 'dashboard' | 'pro-onboarding' | 'blog' | 'contact' | 'check-my-pro' | 'the-standard' | 'why-us' | 'pro-profile' | 'tier-2' | 'tier-3' | 'property-story');
+      setCurrentPage(link.page as PageView);
     } else if (link.action === 'scroll' && link.href) {
       if (useAppStore.getState().currentPage !== 'home') setCurrentPage('home');
       setTimeout(() => {
@@ -54,9 +60,9 @@ export function Footer() {
     <footer className="bg-[#0F1219] text-white">
       {/* Main Footer */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-16 pb-8">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-8 lg:gap-12">
           {/* Brand Column */}
-          <div className="col-span-2">
+          <div className="sm:col-span-2">
             <button
               onClick={() => setCurrentPage('home')}
               className="flex items-center gap-2.5 group mb-4"

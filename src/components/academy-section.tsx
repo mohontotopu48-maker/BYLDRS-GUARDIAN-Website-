@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  CheckCircle2,
   ArrowRight,
   BookOpen,
   Clock,

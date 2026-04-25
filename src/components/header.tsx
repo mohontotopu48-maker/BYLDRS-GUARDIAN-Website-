@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
+import Image from 'next/image';
 import {
   ShieldCheck,
   Menu,
@@ -25,7 +26,7 @@ import { motion, AnimatePresence } from 'framer-motion';
  * This enables parent-link highlighting when the user is on a sub-page.
  */
 const pageChildMap: Record<string, string[]> = {
-  'the-standard': ['the-standard', 'blog', 'property-story', 'protection-guide-download'],
+  'the-standard': ['the-standard', 'blog', 'property-story', 'protection-guide-download', 'shield-scripts'],
 };
 
 function isPageActive(currentPage: string, linkPage: string | undefined): boolean {
@@ -60,6 +61,12 @@ const standardFlyoutItems: FlyoutItem[] = [
     subtext: 'Our complete Pro verification standard — every point explained.',
     icon: ShieldCheck,
     page: 'the-standard',
+  },
+  {
+    label: "Marketer's Pack (20 Scripts)",
+    subtext: 'Video scripts, hooks, and captions — ready for social media & campaigns.',
+    icon: ClipboardCheck,
+    page: 'shield-scripts',
   },
   {
     label: 'How We Rank',
@@ -128,7 +135,7 @@ function StandardFlyout({
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: -8, scale: 0.97 }}
       transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[420px] sm:w-[480px]"
+      className="absolute top-full left-0 sm:left-1/2 sm:-translate-x-1/2 mt-2 w-[min(420px,calc(100vw-2rem))] sm:w-[480px]"
     >
       {/* Glassmorphism card */}
       <div className="rounded-2xl border border-white/[0.08] bg-[#1A1D2E]/85 backdrop-blur-2xl shadow-2xl shadow-black/40 overflow-hidden">
@@ -147,7 +154,7 @@ function StandardFlyout({
                   onClose();
                   if (item.scrollTo) {
                     setTimeout(() => {
-                      document.querySelector(item.scrollTo)?.scrollIntoView({ behavior: 'smooth' });
+                      document.querySelector(item.scrollTo!)?.scrollIntoView({ behavior: 'smooth' });
                     }, 200);
                   }
                 }}
@@ -239,6 +246,16 @@ export function Header() {
     return () => document.removeEventListener('mousedown', handleClick);
   }, [flyoutOpen]);
 
+  // Close mobile menu on Escape key
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMobileOpen(false);
+    };
+    document.addEventListener('keydown', handleEsc);
+    return () => document.removeEventListener('keydown', handleEsc);
+  }, [mobileOpen]);
+
   const clearFlyoutTimeout = useCallback(() => {
     if (flyoutTimeoutRef.current) {
       clearTimeout(flyoutTimeoutRef.current);
@@ -311,9 +328,11 @@ export function Header() {
         <div className="flex h-16 items-center justify-between lg:h-[72px]">
           {/* Logo — always returns to home */}
           <button onClick={goHome} className="flex items-center gap-2.5 group">
-            <img
+            <Image
               src="/guardian-logo.png"
               alt="BYLDRS GUARDIAN"
+              width={36}
+              height={36}
               className="h-9 w-auto object-contain"
             />
             <div className="flex flex-col leading-none">
@@ -439,6 +458,7 @@ export function Header() {
             }}
             className="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-white/[0.06] transition-colors"
             aria-label="Toggle menu"
+            aria-expanded={mobileOpen}
           >
             {mobileOpen ? (
               <X className="h-5 w-5 text-white" />
@@ -449,6 +469,21 @@ export function Header() {
         </div>
       </div>
 
+      {/* ──────── Mobile Backdrop (click to close) ──────── */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
+            onClick={() => { setMobileOpen(false); setMobileFlyoutOpen(false); }}
+            aria-hidden="true"
+          />
+        )}
+      </AnimatePresence>
+
       {/* ──────── Mobile Menu ──────── */}
       <AnimatePresence>
         {mobileOpen && (
@@ -457,7 +492,7 @@ export function Header() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:hidden overflow-hidden border-t border-white/[0.06] bg-[#0F1219]"
+            className="lg:hidden overflow-hidden border-t border-white/[0.06] bg-[#0F1219] relative z-[45]"
           >
             <div className="px-4 py-4 space-y-1">
               {navLinks.map((link, i) => {

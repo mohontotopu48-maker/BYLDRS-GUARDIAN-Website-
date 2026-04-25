@@ -6,7 +6,6 @@ import {
   RefreshCw,
   Scale,
   HeartHandshake,
-  ArrowRight,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 

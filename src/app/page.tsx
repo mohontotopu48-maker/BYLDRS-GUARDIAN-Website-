@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { Header } from '@/components/header';
 import { HeroSection } from '@/components/hero-section';
 import { HowItWorksSection } from '@/components/how-it-works-section';
@@ -23,8 +24,9 @@ import { WhyUsView } from '@/components/why-us-view';
 import { ProtectionGuideDownloadView } from '@/components/protection-guide-download-view';
 import { VaultView } from '@/components/vault-view';
 import { EnrollShieldView } from '@/components/enroll-shield-view';
+import { ShieldScriptsView } from '@/components/shield-scripts-view';
 import { Footer } from '@/components/footer';
-import { useAppStore } from '@/lib/store';
+import { useAppStore, initHashRouting } from '@/lib/store';
 import { AnimatePresence, motion } from 'framer-motion';
 
 function HomePage() {
@@ -73,6 +75,8 @@ function PageView({ page }: { page: string }) {
       return <VaultView />;
     case 'enroll-shield':
       return <EnrollShieldView />;
+    case 'shield-scripts':
+      return <ShieldScriptsView />;
     default:
       return <HomePage />;
   }
@@ -81,10 +85,16 @@ function PageView({ page }: { page: string }) {
 export default function Home() {
   const currentPage = useAppStore((s) => s.currentPage);
 
+  // Initialize hash routing once on mount
+  useEffect(() => {
+    initHashRouting();
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col bg-white">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:top-4 focus:left-4 focus:px-4 focus:py-2 focus:bg-[#3ED1B8] focus:text-[#0A0D14] focus:rounded-lg focus:text-sm focus:font-semibold">Skip to main content</a>
       <Header />
-      <main className="flex-1">
+      <main id="main-content" className="flex-1">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentPage}

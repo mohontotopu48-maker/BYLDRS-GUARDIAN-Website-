@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState, useEffect } from 'react';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -113,7 +114,7 @@ function GuardianChoiceCard({ pro }: { pro: ProProfile }) {
           <div className="shrink-0 w-full sm:w-48">
             <div className="relative h-32 sm:h-36 rounded-xl overflow-hidden bg-gradient-to-br from-[#F5A623]/10 to-[#3257C2]/10">
               {pro.coverPhoto ? (
-                <img src={pro.coverPhoto} alt={`${pro.company} work`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <Image src={pro.coverPhoto} alt={`${pro.company} work`} width={192} height={144} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
                   <Shield className="h-12 w-12 text-[#F5A623]/30" />
@@ -123,7 +124,7 @@ function GuardianChoiceCard({ pro }: { pro: ProProfile }) {
             <div className="relative -mt-8 ml-4">
               <div className="h-16 w-16 rounded-xl overflow-hidden ring-3 ring-white shadow-lg">
                 {pro.headshot ? (
-                  <img src={pro.headshot} alt={pro.name} className="h-full w-full object-cover" />
+                  <Image src={pro.headshot} alt={pro.name} width={64} height={64} className="h-full w-full object-cover" />
                 ) : (
                   <div className="h-full w-full bg-[#F5A623] flex items-center justify-center text-white text-lg font-bold">
                     {pro.avatar}
@@ -193,10 +194,10 @@ function ProCard({ pro, index }: { pro: ProProfile; index: number }) {
     setCurrentPage('pro-profile');
   };
   return (
-    <motion.div layout initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ duration: 0.35, delay: index * 0.05 }} className="group bg-white rounded-xl border border-[#E5E7EB] overflow-hidden hover:shadow-xl hover:shadow-[#1A1D2E]/[0.08] hover:border-transparent transition-all duration-300 cursor-pointer" onClick={handleViewProfile}>
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ duration: 0.35, delay: index * 0.05 }} className="group bg-white rounded-xl border border-[#E5E7EB] overflow-hidden hover:shadow-xl hover:shadow-[#1A1D2E]/[0.08] hover:border-transparent transition-all duration-300 cursor-pointer" onClick={handleViewProfile}>
       <div className="relative h-40 bg-gradient-to-br from-[#F4F7F9] to-[#E8ECF0] overflow-hidden">
         {pro.coverPhoto ? (
-          <img src={pro.coverPhoto} alt={`${pro.company} work`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+          <Image src={pro.coverPhoto} alt={`${pro.company} work`} width={320} height={160} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
             <div className={`h-16 w-16 rounded-2xl ${tierColors[pro.tier]} flex items-center justify-center text-white text-xl font-bold opacity-30`}>{pro.avatar}</div>
@@ -213,7 +214,7 @@ function ProCard({ pro, index }: { pro: ProProfile; index: number }) {
         <div className="flex items-center gap-3 mb-3 -mt-10 relative z-10">
           <div className="relative">
             <div className={`h-14 w-14 rounded-xl ${tierColors[pro.tier]} flex items-center justify-center text-white text-sm font-bold shadow-lg ring-4 ring-white`}>
-              {pro.headshot ? <img src={pro.headshot} alt={pro.name} className="h-full w-full rounded-xl object-cover" /> : pro.avatar}
+              {pro.headshot ? <Image src={pro.headshot} alt={pro.name} width={56} height={56} className="h-full w-full rounded-xl object-cover" /> : pro.avatar}
             </div>
           </div>
           <div className="min-w-0">
@@ -412,7 +413,7 @@ export function ProGrid() {
         </div>
 
         <AnimatePresence mode="wait">
-          <motion.div key={filteredPros.length} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center mb-8">
+          <motion.div key={`${searchCategory}-${searchZipCode}-${filteredPros.length}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center mb-8">
             <p className="text-sm text-[#1A1D2E]/40 font-medium">{filteredPros.length} {filteredPros.length === 1 ? 'Pro' : 'Pros'} found</p>
           </motion.div>
         </AnimatePresence>

@@ -6,7 +6,6 @@ import {
   Lock,
   FileText,
   Upload,
-  FolderOpen,
   ArrowRight,
   CheckCircle2,
   X,
@@ -155,9 +154,9 @@ export function VaultView() {
   }, [showSuccessToast]);
 
   const totalDocs = folders.reduce((sum, f) => sum + f.documents.length, 0);
-  const totalSize = '8.9 MB';
-  const storageUsed = 8.9;
-  const storageTotal = 5120; // 5GB in MB
+  const storageUsedMB = vaultSyncedBids.length * 2.3;
+  const totalSize = '5.0 GB';
+  const storageTotalMB = 5120; // 5GB in MB
 
   const handleDragOver = useCallback((folderId: string) => {
     setDragOverId(folderId);
@@ -323,12 +322,12 @@ export function VaultView() {
         >
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-semibold text-white/40">Storage Used</span>
-            <span className="text-xs font-bold text-[#3ED1B8]">{storageUsed} MB / 5 GB</span>
+            <span className="text-xs font-bold text-[#3ED1B8]">{storageUsedMB.toFixed(1)} MB / {totalSize}</span>
           </div>
           <div className="h-2 rounded-full bg-white/[0.06] overflow-hidden">
             <motion.div
               initial={{ width: 0 }}
-              animate={{ width: `${(storageUsed / storageTotal) * 100}%` }}
+              animate={{ width: `${(storageUsedMB / storageTotalMB) * 100}%` }}
               transition={{ duration: 1, delay: 0.3, ease: 'easeOut' }}
               className="h-full rounded-full bg-gradient-to-r from-[#3257C2] to-[#3ED1B8]"
             />

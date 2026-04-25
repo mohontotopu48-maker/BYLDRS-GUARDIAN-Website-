@@ -2,13 +2,11 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import {
   Search,
   Star,
   Users,
   ArrowRight,
-  ChevronDown,
   Home,
   Droplets,
   Zap,
@@ -93,7 +91,6 @@ export function HeroSection() {
     setSearchZipCode,
     setSearchCategory,
     setHasSearched,
-    setCurrentPage,
   } = useAppStore();
 
   // Live Audit Ticker auto-rotation

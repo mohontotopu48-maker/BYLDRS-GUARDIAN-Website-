@@ -12,14 +12,11 @@ import {
   Award,
   Zap,
   ArrowRight,
-  ChevronRight,
   CheckCircle2,
   TrendingUp,
-  RotateCcw,
   Trophy,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
 
 interface Reward {
   icon: React.ElementType;

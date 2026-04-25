@@ -13,7 +13,6 @@ import {
   CheckCircle2,
   BadgeCheck,
   Zap,
-  HardDrive,
   FileText,
   MessageSquare,
 } from 'lucide-react';

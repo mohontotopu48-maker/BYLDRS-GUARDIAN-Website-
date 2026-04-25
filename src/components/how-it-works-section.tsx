@@ -5,9 +5,6 @@ import {
   Activity,
   UserCheck,
   ArrowRight,
-  Shield,
-  Scale,
-  FileWarning,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 

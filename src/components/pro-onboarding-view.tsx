@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,7 +12,6 @@ import {
   Star,
   Shield,
   Award,
-  Upload,
   Camera,
   Instagram,
   Facebook,
@@ -40,7 +39,7 @@ const fadeUp = {
   visible: (i: number = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.08, duration: 0.5, ease: 'easeOut' },
+    transition: { delay: i * 0.08, duration: 0.5, ease: 'easeOut' as const },
   }),
 };
 
@@ -54,12 +53,12 @@ const slideIn = {
   visible: {
     opacity: 1,
     x: 0,
-    transition: { duration: 0.4, ease: 'easeOut' },
+    transition: { duration: 0.4, ease: 'easeOut' as const },
   },
   exit: {
     opacity: 0,
     x: -40,
-    transition: { duration: 0.3, ease: 'easeIn' },
+    transition: { duration: 0.3, ease: 'easeIn' as const },
   },
 };
 
@@ -718,6 +717,8 @@ function StepInfo({
 // ── Upload Zone Sub-component ────────────────────────────────────
 function UploadZone({ label }: { label: string }) {
   const [isDragOver, setIsDragOver] = useState(false);
+  const [fileName, setFileName] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   return (
     <div
@@ -729,29 +730,53 @@ function UploadZone({ label }: { label: string }) {
       onDrop={(e) => {
         e.preventDefault();
         setIsDragOver(false);
+        if (e.dataTransfer.files.length > 0) setFileName(e.dataTransfer.files[0].name);
       }}
+      onClick={() => fileInputRef.current?.click()}
       className={`
         flex flex-col items-center justify-center rounded-xl p-4 sm:p-6 cursor-pointer
         transition-all duration-200 min-h-[140px] sm:min-h-[160px]
         border-2 border-dashed
         ${
-          isDragOver
-            ? 'border-[#3257C2] bg-[#3257C2]/5'
-            : 'border-gray-300 bg-[#F4F7F9] hover:border-[#3257C2]/40 hover:bg-[#F4F7F9]'
+          fileName
+            ? 'border-[#22C55E] bg-[#22C55E]/5'
+            : isDragOver
+              ? 'border-[#3257C2] bg-[#3257C2]/5'
+              : 'border-gray-300 bg-[#F4F7F9] hover:border-[#3257C2]/40 hover:bg-[#F4F7F9]'
         }
       `}
     >
+      <input
+        type="file"
+        ref={fileInputRef}
+        accept=".jpg,.jpeg,.png,.pdf"
+        className="hidden"
+        onChange={(e) => {
+          if (e.target.files && e.target.files.length > 0) {
+            setFileName(e.target.files[0].name);
+          }
+        }}
+      />
       <div
         className={`size-10 rounded-lg flex items-center justify-center mb-2 transition-colors ${
-          isDragOver ? 'bg-[#3257C2]/15' : 'bg-gray-200'
+          fileName ? 'bg-[#22C55E]/15' : isDragOver ? 'bg-[#3257C2]/15' : 'bg-gray-200'
         }`}
       >
         <ImagePlus
-          className={`size-5 transition-colors ${isDragOver ? 'text-[#3257C2]' : 'text-gray-400'}`}
+          className={`size-5 transition-colors ${fileName ? 'text-[#22C55E]' : isDragOver ? 'text-[#3257C2]' : 'text-gray-400'}`}
         />
       </div>
-      <p className="text-xs font-semibold text-[#1A1D2E] mb-0.5">Click to upload</p>
-      <p className="text-[10px] text-gray-400 text-center leading-tight">{label}</p>
+      {fileName ? (
+        <>
+          <p className="text-xs font-semibold text-[#22C55E] mb-0.5 truncate max-w-full px-2">{fileName}</p>
+          <p className="text-[10px] text-gray-400 text-center leading-tight">{label}</p>
+        </>
+      ) : (
+        <>
+          <p className="text-xs font-semibold text-[#1A1D2E] mb-0.5">Click to upload</p>
+          <p className="text-[10px] text-gray-400 text-center leading-tight">{label}</p>
+        </>
+      )}
     </div>
   );
 }

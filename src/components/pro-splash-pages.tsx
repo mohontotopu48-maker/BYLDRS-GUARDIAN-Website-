@@ -3,7 +3,6 @@
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
 import { useAppStore } from '@/lib/store';
 import {
   Shield,
@@ -12,13 +11,9 @@ import {
   Clock,
   ArrowRight,
   CheckCircle2,
-  Award,
-  Users,
-  Home,
   Play,
   Briefcase,
   Wrench,
-  FileCheck,
   HeartHandshake,
   ArrowLeft,
 } from 'lucide-react';
@@ -28,7 +23,7 @@ const fadeUp = {
   visible: (i: number = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.08, duration: 0.5, ease: 'easeOut' },
+    transition: { delay: i * 0.08, duration: 0.5, ease: 'easeOut' as const },
   }),
 };
 
@@ -138,7 +133,7 @@ export function Tier3Splash() {
           {/* CTA */}
           <motion.div initial="hidden" animate="visible" className="text-center">
             <motion.div variants={fadeUp} custom={6}>
-              <Button className="h-12 px-8 rounded-lg bg-[#F5A623] hover:bg-[#e09518] text-[#1A1D2E] font-bold text-sm shadow-lg shadow-[#F5A623]/30 hover:shadow-xl transition-all duration-300 group">
+              <Button onClick={() => setCurrentPage('check-my-pro')} className="h-12 px-8 rounded-lg bg-[#F5A623] hover:bg-[#e09518] text-[#1A1D2E] font-bold text-sm shadow-lg shadow-[#F5A623]/30 hover:shadow-xl transition-all duration-300 group">
                 Request Audit
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
@@ -320,7 +315,7 @@ export function Tier2Splash() {
             </div>
 
             {/* CTA */}
-            <Button className="w-full h-12 rounded-lg bg-[#3257C2] hover:bg-[#2a49a8] text-white font-semibold text-sm shadow-lg shadow-[#3257C2]/20 hover:shadow-xl transition-all duration-300 group mb-8">
+            <Button onClick={() => setCurrentPage('check-my-pro')} className="w-full h-12 rounded-lg bg-[#3257C2] hover:bg-[#2a49a8] text-white font-semibold text-sm shadow-lg shadow-[#3257C2]/20 hover:shadow-xl transition-all duration-300 group mb-8">
               Request Audit
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>

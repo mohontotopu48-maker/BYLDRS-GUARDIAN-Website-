@@ -25,7 +25,7 @@ const fadeUp = {
   visible: (i: number = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+    transition: { delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
   }),
 };
 
@@ -444,6 +444,7 @@ export function TheStandardView() {
               <Button
                 variant="outline"
                 className="rounded-xl border-[#E5E7EB] text-[#1A1D2E]/60 hover:text-[#1A1D2E] hover:bg-white font-semibold text-sm"
+                onClick={() => window.open('/api/shield-pdf', '_blank')}
               >
                 <Download className="mr-2 h-4 w-4" />
                 Save as PDF

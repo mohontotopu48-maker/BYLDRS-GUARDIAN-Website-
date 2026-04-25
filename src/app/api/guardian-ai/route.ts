@@ -1,126 +1,392 @@
 import { NextRequest, NextResponse } from 'next/server';
 import ZAI from 'z-ai-web-dev-sdk';
+import { checkDepositViolation } from '@/lib/ghl';
+
+/* ──────────────────────────────────────────────────────────────── */
+/*  SDK Client — supports both .z-ai-config file & env vars        */
+/*  Env vars (ZAI_BASE_URL, ZAI_API_KEY) take priority over file   */
+/* ──────────────────────────────────────────────────────────────── */
+
+// ZAI constructor is private in types but accepts config at runtime
+let _zaiClient: any = null;
+
+async function getZAIClient() {
+  if (_zaiClient) return _zaiClient;
+
+  // Priority 1: Environment variables (Vercel / serverless friendly)
+  const envBaseUrl = process.env.ZAI_BASE_URL;
+  const envApiKey = process.env.ZAI_API_KEY;
+  if (envBaseUrl && envApiKey) {
+    const config: Record<string, string> = { baseUrl: envBaseUrl, apiKey: envApiKey };
+    // Include optional auth fields if available
+    if (process.env.ZAI_TOKEN) config.token = process.env.ZAI_TOKEN;
+    if (process.env.ZAI_CHAT_ID) config.chatId = process.env.ZAI_CHAT_ID;
+    if (process.env.ZAI_USER_ID) config.userId = process.env.ZAI_USER_ID;
+    _zaiClient = new (ZAI as any)(config);
+    console.log('[Guardian AI] SDK initialized from environment variables');
+    return _zaiClient;
+  }
+
+  // Priority 2: .z-ai-config file (local development)
+  // Checks: project root → ~/.z-ai-config → /etc/.z-ai-config
+  try {
+    _zaiClient = await ZAI.create();
+    console.log('[Guardian AI] SDK initialized from .z-ai-config file');
+    return _zaiClient;
+  } catch {
+    throw new Error(
+      'Guardian AI SDK not configured. Set ZAI_BASE_URL, ZAI_API_KEY, and ZAI_TOKEN environment variables, or create a .z-ai-config file.',
+    );
+  }
+}
 
 /* ──────────────────────────────────────────────────────────────── */
 /*  In-memory conversation store (one session per client)          */
+/*  Includes 30-min TTL and 500-session cap with LRU cleanup       */
+/*  NOTE: For production scale, migrate to Redis/Upstash KV        */
 /* ──────────────────────────────────────────────────────────────── */
-const sessions = new Map<string, { role: string; content: string }[]>();
+type WorkflowType = 'ghosting_rescue' | 'matchmaking' | null;
 
-const GUARDIAN_SYSTEM_PROMPT = `You are "Guardian AI," the official virtual assistant for BYLDRS GUARDIAN — California's #1 Pro verification platform. You are authoritative, protective, and helpful — like a seasoned project manager who always has the homeowner's back.
-
-CORE KNOWLEDGE:
-━━━━━━━━━━━━━━━
-1. THE 20-POINT SHIELD: Every contractor on BYLDRS GUARDIAN is audited against 20 compliance points including: active CSLB license, insurance verification, workers' comp coverage, bond validity, complaint history, deposit limits, permit history, background checks, reference checks, contract terms, payment structure, warranty documentation, project timeline, material quality, scope of work, change order policy, site safety, communication protocol, completion guarantee, and dispute resolution.
-
-2. CALIFORNIA DEPOSIT LAW (CA BPC §7159): It is ILLEGAL for a contractor to request a deposit exceeding $1,000 (or 10% of the total contract price, whichever is less) for a home improvement project. If a contractor asks for more than $1,000 upfront, this is a RED FLAG. The homeowner should NOT proceed and should report the contractor to the CSLB (Contractors State License Board).
-
-3. THE HOMEOWNER VAULT: Every enrolled homeowner gets a secure, AES-256 encrypted vault (5GB) with 4 document folders: Contracts, Insurance, Permits, and Completion. Documents can be uploaded directly or synced automatically from Check My Pro audits. The vault creates a switching cost — once organized, homeowners rely on the platform throughout their project.
-
-4. HOW IT WORKS:
-   - Homeowners can search for Pros by ZIP code and service category
-   - Every Pro has a Shield Health Score (1-100) based on their audit
-   - The Check My Pro tool lets homeowners upload bids/quotes for professional Guardian Risk Reports
-   - The Guardian Risk Report identifies red flags, provides a Professional Opinion, and recommends Guardian-verified alternatives if issues are found
-   - Pros are ranked in tiers: Certified Guardian (Gold), Vetted Partner (Silver), and Verified Pro (Bronze)
-
-5. GUARDIAN FEATURES:
-   - Live Audit Ticker showing real-time platform events
-   - Audit Countdown: Every Pro's Shield expires in ~30 days, then re-audited
-   - Vault Sync: Bids from Check My Pro are automatically secured in the Contracts folder
-   - Meet a Verified Pro: If red flags are found, homeowners see Guardian-verified alternatives
-
-TONE GUIDELINES:
-━━━━━━━━━━━━━━━━
-- Be authoritative but approachable — you are the expert.
-- Always prioritize the homeowner's protection and financial safety.
-- When discussing legal limits or red flags, be direct and clear.
-- If you don't know something specific (e.g., a contractor's exact license status), direct the homeowner to use the "Check My Pro" tool on the platform.
-- Keep responses concise and actionable. Use bullet points for lists.
-- Never provide legal advice — always recommend consulting a licensed attorney for specific legal questions.
-
-QUICK RESPONSE PATTERNS:
-━━━━━━━━━━━━━━━━━━━━━
-- Deposit questions → Quote the $1,000 CA law, explain how to protect themselves
-- Vault questions → Explain the 4 folders, encrypted storage, auto-sync from audits
-- Shield questions → List key points, direct to "The Standard" page
-- Pro trust questions → Recommend "Check My Pro" tool, explain Health Score
-- General help → Guide through the platform features
-
-Always end with a helpful suggestion or question to keep the conversation going.`;
-
-/* ─── Session Management ──────────────────────────────────────── */
-function getOrCreateSession(sessionId: string) {
-  if (!sessions.has(sessionId)) {
-    sessions.set(sessionId, [
-      { role: 'assistant', content: GUARDIAN_SYSTEM_PROMPT },
-    ]);
-  }
-  return sessions.get(sessionId)!;
+interface SessionEntry {
+  messages: { role: 'system' | 'user' | 'assistant'; content: string }[];
+  lastAccessed: number;
+  workflow: WorkflowType;
 }
 
-function trimSession(session: { role: string; content: string }[], maxMessages = 20) {
-  if (session.length > maxMessages) {
-    return [session[0], ...session.slice(-(maxMessages - 1))];
+const sessions = new Map<string, SessionEntry>();
+const MAX_SESSIONS = 500;
+const SESSION_TTL_MS = 30 * 60 * 1000; // 30 minutes
+const MAX_MESSAGE_LENGTH = 4000; // characters
+const MAX_MESSAGES_PER_SESSION = 24;
+const RATE_LIMIT_WINDOW_MS = 60_000; // 1 minute
+const RATE_LIMIT_MAX_REQUESTS = 15; // per session per minute
+
+// Per-session rate limiting
+const sessionRateLimits = new Map<string, { count: number; windowStart: number }>();
+
+// Cleanup timer — use unref() so it doesn't block process exit in serverless
+const cleanupTimer = setInterval(() => {
+  const now = Date.now();
+  for (const [id, entry] of sessions) {
+    if (now - entry.lastAccessed > SESSION_TTL_MS) {
+      sessions.delete(id);
+    }
   }
-  return session;
+  // LRU eviction only when over cap
+  if (sessions.size > MAX_SESSIONS) {
+    const sorted = [...sessions.entries()].sort(
+      (a, b) => a[1].lastAccessed - b[1].lastAccessed,
+    );
+    const toRemove = sorted.slice(0, sessions.size - MAX_SESSIONS);
+    for (const [id] of toRemove) sessions.delete(id);
+  }
+  // Clean up expired rate limit entries
+  for (const [id, info] of sessionRateLimits) {
+    if (now - info.windowStart > RATE_LIMIT_WINDOW_MS) {
+      sessionRateLimits.delete(id);
+    }
+  }
+}, 60_000);
+if (cleanupTimer.unref) cleanupTimer.unref();
+
+/* ══════════════════════════════════════════════════════════════════ */
+/*  SYSTEM PROMPT — Guardian AI Concierge Edition                  */
+/* ══════════════════════════════════════════════════════════════════ */
+const GUARDIAN_SYSTEM_PROMPT = `You are "Guardian AI," the lead concierge and protection assistant for BYLDRS GUARDIAN — California's #1 source to help homeowners find, verify, or replace good contractors. Your mission is to "Watch the Watchmen" and be the only platform that doesn't just list Pros — but actually rescues projects.
+
+━━━ THE TWO HATS ━━━
+You wear TWO hats depending on the user's situation:
+1. THE ASSISTANT — When the user is browsing, learning, or exploring. You're helpful, knowledgeable, and guide them through the platform.
+2. THE CONCIERGE — When the user mentions ghosting, unfinished work, disappearing contractors, or needing a new contractor IMMEDIATELY. You activate "Rescue Mode" and your PRIMARY goal is to collect their ZIP and Trade, then match them with a Tier 3 Certified Guardian.
+
+━━━ TONE: "RESCUE FIRST" ━━━
+You are NOT a legal lecturer. You are a helpful peer who has "the inside track" on who is actually working and who isn't.
+• Lead with EMPATHY and RELIEF — not codes and regulations
+• Lead with SOLUTIONS — "We will find you someone else" — not "Here's what went wrong"
+• Homeowners are in SURVIVAL MODE. They don't care about rules until they feel SAFE. Earn the right to teach them the 20-Point Shield by first getting their project back on track.
+• Be warm, direct, confident, and action-oriented. Like a friend who happens to run a rescue squad.
+• SHORT responses. Ask ONE question at a time. Move the conversation forward.
+
+━━━ PRIMARY PROTOCOLS ━━━
+
+🚨 PROTOCOL 1: THE GHOSTING RESCUE — "RESCUE FIRST" (HIGHEST PRIORITY)
+Trigger: User clicks "My contractor disappeared — Help!" OR mentions a disappearing contractor, abandoned project, no-show, stopped responding, ghosted, left the job, took money and ran.
+
+YOU DO NOT START WITH LEGAL CODES. You start with a solution.
+
+Step 1 — EMPATHY & RELIEF:
+"I'm so sorry you're going through this. Getting ghosted is incredibly stressful, but you're in the right place. We specialize in project rescues. Let's get your home back on track right now."
+
+Step 2 — IMMEDIATE PRACTICAL HELP:
+"I have a list of Certified Guardians in your area who are vetted specifically for project takeovers. While I find the right match for you, do you want me to check if your previous contractor at least followed the legal deposit limit? It might help you get some money back."
+(THIS is how you sneak the $1,000 rule in — as a BENEFIT to them, not a lecture.)
+
+Step 3 — COLLECT ESSENTIALS (one at a time, conversationally):
+  • "What's your ZIP code?" (needed first to find local Pros)
+  • "What trade was the project? Roofing, plumbing, electrical...?"
+  • "How much did you pay upfront?"
+  • "What percentage of the work is done?"
+
+Step 4 — THE HANDOFF:
+"I'm alerting our top local Pros now. One of them will reach out to see how they can finish the job safely. Would you like me to send them your project details?"
+→ Guide them to fill out the Rescue Lead form that appears below.
+
+Step 5 — DEPOSIT CHECK (if relevant):
+If they paid over $1,000: "Quick thing — in California, it's actually illegal for a contractor to take more than $1,000 as a deposit. You may be entitled to recovery through the CSLB. I'll flag this in your rescue file."
+
+🔍 PROTOCOL 2: THE CONCIERGE MATCHMAKER — "FIND A PRO NOW"
+Trigger: User clicks "Find me a Vetted Pro now" OR mentions they can't find a contractor, need a Pro, or want a specific trade in their location.
+
+Step 1 — REASSURE & DIFFERENTIATE:
+"Don't settle for unverified Pros on other sites. I can manually source and audit a Pro for you through our Guardian network. Every Pro we recommend has passed our 20-Point Shield audit — that's why they're safer than anyone you'll find on Craigslist, Yelp, or Angi."
+
+Step 2 — COLLECT (one at a time):
+  • "What's your ZIP code?"
+  • "What trade do you need?"
+  • "How soon do you need them?"
+
+Step 3 — SET EXPECTATIONS:
+"Our team will manually audit Pros in your area. You'll get a Guardian Risk Report for each match. Should I start the search now?"
+→ Guide them to fill out the Match Request form.
+
+💰 PROTOCOL 3: THE $1,000 RULE (EMBEDDED AS A BENEFIT, NOT A LECTURE)
+NEVER lead with the law code. Only bring it up when it HELPS the user.
+
+When to trigger:
+• If they ask about deposits directly ("Did I overpay my deposit?")
+• During a Ghosting Rescue, AFTER you've already started helping them
+• If they mention a specific dollar amount
+
+How to frame it:
+"Do you mind if I check something that might help you? In California, contractors can only legally ask for $1,000 or 10% of the total — whichever is less. If you paid more, you have options."
+
+If violation found:
+"That's over the $1,000 limit. Here's the good news: that's actually a violation of CA Business & Professions Code §7159, which means you may have grounds to recover those funds through the CSLB. I'll include this in your rescue file as HIGH priority."
+
+🛡️ PROTOCOL 4: THE 20-POINT SHIELD (THE REASON WHY, NOT THE LEAD)
+The Shield is your DIFFERENTIATOR — why your matched Pros are safer than the last one.
+• NEVER lead with the Shield. It's the REASON your Pros are vetted, not the first thing you teach.
+• When a Rescue or Match user asks "Why should I trust your Pros?" — THAT'S when you bring up the Shield:
+  "Every Pro on our platform has passed a 20-Point Shield audit. That means we've verified their license, insurance, bond, complaint history, background, references, contract terms, warranty, and 12 more points. It's the most thorough vetting in California. That's why your next contractor won't ghost you."
+• Always encourage downloading the full 20-Point Shield Playbook — but frame it as "Here's how to make sure this NEVER happens again."
+• The 20 points: Active CSLB License, Insurance Verification, Workers' Comp Coverage, Bond Validity, Complaint History, Deposit Limits, Permit History, Background Checks, Reference Checks, Contract Terms, Payment Structure, Warranty Documentation, Project Timeline, Material Quality, Scope of Work, Change Order Policy, Site Safety, Communication Protocol, Completion Guarantee, Dispute Resolution.
+
+🔒 PROTOCOL 5: THE HOMEOWNER VAULT
+A secure, AES-256 encrypted vault (5GB) with 4 folders:
+• Contracts — Store all signed agreements
+• Insurance — Keep proof of coverage
+• Permits — Building permits and inspections
+• Completion — Final documentation and photos
+
+Frame it as: "Once your project is rescued, keep everything organized in the Vault so this never happens again."
+
+━━━ CONSTRAINTS ━━━
+1. NEVER recommend a Pro that hasn't passed a Guardian audit in the last 30 days.
+2. NEVER provide legal advice — frame legal info as "Here's something that might help you."
+3. ALWAYS prioritize the homeowner's safety AND getting them a solution FAST.
+4. Keep responses SHORT — 2-4 sentences max. Ask ONE question at a time.
+5. If a user mentions ghosting, unfinished work, or needing a replacement contractor → ACTIVATE RESCUE MODE immediately. Your primary goal is to collect their ZIP and Trade.
+6. Mention the 20-Point Shield ONLY as the reason why the new Pro is safer than the last one.
+7. Always end with an action step or question — keep the conversation MOVING toward a solution.
+
+━━━ QUICK RESPONSE PATTERNS ━━━
+• Ghosting/abandonment → "I'm so sorry. We specialize in rescues. What's your ZIP code?" (Rescue Mode)
+• Can't find a Pro → "Let me source one for you. What trade do you need?" (Matchmaker)
+• Deposit question → "Let me check that for you. How much did they ask for?" ($1,000 as benefit)
+• Vault questions → "It's your secure project folder. Contracts, insurance, permits — all encrypted."
+• Shield questions → "It's why our Pros are the safest in California. 20 audit points."
+• Pro trust → "Every Pro passes a 20-Point Shield audit. No exceptions."
+• General help → "What do you need help with? I can check a contractor, find you a Pro, or explain how the Shield works."`;
+
+/* ─── Session Management ──────────────────────────────────────── */
+function getOrCreateSession(sessionId: string): SessionEntry {
+  const now = Date.now();
+  if (sessions.has(sessionId)) {
+    const entry = sessions.get(sessionId)!;
+    entry.lastAccessed = now;
+    return entry;
+  }
+  const entry: SessionEntry = {
+    messages: [{ role: 'system', content: GUARDIAN_SYSTEM_PROMPT }],
+    lastAccessed: now,
+    workflow: null,
+  };
+  sessions.set(sessionId, entry);
+  return entry;
+}
+
+function trimSession(messages: SessionEntry['messages']): SessionEntry['messages'] {
+  if (messages.length > MAX_MESSAGES_PER_SESSION) {
+    return [messages[0], ...messages.slice(-(MAX_MESSAGES_PER_SESSION - 1))];
+  }
+  return messages;
 }
 
 /* ─── POST Handler ─────────────────────────────────────────────── */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { message, sessionId = 'default' } = body;
+    const { message, sessionId: rawSessionId } = body;
+    const sessionId = rawSessionId || `anon_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 
+    // Input validation
     if (!message || typeof message !== 'string' || message.trim().length === 0) {
       return NextResponse.json(
-        { error: 'Message is required' },
+        { success: false, error: 'Message is required' },
         { status: 400 },
+      );
+    }
+
+    // Cap message length to prevent abuse
+    if (message.length > MAX_MESSAGE_LENGTH) {
+      return NextResponse.json(
+        { success: false, error: `Message too long (max ${MAX_MESSAGE_LENGTH} characters)` },
+        { status: 400 },
+      );
+    }
+
+    // Validate sessionId — prevent injection
+    if (typeof sessionId !== 'string' || sessionId.length > 128 || !/^[\w._-]+$/.test(sessionId)) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid session ID' },
+        { status: 400 },
+      );
+    }
+
+    // Rate limiting — per session, sliding window
+    const now = Date.now();
+    let rateInfo = sessionRateLimits.get(sessionId);
+    if (!rateInfo || now - rateInfo.windowStart > RATE_LIMIT_WINDOW_MS) {
+      rateInfo = { count: 0, windowStart: now };
+      sessionRateLimits.set(sessionId, rateInfo);
+    }
+    rateInfo.count++;
+    if (rateInfo.count > RATE_LIMIT_MAX_REQUESTS) {
+      return NextResponse.json(
+        { success: false, error: 'Rate limit exceeded. Please wait a moment.' },
+        { status: 429 },
       );
     }
 
     const session = getOrCreateSession(sessionId);
 
+    // Detect workflow triggers from user message
+    const msg = message.trim().toLowerCase();
+    if (
+      msg.includes('ghosted') ||
+      msg.includes('disappearing') ||
+      msg.includes('abandoned') ||
+      msg.includes('no-show') ||
+      msg.includes('stopped responding') ||
+      msg.includes('contractor ran') ||
+      msg.includes('left the job') ||
+      msg.includes('took my money and')
+    ) {
+      session.workflow = 'ghosting_rescue';
+    } else if (
+      msg.includes("can't find a pro") ||
+      msg.includes('cant find a pro') ||
+      msg.includes('no pros') ||
+      msg.includes('no contractors') ||
+      msg.includes('find a contractor') ||
+      msg.includes('need a pro') ||
+      msg.includes('need a contractor')
+    ) {
+      session.workflow = 'matchmaking';
+    }
+
+    // Detect deposit amounts and flag violations
+    let depositAlert: string | null = null;
+    const amountMatch = message.match(/\$([0-9,]+(?:\.\d{1,2})?)/g);
+    if (amountMatch) {
+      for (const amt of amountMatch) {
+        const value = parseFloat(amt.replace(/[$,]/g, ''));
+        if (!isNaN(value) && value > 0) {
+          const violation = checkDepositViolation(value);
+          if (violation.isViolation) {
+            depositAlert = `⚠️ DEPOSIT VIOLATION: $${value.toLocaleString()} exceeds the $1,000 legal limit under ${violation.code}. Overage: $${violation.overage.toLocaleString()}.`;
+            break;
+          }
+        }
+      }
+    }
+
     // Add user message
-    session.push({ role: 'user', content: message.trim() });
+    session.messages.push({ role: 'user', content: message.trim() });
 
     // Trim to keep context manageable
-    const trimmedSession = trimSession(session);
+    session.messages = trimSession(session.messages);
 
     // Create ZAI instance and get completion
-    const zai = await ZAI.create();
+    const zai = await getZAIClient();
 
     const completion = await zai.chat.completions.create({
-      messages: trimmedSession,
+      messages: session.messages,
       thinking: { type: 'disabled' },
     });
 
-    const aiResponse = completion.choices[0]?.message?.content || "I'm here to help protect your project. Could you ask your question again?";
+    const aiResponse = completion.choices[0]?.message?.content ||
+      "I'm here to help protect your project. Could you ask your question again?";
 
     // Add response to session
-    trimmedSession.push({ role: 'assistant', content: aiResponse });
-    sessions.set(sessionId, trimmedSession);
+    session.messages.push({ role: 'assistant', content: aiResponse });
 
     return NextResponse.json({
       success: true,
       response: aiResponse,
-      messageCount: trimmedSession.length - 1, // Exclude system prompt
+      messageCount: session.messages.length - 1,
+      workflow: session.workflow,
+      depositAlert,
     });
   } catch (error) {
     console.error('[Guardian AI] Error:', error);
 
-    // Fallback response if AI fails
-    return NextResponse.json({
-      success: true,
-      response:
-        "I'm experiencing a momentary pause, but I'm still here to help. Could you try asking again? If you're dealing with a deposit over $1,000 or need a Pro checked, I recommend using the Check My Pro tool on our platform.",
-    });
+    // Classify the error for better status codes
+    const isConfigError =
+      error instanceof Error &&
+      (error.message.includes('Configuration file not found') ||
+       error.message.includes('config') ||
+       error.message.includes('API key'));
+    const isRateLimitError =
+      error instanceof Error && error.message.includes('rate');
+
+    const statusCode = isConfigError
+      ? 503   // Service unavailable — SDK misconfigured
+      : isRateLimitError
+        ? 429 // Propagate upstream rate limits
+        : 502; // Bad gateway — upstream SDK failure
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: "I'm experiencing a momentary pause. Please try again.",
+        fallback:
+          "If you're dealing with a deposit over $1,000 or a contractor who has ghosted you, I recommend filling out the Rescue Lead form so we can prioritize your case.",
+      },
+      { status: statusCode },
+    );
   }
 }
 
 /* ─── DELETE Handler ──────────────────────────────────────────── */
 export async function DELETE(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const sessionId = searchParams.get('sessionId') || 'default';
-  sessions.delete(sessionId);
-  return NextResponse.json({ success: true, message: 'Session cleared' });
+  try {
+    const body = await request.json().catch(() => ({}));
+    const sessionId = body.sessionId;
+
+    if (!sessionId || typeof sessionId !== 'string') {
+      return NextResponse.json(
+        { success: false, error: 'Session ID required' },
+        { status: 400 },
+      );
+    }
+
+    sessions.delete(sessionId);
+    return NextResponse.json({ success: true, message: 'Session cleared' });
+  } catch {
+    return NextResponse.json(
+      { success: false, error: 'Invalid request' },
+      { status: 400 },
+    );
+  }
 }

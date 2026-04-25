@@ -6,14 +6,12 @@ import { Progress } from '@/components/ui/progress';
 import { useAppStore } from '@/lib/store';
 import {
   Shield,
-  FileText,
   GraduationCap,
   FolderOpen,
   Upload,
   Users,
   Star,
   BookOpen,
-  Award,
   ChevronRight,
   FileCheck,
   FileWarning,
@@ -36,7 +34,7 @@ const fadeUp = {
   visible: (i: number = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.08, duration: 0.5, ease: 'easeOut' },
+    transition: { delay: i * 0.08, duration: 0.5, ease: 'easeOut' as const },
   }),
 };
 
@@ -325,11 +323,12 @@ export function DashboardView() {
             </div>
 
             <div className="p-5 sm:p-6 pt-4">
-              <Button className="w-full bg-[#3257C2] hover:bg-[#2a4aa8] text-white font-semibold">
+              <Button onClick={() => setCurrentPage('vault')} className="w-full bg-[#3257C2] hover:bg-[#2a4aa8] text-white font-semibold">
                 <Upload className="size-4" />
                 Upload Document
               </Button>
               <Button
+                onClick={() => setCurrentPage('vault')}
                 variant="ghost"
                 className="w-full mt-2 text-[#3257C2] hover:bg-[#3257C2]/5 text-sm font-medium"
               >

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -32,6 +32,8 @@ const bulletPoints = [
 
 export function AuditSection() {
   const [submitted, setSubmitted] = useState(false);
+  const [fileName, setFileName] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -195,17 +197,41 @@ export function AuditSection() {
                     <label className="block text-sm font-medium text-[#1A1D2E] mb-1.5">
                       Upload Bid Document (Optional)
                     </label>
-                    <div className="border-2 border-dashed border-[#E5E7EB] rounded-lg p-6 text-center hover:border-[#3257C2]/30 transition-colors cursor-pointer bg-[#F4F7F9]/50">
-                      <Upload className="h-6 w-6 text-[#1A1D2E]/30 mx-auto mb-2" />
-                      <p className="text-sm text-[#1A1D2E]/50">
-                        <span className="font-medium text-[#3257C2]">
-                          Click to upload
-                        </span>{' '}
-                        or drag and drop
-                      </p>
-                      <p className="text-xs text-[#1A1D2E]/30 mt-1">
-                        PDF, DOC, or JPG (max 10MB)
-                      </p>
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                      className="hidden"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files.length > 0) {
+                          setFileName(e.target.files[0].name);
+                        }
+                      }}
+                    />
+                    <div
+                      className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer ${
+                        fileName
+                          ? 'border-[#22C55E]/40 bg-[#22C55E]/5'
+                          : 'border-[#E5E7EB] hover:border-[#3257C2]/30 bg-[#F4F7F9]/50'
+                      }`}
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      <Upload className={`h-6 w-6 mx-auto mb-2 ${fileName ? 'text-[#22C55E]' : 'text-[#1A1D2E]/30'}`} />
+                      {fileName ? (
+                        <p className="text-sm font-medium text-[#22C55E]">{fileName}</p>
+                      ) : (
+                        <>
+                          <p className="text-sm text-[#1A1D2E]/50">
+                            <span className="font-medium text-[#3257C2]">
+                              Click to upload
+                            </span>{' '}
+                            or drag and drop
+                          </p>
+                          <p className="text-xs text-[#1A1D2E]/30 mt-1">
+                            PDF, DOC, or JPG (max 10MB)
+                          </p>
+                        </>
+                      )}
                     </div>
                   </div>
 
