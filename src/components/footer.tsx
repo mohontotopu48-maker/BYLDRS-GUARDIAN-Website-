@@ -141,13 +141,25 @@ export function Footer() {
             <p className="text-xs text-white/25">
               © {new Date().getFullYear()} BYLDRS GUARDIAN. All rights reserved.
             </p>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-white/25">
-                Powered by
-              </span>
-              <span className="text-xs font-bold text-[#3ED1B8] tracking-wide">
-                NXLBYLDR CRM
-              </span>
+            <div className="flex flex-col items-end gap-1">
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-white/25">
+                  Powered by
+                </span>
+                <span className="text-xs font-bold text-[#3ED1B8] tracking-wide">
+                  NXLBYLDR CRM
+                </span>
+              </div>
+              <a
+                href="https://VSUALdigitalmedia.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10px] text-white/40 hover:text-white/60 transition-colors duration-200"
+              >
+                managed by{' '}
+                <span className="font-bold">VSUAL</span>
+                <span className="font-normal">digitalmedia.com</span>
+              </a>
             </div>
           </div>
         </div>

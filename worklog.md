@@ -636,3 +636,25 @@ Stage Summary:
 - Royal Blue (#3257C2) brand color with white text and animated arrow icon
 - Visible on both desktop and mobile (text-center, responsive padding)
 - scroll-mt-24 ensures anchor clears the sticky dark header
+
+---
+Task ID: 3
+Agent: Main Agent
+Task: VSUAL digitalmedia – Global Agency Credit Restoration in Footer
+
+Work Log:
+- Located "Powered by NXLBYLDR CRM" in `src/components/footer.tsx` bottom bar (lines 144-151)
+- Wrapped CRM line and new agency line in a `flex-col items-end gap-1` container for right-aligned branding unit
+- Added "managed by VSUALdigitalmedia.com" link below CRM credit with:
+  - Typography: `font-bold` on "VSUAL", `font-normal` on "digitalmedia.com"
+  - Color: `text-white/40` with `hover:text-white/60` transition
+  - Size: `text-[10px]` (smaller than CRM's `text-xs`)
+  - Link: `<a href="https://VSUALdigitalmedia.com" target="_blank" rel="noopener noreferrer">`
+- Tight vertical spacing: `gap-1` (4px) between CRM line and agency line
+- ESLint: CLEAN (0 errors), Compilation: SUCCESS (GET / 200)
+
+Stage Summary:
+- Footer now shows "Powered by NXLBYLDR CRM" + "managed by VSUALdigitalmedia.com" as a grouped branding unit
+- VSUALdigitalmedia.com link opens in new tab with bold/regular typography split
+- Subtle white/40 opacity with hover lift to white/60
+- Right-aligned across all breakpoints, tight 4px vertical spacing
