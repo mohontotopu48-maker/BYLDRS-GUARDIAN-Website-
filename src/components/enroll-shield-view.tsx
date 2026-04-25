@@ -8,12 +8,14 @@ import {
   ArrowRight,
   User,
   Mail,
+  Phone,
   MapPin,
   CheckCircle2,
   BadgeCheck,
   Zap,
   HardDrive,
   FileText,
+  MessageSquare,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
@@ -29,15 +31,33 @@ export function EnrollShieldView() {
   const { setCurrentPage, login, setShowEnrollSuccess } = useAppStore();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [zipCode, setZipCode] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSmsSent, setShowSmsSent] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const formatPhoneNumber = (value: string) => {
+    const digits = value.replace(/\D/g, '').slice(0, 10);
+    if (digits.length === 0) return '';
+    if (digits.length <= 3) return `(${digits}`;
+    if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatPhoneNumber(e.target.value);
+    setPhone(formatted);
+    if (errors.phone) setErrors((p) => ({ ...p, phone: '' }));
+  };
 
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
     if (!name.trim()) newErrors.name = 'Name is required';
     if (!email.trim()) newErrors.email = 'Email is required';
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) newErrors.email = 'Enter a valid email';
+    if (!phone.trim()) newErrors.phone = 'Phone number is required';
+    else if (phone.replace(/\D/g, '').length < 10) newErrors.phone = 'Enter a valid 10-digit phone number';
     if (!zipCode.trim()) newErrors.zipCode = 'ZIP Code is required';
     else if (!/^\d{5}(-\d{4})?$/.test(zipCode.trim())) newErrors.zipCode = 'Enter a valid ZIP Code';
     setErrors(newErrors);
@@ -50,8 +70,12 @@ export function EnrollShieldView() {
 
     setIsSubmitting(true);
 
-    // Simulate enrollment
-    await new Promise((resolve) => setTimeout(resolve, 1800));
+    // Simulate enrollment + automated welcome SMS
+    await new Promise((resolve) => setTimeout(resolve, 2200));
+
+    // Simulate Welcome text sent to homeowner's phone
+    setShowSmsSent(true);
+    await new Promise((resolve) => setTimeout(resolve, 1200));
 
     setIsSubmitting(false);
     login('homeowner');
@@ -230,6 +254,44 @@ export function EnrollShieldView() {
                   {errors.email && <p className="mt-1 text-[11px] text-red-400 font-medium">{errors.email}</p>}
                 </div>
 
+                {/* Phone Number Field */}
+                <div>
+                  <label htmlFor="enroll-phone" className="block text-xs font-semibold text-white/50 mb-1.5">
+                    Phone Number <span className="text-red-400/60">*</span>
+                  </label>
+                  <div className="relative">
+                    <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-white/20" />
+                    <input
+                      id="enroll-phone"
+                      type="tel"
+                      value={phone}
+                      onChange={handlePhoneChange}
+                      placeholder="(555) 000-0000"
+                      maxLength={14}
+                      className={`w-full h-12 pl-10 pr-10 rounded-xl bg-white/[0.04] border text-sm text-white placeholder:text-white/20 focus:outline-none focus:ring-2 transition-all ${
+                        errors.phone
+                          ? 'border-red-500/50 focus:ring-red-500/20 focus:border-red-500/60'
+                          : 'border-white/[0.08] focus:ring-[#3ED1B8]/20 focus:border-[#3ED1B8]/40'
+                      }`}
+                    />
+                    <Lock className="absolute right-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#3ED1B8]/40" />
+                  </div>
+                  <div className="mt-1.5 flex items-start gap-1.5">
+                    <p className="text-[10px] text-white/25 leading-relaxed">
+                      For urgent legal alerts and Shield verification updates.
+                    </p>
+                  </div>
+                  {errors.phone && <p className="mt-0.5 text-[11px] text-red-400 font-medium">{errors.phone}</p>}
+                  {/* Trust badge next to phone field */}
+                  <div className="mt-2 flex items-center gap-2 rounded-lg bg-[#3ED1B8]/[0.06] border border-[#3ED1B8]/10 px-3 py-2">
+                    <Lock className="h-3.5 w-3.5 text-[#3ED1B8] flex-shrink-0" />
+                    <p className="text-[10px] text-[#3ED1B8]/70 leading-relaxed">
+                      <span className="font-semibold text-[#3ED1B8]/90">Encrypted &amp; Spam-Free.</span>{' '}
+                      We only text for critical project protection.
+                    </p>
+                  </div>
+                </div>
+
                 {/* ZIP Code Field */}
                 <div>
                   <label htmlFor="enroll-zip" className="block text-xs font-semibold text-white/50 mb-1.5">
@@ -267,7 +329,14 @@ export function EnrollShieldView() {
                         transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                         className="h-5 w-5 border-2 border-[#0A0D14]/20 border-t-[#0A0D14] rounded-full"
                       />
-                      Activating...
+                      {showSmsSent ? (
+                        <span className="flex items-center gap-2">
+                          <MessageSquare className="h-4 w-4" />
+                          Welcome text sent!
+                        </span>
+                      ) : (
+                        'Activating Shield...'
+                      )}
                     </>
                   ) : (
                     <>
