@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import { useAppStore } from '@/lib/store';
 
 const vaultFeatures = [
   {
@@ -38,6 +39,7 @@ const vaultFeatures = [
 ];
 
 export function VaultSection() {
+  const { setCurrentPage } = useAppStore();
   return (
     <section id="vault" className="relative bg-[#F4F7F9] py-16 lg:py-24">
       {/* Background */}
@@ -184,7 +186,7 @@ export function VaultSection() {
             </div>
 
             <div className="mt-8">
-              <Button className="rounded-lg bg-[#3257C2] hover:bg-[#2a49a8] text-white font-semibold text-sm px-6 py-3 shadow-lg shadow-[#3257C2]/20 hover:shadow-xl hover:shadow-[#3257C2]/30 transition-all duration-300 group">
+              <Button onClick={() => setCurrentPage('vault')} className="rounded-lg bg-[#3257C2] hover:bg-[#2a49a8] text-white font-semibold text-sm px-6 py-3 shadow-lg shadow-[#3257C2]/20 hover:shadow-xl hover:shadow-[#3257C2]/30 transition-all duration-300 group">
                 Open Your Vault
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>

@@ -658,3 +658,42 @@ Stage Summary:
 - VSUALdigitalmedia.com link opens in new tab with bold/regular typography split
 - Subtle white/40 opacity with hover lift to white/60
 - Right-aligned across all breakpoints, tight 4px vertical spacing
+
+---
+Task ID: 4
+Agent: Main Agent
+Task: BYLDRS GUARDIAN – Homeowner Vault Full Page Implementation
+
+Work Log:
+- Updated `src/lib/store.ts` — Added 'vault' to PageView union type
+- Updated `src/app/page.tsx` — Added VaultView import and 'vault' route case in PageView switch
+- Updated `src/components/vault-section.tsx` — Wired "Open Your Vault" button with onClick → setCurrentPage('vault'), added useAppStore import
+- Created `src/components/vault-view.tsx` — Full vault page with dark Glassmorphism design:
+  - Header: "Your Secure Property Vault" with gradient text, "Shield Verified & Encrypted" badge, subtitle about 4 core document categories
+  - Stats Row: 3 glassmorphism cards (Documents count, Storage used, Folders 4/4)
+  - Animated Storage Bar: gradient progress bar showing 8.9 MB / 5 GB
+  - 4 Category Folder Cards (expandable):
+    1. Contract Folder (FileSignature, blue) — Signed contracts, change orders, payment schedules. Pre-loaded 3 docs.
+    2. Insurance Folder (ShieldCheck, turquoise) — GL, Workers' Comp, Bond docs. Pre-loaded 1 doc.
+    3. Permits Folder (ClipboardCheck, gold) — Building permits, inspection reports, sign-offs. Pre-loaded 2 docs.
+    4. Completion Folder (Award, bronze) — Lien releases, warranties, maintenance schedules. Empty.
+  - Each folder: colored top accent line, icon badge, status indicator ("Empty" or "N Documents"), expand/collapse with arrow rotation
+  - Expanded view: document list with file icons, names, sizes, dates, hover-reveal action buttons (Download, Share, View)
+  - Drag & Drop: onDragOver/onDragLeave/onDrop with visual overlay ("Drop to upload"), adds document after 1.5s simulated upload
+  - Upload Button: "Drag & Drop or Upload Document" clickable zone with spinner during upload, adds document after 1.2s
+  - Security Features: 4 cards (AES-256 Encryption, Access Control, Version History, Audit Trail)
+  - Back to Home button
+  - Background: dark #0A0D14 with decorative gradient orbs and dot grid pattern
+  - All cards use Glassmorphism: bg-white/[0.04] backdrop-blur-xl border border-white/[0.08]
+  - Framer Motion: fadeUp, staggered delays, AnimatePresence expand/collapse, storage bar animation, drag overlay
+  - Fully responsive: 2-col grid on sm+, stacked on mobile
+- ESLint: CLEAN (0 errors), Compilation: SUCCESS (GET / 200)
+
+Stage Summary:
+- Full Homeowner Vault page created with elite dark aesthetic and Glassmorphism design
+- 4 interactive category folders with drag/drop upload and click-to-upload functionality
+- Status badges ("Empty" / "N Documents") on each folder
+- "Shield Verified & Encrypted" security badge in header
+- Storage progress bar with animated gradient fill
+- "Open Your Vault" button in homepage vault section now navigates to dedicated vault page
+- Global footer branding (VSUALdigitalmedia.com) visible via shared Footer component
