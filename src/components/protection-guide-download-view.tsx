@@ -670,30 +670,46 @@ SECTION 5: PROJECT INTEGRITY & ETHICS (Points 16–20)
               </motion.div>
             </motion.div>
 
-            {/* ── Right: Book Mockup ── */}
+            {/* ── Right: 20-Point Shield Video + Book Mockup ── */}
             <motion.div
               initial={{ opacity: 0, x: 40, scale: 0.95 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-              className="relative flex justify-center lg:justify-end"
+              className="relative flex flex-col items-center gap-6"
             >
-              {/* Glow behind book */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[300px] rounded-full bg-[#3ED1B8]/[0.08] blur-[80px]" />
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[300px] w-[250px] rounded-full bg-[#3257C2]/[0.06] blur-[60px]" />
+              {/* NotebookLM Video Embed — The Hook */}
+              <div className="relative w-full">
+                {/* Glow behind video */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[300px] w-[400px] rounded-full bg-[#3ED1B8]/[0.08] blur-[80px]" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[200px] w-[300px] rounded-full bg-[#3257C2]/[0.06] blur-[60px]" />
 
-              {/* Book image */}
-              <div className="relative">
-                <img
-                  src="/guide-book-mockup.png"
-                  alt="BYLDRS GUARDIAN 20-Point Shield"
-                  className="relative z-10 w-[240px] sm:w-[280px] lg:w-[320px] rounded-lg shadow-2xl shadow-black/50"
-                />
-                {/* Floating badge */}
+                <div className="relative z-10 rounded-xl overflow-hidden border border-white/[0.08] shadow-2xl shadow-black/40">
+                  <div className="relative">
+                    <div className="bg-[#1A1D2E] px-4 py-2.5 flex items-center gap-2.5">
+                      <div className="flex gap-1.5">
+                        <div className="h-2.5 w-2.5 rounded-full bg-red-500/60" />
+                        <div className="h-2.5 w-2.5 rounded-full bg-yellow-500/60" />
+                        <div className="h-2.5 w-2.5 rounded-full bg-green-500/60" />
+                      </div>
+                      <span className="text-[10px] text-white/30 font-medium flex-1 text-center">BYLDRS GUARDIAN — 20-Point Shield Explained</span>
+                    </div>
+                    <iframe
+                      src="https://www.youtube.com/embed/Oz-NQbmwGRc?rel=0&modestbranding=1&color=white"
+                      title="BYLDRS GUARDIAN — 20-Point Shield Video"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full aspect-video"
+                      loading="lazy"
+                    />
+                  </div>
+                </div>
+
+                {/* Floating badge below video */}
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.6, duration: 0.4 }}
-                  className="absolute -bottom-4 -left-4 sm:-left-8 z-20 flex items-center gap-2 rounded-xl bg-[#1A1D2E]/90 backdrop-blur-xl border border-white/[0.08] px-4 py-3 shadow-xl"
+                  className="absolute -bottom-4 -left-2 sm:-left-4 z-20 flex items-center gap-2 rounded-xl bg-[#1A1D2E]/90 backdrop-blur-xl border border-white/[0.08] px-4 py-3 shadow-xl"
                 >
                   <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#3ED1B8]/15">
                     <ShieldCheck className="h-4 w-4 text-[#3ED1B8]" />
@@ -703,19 +719,28 @@ SECTION 5: PROJECT INTEGRITY & ETHICS (Points 16–20)
                     <span className="text-[10px] text-white/30">Updated 2025</span>
                   </div>
                 </motion.div>
-                {/* Top-right: New badge */}
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.8, duration: 0.4 }}
-                  className="absolute -top-3 -right-3 sm:-right-6 z-20 flex items-center gap-1.5 rounded-lg bg-[#F5A623]/90 backdrop-blur-xl px-3 py-2 shadow-lg"
-                >
-                  <Sparkles className="h-3.5 w-3.5 text-[#0A0D14]" />
-                  <span className="text-[10px] font-bold text-[#0A0D14] tracking-wide uppercase">
-                    Now Expanded
-                  </span>
-                </motion.div>
               </div>
+
+              {/* AI Interaction CTA — connects video hook to Guardian AI */}
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.0, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                className="w-full max-w-sm"
+              >
+                <div className="rounded-xl bg-gradient-to-br from-[#3ED1B8]/[0.08] to-[#3257C2]/[0.08] border border-white/[0.06] p-4 text-center">
+                  <p className="text-[11px] font-bold text-white/50 uppercase tracking-wider mb-2">
+                    Got contractor problems?
+                  </p>
+                  <p className="text-sm text-white/70 leading-relaxed mb-3">
+                    Watch the video, then ask <span className="text-[#3ED1B8] font-semibold">Guardian AI</span> to check your contractor, rescue your project, or find a vetted Pro.
+                  </p>
+                  <div className="flex items-center justify-center gap-2 text-[10px] text-white/30">
+                    <MessageSquare className="h-3 w-3" />
+                    <span>Click &quot;Ask Guardian AI&quot; on the right edge of your screen</span>
+                  </div>
+                </div>
+              </motion.div>
             </motion.div>
           </div>
         </div>

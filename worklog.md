@@ -35,3 +35,35 @@ Stage Summary:
   - Deposit check: $1,000 rule working both in system prompt and server-side parsing
 - Rescue lead API tested: local DB fallback working, GHL CRM ready (pending credentials)
 - Dev server: compiled, serving 200s
+
+---
+Task ID: 2
+Agent: Main Agent
+Task: Rescue First Strategy — Video Embed + System Prompt Rewrite + Sidebar UX Pivot
+
+Work Log:
+- Embedded NotebookLM YouTube video (https://youtu.be/Oz-NQbmwGRc) on protection-guide-download page, replacing book mockup in right column with styled iframe + browser-chrome wrapper + floating badge
+- Added AI Interaction CTA card below video: "Got contractor problems?" with pointer to Guardian AI sidebar
+- Completely rewrote Guardian AI system prompt to "Rescue First / Concierge First" strategy:
+  - "Two Hats" model: Assistant (browsing) vs Concierge (Rescue Mode)
+  - Protocol 1 (Ghosting Rescue): Empathy → Immediate Help → Collect ZIP/Trade → Handoff → Deposit Check (as benefit)
+  - Protocol 2 (Matchmaker): Reassure → Differentiate from competitors → Collect → Set expectations
+  - Protocol 3 ($1,000 Rule): Embedded as BENEFIT not lecture, only after building trust
+  - Protocol 4 (20-Point Shield): THE REASON WHY, not the lead — frame as "why our Pros are safer"
+  - Protocol 5 (Vault): "So this never happens again" framing
+- Updated sidebar quick actions to action-oriented language:
+  - "My contractor disappeared — Help!" (red alert style)
+  - "Find me a Vetted Pro now." (turquoise style)
+  - "Did I overpay my deposit?" (compact pill)
+  - "Open my Project Vault." (compact pill)
+- Updated welcome message, section header ("How can we help?"), input placeholder ("What's going on with your project?")
+- Matchmaking button gets turquoise styling (not red) to differentiate from emergency
+- Cleaned up unused imports (Phone, MapPin, Clock, FileText)
+
+Stage Summary:
+- ESLint: 0 errors
+- Ghosting response: "I'm so sorry... Let's get your roof back on track. What's your ZIP code?" ✅ Empathy-first
+- Matchmaking response: "Don't settle for unverified Pros. Every Pro has passed our 20-Point Shield audit." ✅ Differentiation
+- Deposit response: "That's actually a violation... you may have grounds to recover those funds" ✅ Benefit framing
+- Video embedded next to Download button with AI CTA bridge
+- All API routes returning 200

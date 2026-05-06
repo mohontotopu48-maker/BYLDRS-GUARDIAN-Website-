@@ -11,14 +11,10 @@ import {
   RotateCcw,
   Minimize2,
   AlertTriangle,
-  Phone,
-  MapPin,
   Briefcase,
   DollarSign,
   ChevronDown,
-  Clock,
   UserCheck,
-  FileText,
   CheckCircle2,
   Loader2,
 } from 'lucide-react';
@@ -91,36 +87,31 @@ const TIMELINE_OPTIONS = [
 const QUICK_ACTIONS = [
   {
     icon: <AlertTriangle className="h-3.5 w-3.5" />,
-    label: 'Help! My contractor ghosted me',
-    message: 'Help! My contractor ghosted me. They took my money and stopped showing up to the job site.',
+    label: 'My contractor disappeared — Help!',
+    message: 'My contractor disappeared — Help! They took my money and I have an unfinished project.',
     workflow: 'ghosting_rescue' as WorkflowType,
     priority: true,
+    subtitle: 'Get matched with a verified rescue Pro',
   },
   {
-    icon: <MapPin className="h-3.5 w-3.5" />,
-    label: "I can't find a Pro in my area",
-    message: "I can't find a Pro in my area. I need help finding a verified contractor.",
+    icon: <UserCheck className="h-3.5 w-3.5" />,
+    label: 'Find me a Vetted Pro now.',
+    message: 'Find me a Vetted Pro now. I need a verified contractor for my project.',
     workflow: 'matchmaking' as WorkflowType,
     priority: true,
+    subtitle: "We'll source & audit a Pro for you",
   },
   {
     icon: <DollarSign className="h-3.5 w-3.5" />,
-    label: 'Check my deposit limit',
-    message: 'What is the legal deposit limit a contractor can ask for in California? What should I do if they ask for more?',
+    label: 'Did I overpay my deposit?',
+    message: 'Did I overpay my deposit? My contractor asked me for money upfront and I want to know if it was legal.',
     workflow: null,
     priority: false,
   },
   {
-    icon: <Shield className="h-3.5 w-3.5" />,
-    label: 'What is the 20-Point Shield?',
-    message: 'Explain the 20-Point Shield and how it protects homeowners.',
-    workflow: null,
-    priority: false,
-  },
-  {
-    icon: <FileText className="h-3.5 w-3.5" />,
-    label: 'How do I use my Vault?',
-    message: 'How does the Homeowner Vault work? What can I store in it?',
+    icon: <Lock className="h-3.5 w-3.5" />,
+    label: 'Open my Project Vault.',
+    message: 'How do I open my Project Vault? I want to store my contracts and permits securely.',
     workflow: null,
     priority: false,
   },
@@ -143,7 +134,7 @@ function getSessionId(): string {
 const WELCOME_MESSAGE: ChatMessage = {
   id: 'welcome',
   role: 'assistant',
-  content: "Hey there! I'm **Guardian AI**, your personal project protection assistant.\n\nI'm trained on California contracting law, the 20-Point Shield standard, and every feature on BYLDRS GUARDIAN. I'm here to help you:\n\n• 🛡️ **Understand** your protection rights\n• 💰 **Spot red flags** before signing anything\n• 🚨 **Rescue** your project from ghosted contractors\n• 🔍 **Match** you with verified Pros in your area\n• 🔒 **Secure** your documents in the Vault\n\nWhat can I help you with today?",
+  content: "Hey there! I'm **Guardian AI**, your project protection concierge.\n\nI'm here to help you with whatever you need:\n\n• 🚨 **Rescue** your project if your contractor ghosted you\n• 🔍 **Find** a vetted Pro in your area — fast\n• 💰 **Check** if you overpaid your deposit\n• 🔒 **Secure** your documents in the Vault\n\nWhat's going on with your project?",
   timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
 };
 
@@ -872,7 +863,7 @@ export function GuardianAI() {
               {messages.length <= 2 && !isLoading && !showForm && (
                 <div className="px-4 py-3 border-t border-white/[0.06] shrink-0">
                   <p className="text-[10px] font-semibold text-white/25 uppercase tracking-wider mb-2.5">
-                    Suggested Questions
+                    How can we help?
                   </p>
                   <div className="space-y-2">
                     {/* Priority actions (prominent) */}
@@ -883,16 +874,22 @@ export function GuardianAI() {
                           onClick={() => handleQuickAction(qa)}
                           className="w-full flex items-center gap-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] px-3.5 py-2.5 text-left transition-all duration-200 group"
                         >
-                          <div className="flex-shrink-0 h-7 w-7 rounded-lg bg-red-500/10 flex items-center justify-center text-red-400">
+                          <div className={`flex-shrink-0 h-7 w-7 rounded-lg flex items-center justify-center ${
+                            qa.workflow === 'ghosting_rescue'
+                              ? 'bg-red-500/10 text-red-400'
+                              : 'bg-[#3ED1B8]/10 text-[#3ED1B8]'
+                          }`}>
                             {qa.icon}
                           </div>
                           <div className="flex-1 min-w-0">
                             <span className="text-[11px] font-semibold text-white/70 group-hover:text-white transition-colors block">
                               {qa.label}
                             </span>
-                            <span className="text-[9px] text-white/30 group-hover:text-white/40 transition-colors">
-                              {qa.workflow === 'ghosting_rescue' ? 'Get matched with a verified Guardian' : 'We\'ll source & audit a Pro for you'}
-                            </span>
+                            {qa.subtitle && (
+                              <span className="text-[9px] text-white/30 group-hover:text-white/40 transition-colors">
+                                {qa.subtitle}
+                              </span>
+                            )}
                           </div>
                         </button>
                       ))}
@@ -947,7 +944,7 @@ export function GuardianAI() {
                       value={input}
                       onChange={handleTextareaChange}
                       onKeyDown={handleKeyDown}
-                      placeholder="Ask Guardian AI anything..."
+                      placeholder="What's going on with your project?"
                       rows={1}
                       className="flex-1 bg-transparent resize-none text-sm text-white placeholder:text-white/25 focus:outline-none min-h-[24px] max-h-[120px] py-1"
                       disabled={isLoading}
