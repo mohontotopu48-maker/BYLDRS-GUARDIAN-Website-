@@ -30,3 +30,22 @@ model Post {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model RescueLead {
+  id               String   @id @default(cuid())
+  workflow         String   // 'ghosting_rescue' | 'matchmaking'
+  zipCode          String
+  trade            String
+  amountPaid       String?
+  workPercentDone  String?
+  projectTimeline  String?
+  contractorName   String?
+  email            String?
+  phone            String?
+  name             String?
+  depositViolation Boolean  @default(false)
+  crmSynced        Boolean  @default(false)
+  crmId            String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
