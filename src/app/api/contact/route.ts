@@ -41,17 +41,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: 'Message is too long' }, { status: 400 });
     }
 
-    // Store in database
+    // Store in database using dedicated ContactSubmission model
     try {
-      await db.rescueLead.create({
+      await db.contactSubmission.create({
         data: {
-          workflow: 'contact',
           name: name.trim().slice(0, 200),
           email: email.trim().slice(0, 254),
           phone: phone?.trim().slice(0, 20) || null,
-          zipCode: '00000', // Contact form doesn't require ZIP
-          trade: subject || 'general',
-          contractorName: null,
+          subject: subject || null,
+          message: message.trim().slice(0, 5000),
         },
       });
     } catch (dbErr) {

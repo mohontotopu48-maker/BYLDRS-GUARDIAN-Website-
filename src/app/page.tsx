@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { Header } from '@/components/header';
 import { HeroSection } from '@/components/hero-section';
 import { HowItWorksSection } from '@/components/how-it-works-section';
@@ -25,7 +26,7 @@ import { VaultView } from '@/components/vault-view';
 import { EnrollShieldView } from '@/components/enroll-shield-view';
 import { ShieldScriptsView } from '@/components/shield-scripts-view';
 import { Footer } from '@/components/footer';
-import { useAppStore } from '@/lib/store';
+import { useAppStore, initHashRouting } from '@/lib/store';
 import { AnimatePresence, motion } from 'framer-motion';
 
 function HomePage() {
@@ -83,6 +84,11 @@ function PageView({ page }: { page: string }) {
 
 export default function Home() {
   const currentPage = useAppStore((s) => s.currentPage);
+
+  // Initialize hash routing once on mount
+  useEffect(() => {
+    initHashRouting();
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
