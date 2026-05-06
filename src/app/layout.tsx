@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { GuardianAI } from "@/components/guardian-ai";
+import { ThemeProvider } from "next-themes";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -77,6 +78,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem={false}
+          disableTransitionOnChange
+        >
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -105,6 +112,7 @@ export default function RootLayout({
         {children}
         <Toaster />
         <GuardianAI />
+        </ThemeProvider>
       </body>
     </html>
   );

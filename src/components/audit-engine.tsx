@@ -579,12 +579,13 @@ function VaultSyncToast({
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 20, scale: 0.95 }}
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-      className="rounded-xl border-2 p-4"
+      className="relative rounded-xl border-2 p-4"
       style={{ backgroundColor: `${TURQUOISE}08`, borderColor: `${TURQUOISE}25` }}
     >
       <button
         onClick={() => setVisible(false)}
         className="absolute top-2 right-2 size-8 rounded-md hover:bg-black/5 flex items-center justify-center transition-colors"
+        aria-label="Dismiss"
       >
         <XCircle className="size-3.5 text-gray-400" />
       </button>

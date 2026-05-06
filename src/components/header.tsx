@@ -134,7 +134,7 @@ function StandardFlyout({
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: -8, scale: 0.97 }}
       transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[420px] sm:w-[480px]"
+      className="absolute top-full left-0 sm:left-1/2 sm:-translate-x-1/2 mt-2 w-[min(420px,calc(100vw-2rem))] sm:w-[480px]"
     >
       {/* Glassmorphism card */}
       <div className="rounded-2xl border border-white/[0.08] bg-[#1A1D2E]/85 backdrop-blur-2xl shadow-2xl shadow-black/40 overflow-hidden">
