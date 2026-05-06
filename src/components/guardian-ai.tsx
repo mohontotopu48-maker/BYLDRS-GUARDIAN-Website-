@@ -130,18 +130,20 @@ function getSessionId(): string {
   return 'default';
 }
 
-/* ─── Welcome Message ───────────────────────────────────────── */
-const WELCOME_MESSAGE: ChatMessage = {
-  id: 'welcome',
-  role: 'assistant',
-  content: "Hey there! I'm **Guardian AI**, your project protection concierge.\n\nI'm here to help you with whatever you need:\n\n• 🚨 **Rescue** your project if your contractor ghosted you\n• 🔍 **Find** a vetted Pro in your area — fast\n• 💰 **Check** if you overpaid your deposit\n• 🔒 **Secure** your documents in the Vault\n\nWhat's going on with your project?",
-  timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-};
+/* ─── Welcome Message (timestamp computed at render time) ────── */
+function getWelcomeMessage(): ChatMessage {
+  return {
+    id: 'welcome',
+    role: 'assistant',
+    content: "Hey there! I'm **Guardian AI**, your project protection concierge.\n\nI'm here to help you with whatever you need:\n\n• 🚨 **Rescue** your project if your contractor ghosted you\n• 🔍 **Find** a vetted Pro in your area — fast\n• 💰 **Check** if you overpaid your deposit\n• 🔒 **Secure** your documents in the Vault\n\nWhat's going on with your project?",
+    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+  };
+}
 
 /* ─── Component ─────────────────────────────────────────────── */
 export function GuardianAI() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([WELCOME_MESSAGE]);
+  const [messages, setMessages] = useState<ChatMessage[]>(() => [getWelcomeMessage()]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -306,7 +308,7 @@ export function GuardianAI() {
         body: JSON.stringify({ sessionId: sessionIdRef.current }),
       });
     } catch {}
-    setMessages([WELCOME_MESSAGE]);
+    setMessages([getWelcomeMessage()]);
     setActiveWorkflow(null);
     setShowForm(false);
     setFormSubmitted(false);

@@ -634,6 +634,7 @@ export function AuditEngine() {
     email: '',
     bidAmount: '',
     concerns: '',
+    smsPhone: '',
   });
   const [isDragOver, setIsDragOver] = useState(false);
   const [fileName, setFileName] = useState('');
@@ -743,6 +744,7 @@ export function AuditEngine() {
       email: '',
       bidAmount: '',
       concerns: '',
+      smsPhone: '',
     });
     setFileName('');
   }, []);
@@ -988,9 +990,9 @@ export function AuditEngine() {
                     id="sms-phone"
                     type="tel"
                     placeholder="(555) 000-0000"
-                    value={formData.phone}
+                    value={formData.smsPhone}
                     onChange={(e) =>
-                      handleInputChange('phone', e.target.value)
+                      handleInputChange('smsPhone', e.target.value)
                     }
                     className="h-10 border-[#EF4444]/20 focus:border-[#EF4444]/40 focus:ring-[#EF4444]/10"
                   />

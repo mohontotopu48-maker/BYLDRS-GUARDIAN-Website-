@@ -2,6 +2,7 @@
 
 import { Shield, Facebook, Instagram, Linkedin } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
+import type { PageView } from '@/lib/store';
 
 const footerLinks = {
   platform: [
@@ -41,7 +42,7 @@ export function Footer() {
 
   const handleLinkClick = (link: { action: string; href?: string; page?: string }) => {
     if (link.action === 'page' && link.page) {
-      setCurrentPage(link.page as 'home' | 'dashboard' | 'pro-onboarding' | 'blog' | 'contact' | 'check-my-pro' | 'the-standard' | 'why-us' | 'pro-profile' | 'tier-2' | 'tier-3' | 'property-story');
+      setCurrentPage(link.page as PageView);
     } else if (link.action === 'scroll' && link.href) {
       if (useAppStore.getState().currentPage !== 'home') setCurrentPage('home');
       setTimeout(() => {

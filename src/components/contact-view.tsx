@@ -40,11 +40,43 @@ const fadeUp = {
 export function ContactView() {
   const { setCurrentPage } = useAppStore();
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [subject, setSubject] = useState('');
+  const [formError, setFormError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSubmitted(true);
+    setFormError('');
+    setSubmitting(true);
+
+    const form = e.currentTarget;
+    const formData = {
+      name: (form.elements.namedItem('contact-name') as HTMLInputElement)?.value || '',
+      email: (form.elements.namedItem('contact-email') as HTMLInputElement)?.value || '',
+      phone: (form.elements.namedItem('contact-phone') as HTMLInputElement)?.value || '',
+      subject,
+      message: (form.elements.namedItem('contact-message') as HTMLTextAreaElement)?.value || '',
+    };
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setFormError(data.error || 'Something went wrong. Please try again.');
+        return;
+      }
+
+      setSubmitted(true);
+    } catch {
+      setFormError('Network error. Please check your connection and try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -141,6 +173,11 @@ export function ContactView() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
+                {formError && (
+                  <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+                    {formError}
+                  </div>
+                )}
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <Label className="text-sm font-medium text-[#1A1D2E] mb-1.5 block">
@@ -148,6 +185,7 @@ export function ContactView() {
                     </Label>
                     <Input
                       required
+                      name="contact-name"
                       placeholder="Your full name"
                       className="h-12 rounded-lg border-[#E5E7EB] bg-[#F4F7F9] text-sm"
                     />
@@ -158,6 +196,7 @@ export function ContactView() {
                     </Label>
                     <Input
                       required
+                      name="contact-email"
                       type="email"
                       placeholder="you@example.com"
                       className="h-12 rounded-lg border-[#E5E7EB] bg-[#F4F7F9] text-sm"
@@ -171,6 +210,7 @@ export function ContactView() {
                       Phone
                     </Label>
                     <Input
+                      name="contact-phone"
                       placeholder="(555) 555-5555"
                       className="h-12 rounded-lg border-[#E5E7EB] bg-[#F4F7F9] text-sm"
                     />
@@ -200,6 +240,7 @@ export function ContactView() {
                   </Label>
                   <Textarea
                     required
+                    name="contact-message"
                     placeholder="Tell us more about your project or the problem you're trying to solve..."
                     rows={6}
                     className={`rounded-lg bg-[#F4F7F9] text-sm resize-none transition-all duration-200 ${
@@ -218,10 +259,11 @@ export function ContactView() {
 
                 <Button
                   type="submit"
-                  className="w-full h-12 rounded-lg bg-[#3257C2] hover:bg-[#2a49a8] text-white font-semibold text-sm shadow-lg shadow-[#3257C2]/20 hover:shadow-xl transition-all duration-300 group"
+                  disabled={submitting}
+                  className="w-full h-12 rounded-lg bg-[#3257C2] hover:bg-[#2a49a8] text-white font-semibold text-sm shadow-lg shadow-[#3257C2]/20 hover:shadow-xl transition-all duration-300 group disabled:opacity-50"
                 >
-                  Send Message
-                  <Send className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  {submitting ? 'Sending...' : 'Send Message'}
+                  {!submitting && <Send className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />}
                 </Button>
               </form>
             )}

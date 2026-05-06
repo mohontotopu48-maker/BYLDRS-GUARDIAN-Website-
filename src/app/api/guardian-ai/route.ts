@@ -20,6 +20,11 @@ const MAX_SESSIONS = 500;
 const SESSION_TTL_MS = 30 * 60 * 1000; // 30 minutes
 const MAX_MESSAGE_LENGTH = 4000; // characters
 const MAX_MESSAGES_PER_SESSION = 24;
+const RATE_LIMIT_WINDOW_MS = 60_000; // 1 minute
+const RATE_LIMIT_MAX_REQUESTS = 15; // per session per minute
+
+// Per-session rate limiting
+const sessionRateLimits = new Map<string, { count: number; windowStart: number }>();
 
 // Cleanup timer — use unref() so it doesn't block process exit in serverless
 const cleanupTimer = setInterval(() => {
@@ -200,6 +205,21 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { success: false, error: 'Invalid session ID' },
         { status: 400 },
+      );
+    }
+
+    // Rate limiting — per session, sliding window
+    const now = Date.now();
+    let rateInfo = sessionRateLimits.get(sessionId);
+    if (!rateInfo || now - rateInfo.windowStart > RATE_LIMIT_WINDOW_MS) {
+      rateInfo = { count: 0, windowStart: now };
+      sessionRateLimits.set(sessionId, rateInfo);
+    }
+    rateInfo.count++;
+    if (rateInfo.count > RATE_LIMIT_MAX_REQUESTS) {
+      return NextResponse.json(
+        { success: false, error: 'Rate limit exceeded. Please wait a moment.' },
+        { status: 429 },
       );
     }
 

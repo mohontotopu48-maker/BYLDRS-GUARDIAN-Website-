@@ -4,6 +4,22 @@ import { db } from '@/lib/db';
 
 const MAX_MESSAGE_LENGTH = 2000;
 const MAX_FIELD_LENGTH = 200;
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_MAX_REQUESTS = 5; // rescue leads are expensive
+
+// Simple IP-based rate limiting (in-memory)
+const ipRateLimits = new Map<string, { count: number; windowStart: number }>();
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now();
+  let info = ipRateLimits.get(ip);
+  if (!info || now - info.windowStart > RATE_LIMIT_WINDOW_MS) {
+    info = { count: 0, windowStart: now };
+    ipRateLimits.set(ip, info);
+  }
+  info.count++;
+  return info.count <= RATE_LIMIT_MAX_REQUESTS;
+}
 
 /* ──────────────────────────────────────────────────────────────── */
 /*  POST /api/ghl/rescue-lead                                      */
@@ -11,6 +27,15 @@ const MAX_FIELD_LENGTH = 200;
 /* ──────────────────────────────────────────────────────────────── */
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting
+    const clientIp = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+    if (!checkRateLimit(clientIp)) {
+      return NextResponse.json(
+        { success: false, error: 'Too many requests. Please try again later.' },
+        { status: 429 },
+      );
+    }
+
     const body = await request.json();
 
     const {
