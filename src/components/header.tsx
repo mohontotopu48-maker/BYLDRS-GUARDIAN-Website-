@@ -25,7 +25,7 @@ import { motion, AnimatePresence } from 'framer-motion';
  * This enables parent-link highlighting when the user is on a sub-page.
  */
 const pageChildMap: Record<string, string[]> = {
-  'the-standard': ['the-standard', 'blog', 'property-story', 'protection-guide-download'],
+  'the-standard': ['the-standard', 'blog', 'property-story', 'protection-guide-download', 'shield-scripts'],
 };
 
 function isPageActive(currentPage: string, linkPage: string | undefined): boolean {
@@ -60,6 +60,12 @@ const standardFlyoutItems: FlyoutItem[] = [
     subtext: 'Our complete Pro verification standard — every point explained.',
     icon: ShieldCheck,
     page: 'the-standard',
+  },
+  {
+    label: "Marketer's Pack (20 Scripts)",
+    subtext: 'Video scripts, hooks, and captions — ready for social media & campaigns.',
+    icon: ClipboardCheck,
+    page: 'shield-scripts',
   },
   {
     label: 'How We Rank',
@@ -439,6 +445,7 @@ export function Header() {
             }}
             className="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-white/[0.06] transition-colors"
             aria-label="Toggle menu"
+            aria-expanded={mobileOpen}
           >
             {mobileOpen ? (
               <X className="h-5 w-5 text-white" />

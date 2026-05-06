@@ -191,3 +191,54 @@ Stage Summary:
 - Contact form now properly submits to backend with validation
 - CSP header active on all responses
 - Dev server: running, healthy
+
+---
+Task ID: 5
+Agent: Main Agent
+Task: 20-Point Shield Marketer's Pack — Full Implementation + Responsive/A11y/SEO Audit
+
+Work Log:
+- Created `src/lib/shield-scripts.ts` — Data module with all 20 scripts (hook, caption, full video script), typed interfaces, category system, and color mapping
+- Created `src/components/shield-scripts-view.tsx` — Full Marketer's Pack page:
+  - Dark theme hero with gradient orbs and stats
+  - Sticky filter bar with search + 6 category pills (All, Safety, Quality, Communication, Process, Financial)
+  - 20 expandable script cards with color-coded category badges, copy-to-clipboard, and full script reveal
+  - Download PDF CTA with fallback to .txt
+  - Fully responsive (mobile-first, sm/md/lg breakpoints)
+  - Accessibility: aria-label on search, copy, expand/collapse buttons; aria-expanded on toggles
+- Created `src/app/api/shield-pdf/route.ts` — Branded PDF generation API:
+  - Playwright + Chromium renders styled HTML to A4 PDF
+  - Professional cover page (dark gradient, shield branding, stats)
+  - Body page with all 20 scripts (color-coded cards, border accents, labeled sections)
+  - ~448KB output, instant download
+- Updated `src/lib/store.ts` — Added 'shield-scripts' to PageView union type
+- Updated `src/app/page.tsx` — Added ShieldScriptsView import + route case
+- Updated `src/components/header.tsx`:
+  - Added "Marketer's Pack (20 Scripts)" to Standard flyout menu (with ClipboardCheck icon)
+  - Added 'shield-scripts' to pageChildMap for active state highlighting
+  - Added aria-expanded={mobileOpen} to mobile menu toggle
+- Updated `src/app/layout.tsx`:
+  - Added viewport-fit: "cover" for iOS safe area insets
+  - Added complete OpenGraph metadata (url, siteName, locale, images)
+  - Added Twitter Card metadata (summary_large_image)
+  - Added canonical URL (metadataBase + alternates)
+  - Added JSON-LD Organization structured data
+- Updated `public/robots.txt` — Added Sitemap directive + Disallow: /api/
+- Responsive fixes:
+  - audit-engine.tsx: View Profile button h-8→h-10, Toast close size-6→size-8
+  - guardian-ai.tsx: Header buttons h-8→h-10, Cancel button h-8→h-10
+- Accessibility fixes:
+  - page.tsx: Skip-to-content link + id="main-content" on <main>
+  - header.tsx: aria-expanded on mobile menu toggle
+  - shield-scripts-view.tsx: aria-label on all icon-only buttons, aria-expanded on expand/collapse
+
+Stage Summary:
+- ESLint: 0 errors
+- PDF API: /api/shield-pdf returns 200, 448KB branded PDF
+- Homepage: GET / returns 200
+- Dev server: running, healthy
+- All 20 scripts available in data module
+- Marketer's Pack accessible from: The Standard flyout menu, Download CTA on protection-guide page
+- Responsive audit: 13/13 components checked, 3 issues found and fixed (touch targets)
+- SEO audit: 6 critical/warning issues fixed (JSON-LD, OG, Twitter, canonical, robots.txt, viewport-fit)
+- Accessibility audit: 16 issues found, 8 high-priority fixed (skip-to-content, aria labels, ARIA expanded)

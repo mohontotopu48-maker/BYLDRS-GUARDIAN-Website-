@@ -14,7 +14,7 @@ export interface VaultSyncedBid {
   reportId: string;
 }
 
-export type PageView = 'home' | 'dashboard' | 'pro-onboarding' | 'blog' | 'contact' | 'check-my-pro' | 'the-standard' | 'why-us' | 'pro-profile' | 'tier-2' | 'tier-3' | 'property-story' | 'protection-guide-download' | 'vault' | 'enroll-shield';
+export type PageView = 'home' | 'dashboard' | 'pro-onboarding' | 'blog' | 'contact' | 'check-my-pro' | 'the-standard' | 'why-us' | 'pro-profile' | 'tier-2' | 'tier-3' | 'property-story' | 'protection-guide-download' | 'vault' | 'enroll-shield' | 'shield-scripts';
 
 interface AppStore {
   currentPage: PageView;

@@ -525,7 +525,7 @@ export function GuardianAI() {
                 <div className="flex items-center gap-1">
                   <button
                     onClick={handleClear}
-                    className="h-8 w-8 rounded-lg hover:bg-white/[0.06] flex items-center justify-center transition-colors"
+                    className="h-10 w-10 rounded-lg hover:bg-white/[0.06] flex items-center justify-center transition-colors"
                     title="Clear chat"
                   >
                     <RotateCcw className="h-4 w-4 text-white/40 hover:text-white/70" />
@@ -533,7 +533,7 @@ export function GuardianAI() {
                   {isMobile ? (
                     <button
                       onClick={toggleOpen}
-                      className="h-8 w-8 rounded-lg hover:bg-white/[0.06] flex items-center justify-center transition-colors"
+                      className="h-10 w-10 rounded-lg hover:bg-white/[0.06] flex items-center justify-center transition-colors"
                       title="Close"
                     >
                       <X className="h-4 w-4 text-white/40" />
@@ -541,7 +541,7 @@ export function GuardianAI() {
                   ) : (
                     <button
                       onClick={toggleOpen}
-                      className="h-8 w-8 rounded-lg hover:bg-white/[0.06] flex items-center justify-center transition-colors"
+                      className="h-10 w-10 rounded-lg hover:bg-white/[0.06] flex items-center justify-center transition-colors"
                       title="Minimize"
                     >
                       <Minimize2 className="h-4 w-4 text-white/40" />
@@ -848,7 +848,7 @@ export function GuardianAI() {
                           </Button>
                           <button
                             onClick={() => { setShowForm(false); setActiveWorkflow(null); }}
-                            className="h-8 px-3 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-[11px] text-white/40 hover:text-white/60 transition-all"
+                            className="h-10 px-3 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-[11px] text-white/40 hover:text-white/60 transition-all"
                           >
                             Cancel
                           </button>

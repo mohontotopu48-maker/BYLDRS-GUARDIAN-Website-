@@ -544,7 +544,7 @@ function MeetVerifiedPro({
                 </div>
                 <button
                   onClick={() => onViewPro(pro.id)}
-                  className="w-full mt-1 h-8 rounded-lg text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all duration-200 hover:shadow-sm"
+                  className="w-full mt-1 h-10 rounded-lg text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all duration-200 hover:shadow-sm"
                   style={{ backgroundColor: `${TRUE_BLUE}10`, color: TRUE_BLUE }}
                 >
                   View Profile
@@ -584,7 +584,7 @@ function VaultSyncToast({
     >
       <button
         onClick={() => setVisible(false)}
-        className="absolute top-2 right-2 size-6 rounded-md hover:bg-black/5 flex items-center justify-center transition-colors"
+        className="absolute top-2 right-2 size-8 rounded-md hover:bg-black/5 flex items-center justify-center transition-colors"
       >
         <XCircle className="size-3.5 text-gray-400" />
       </button>
