@@ -189,8 +189,17 @@ export function GuardianAI() {
     }
   }, [isOpen]);
 
+  // Use ref to prevent race conditions with stale closure
+  const isLoadingRef = useRef(false);
+  const messageCountRef = useRef(messages.length);
+  messageCountRef.current = messages.length;
+
   const sendMessage = useCallback(async (content: string, workflowTrigger?: WorkflowType) => {
-    if (!content.trim() || isLoading) return;
+    // Use ref for guard — closure's isLoading is stale under rapid clicks
+    if (!content.trim() || isLoadingRef.current) return;
+
+    isLoadingRef.current = true;
+    setIsLoading(true);
 
     const userMsg: ChatMessage = {
       id: `user_${Date.now()}`,
@@ -201,7 +210,6 @@ export function GuardianAI() {
 
     setMessages((prev) => [...prev, userMsg]);
     setInput('');
-    setIsLoading(true);
 
     // Activate workflow if triggered
     if (workflowTrigger) {
@@ -218,6 +226,8 @@ export function GuardianAI() {
         }),
       });
 
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
+
       const data = await res.json();
 
       if (data.success) {
@@ -233,27 +243,30 @@ export function GuardianAI() {
           setActiveWorkflow(data.workflow as WorkflowType);
         }
 
-        const newMessages = [...messages, userMsg, aiMsg];
+        // Use functional updater to avoid stale messages array
+        setMessages((prev) => {
+          const updated = [...prev, aiMsg];
 
-        // Show deposit alert as a separate message
-        if (data.depositAlert) {
-          newMessages.push({
-            id: `alert_${Date.now()}`,
-            role: 'assistant',
-            content: data.depositAlert,
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            isAlert: true,
-          });
-          // Auto-show form for ghosting rescue after deposit violation
-          if (!activeWorkflow) {
-            setActiveWorkflow('ghosting_rescue');
+          // Show deposit alert as a separate message
+          if (data.depositAlert) {
+            updated.push({
+              id: `alert_${Date.now()}`,
+              role: 'assistant',
+              content: data.depositAlert,
+              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              isAlert: true,
+            });
+            // Auto-show form for ghosting rescue after deposit violation
+            if (!workflowTrigger && !data.workflow) {
+              setActiveWorkflow('ghosting_rescue');
+            }
           }
-        }
 
-        setMessages(newMessages);
+          return updated;
+        });
 
         // Auto-show form after workflow messages
-        if (data.workflow && messages.length > 2) {
+        if (data.workflow && messageCountRef.current > 2) {
           setTimeout(() => setShowForm(true), 1500);
         }
       }
@@ -268,9 +281,10 @@ export function GuardianAI() {
         },
       ]);
     } finally {
+      isLoadingRef.current = false;
       setIsLoading(false);
     }
-  }, [isLoading, messages, activeWorkflow]);
+  }, []); // Stable — no closure over changing state
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -286,7 +300,11 @@ export function GuardianAI() {
 
   const handleClear = async () => {
     try {
-      await fetch(`/api/guardian-ai?sessionId=${sessionIdRef.current}`, { method: 'DELETE' });
+      await fetch('/api/guardian-ai', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId: sessionIdRef.current }),
+      });
     } catch {}
     setMessages([WELCOME_MESSAGE]);
     setActiveWorkflow(null);
@@ -350,6 +368,8 @@ export function GuardianAI() {
         }),
       });
 
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
+
       const data = await res.json();
 
       if (data.success) {
@@ -364,6 +384,18 @@ export function GuardianAI() {
             content: data.message + (data.depositWarning ? '\n\n' + data.depositWarning : ''),
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             isAlert: !!data.depositWarning,
+          },
+        ]);
+      } else {
+        // Server returned success: false — show the error message
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: `form_fail_${Date.now()}`,
+            role: 'assistant',
+            content: data.error || data.message || 'Something went wrong. Please try again.',
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            isAlert: true,
           },
         ]);
       }

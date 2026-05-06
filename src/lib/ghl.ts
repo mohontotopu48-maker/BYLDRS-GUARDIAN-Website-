@@ -6,6 +6,7 @@
  */
 
 const GHL_API_BASE = 'https://services.leadconnectorhq.com';
+const GHL_REQUEST_TIMEOUT_MS = 10_000;
 
 interface GHLContactPayload {
   firstName?: string;
@@ -54,6 +55,9 @@ export async function pushRescueLeadToGHL(lead: RescueLeadData): Promise<{
     };
   }
 
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), GHL_REQUEST_TIMEOUT_MS);
+
   try {
     const contact: GHLContactPayload = {
       tags: [
@@ -92,6 +96,7 @@ export async function pushRescueLeadToGHL(lead: RescueLeadData): Promise<{
 
     const response = await fetch(`${GHL_API_BASE}/contacts/`, {
       method: 'POST',
+      signal: controller.signal,
       headers: {
         'Authorization': `Bearer ${apiKey}`,
         'Version': '2021-07-28',
@@ -113,18 +118,32 @@ export async function pushRescueLeadToGHL(lead: RescueLeadData): Promise<{
     const data = await response.json();
     const crmId = data?.contact?.id || data?.id;
 
+    if (!crmId) {
+      console.warn('[GHL] Contact created but no ID returned');
+      return {
+        success: false,
+        error: 'GHL returned no contact ID',
+      };
+    }
+
     console.log(`[GHL] Rescue lead created: ${crmId} (${lead.workflow})`);
 
     return {
       success: true,
-      crmId: crmId || 'created',
+      crmId,
     };
   } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      console.error('[GHL] Request timed out after', GHL_REQUEST_TIMEOUT_MS, 'ms');
+      return { success: false, error: 'GHL request timed out' };
+    }
     console.error('[GHL] pushRescueLeadToGHL error:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
     };
+  } finally {
+    clearTimeout(timeoutId);
   }
 }
 
@@ -137,8 +156,9 @@ export function validateRescueLead(lead: Partial<RescueLeadData>): {
 } {
   const errors: string[] = [];
 
-  if (!lead.zipCode || lead.zipCode.trim().length < 5) {
-    errors.push('Valid ZIP code is required');
+  // ZIP: must be 5 digits
+  if (!lead.zipCode || !/^\d{5}$/.test(lead.zipCode.trim())) {
+    errors.push('Valid 5-digit ZIP code is required');
   }
 
   if (!lead.trade || lead.trade.trim().length < 2) {
@@ -152,8 +172,22 @@ export function validateRescueLead(lead: Partial<RescueLeadData>): {
     }
   }
 
+  if (lead.workPercentDone) {
+    const pct = parseInt(lead.workPercentDone, 10);
+    if (isNaN(pct) || pct < 0 || pct > 100) {
+      errors.push('Work percent done must be between 0 and 100');
+    }
+  }
+
   if (lead.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lead.email)) {
     errors.push('Invalid email format');
+  }
+
+  if (lead.phone) {
+    // Basic phone format: allow digits, spaces, dashes, parens, plus
+    if (!/^\+?[\d\s\-()]{7,20}$/.test(lead.phone.trim())) {
+      errors.push('Invalid phone format');
+    }
   }
 
   return {

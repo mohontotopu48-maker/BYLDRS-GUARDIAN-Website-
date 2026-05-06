@@ -67,3 +67,69 @@ Stage Summary:
 - Deposit response: "That's actually a violation... you may have grounds to recover those funds" ✅ Benefit framing
 - Video embedded next to Download button with AI CTA bridge
 - All API routes returning 200
+
+---
+Task ID: 3
+Agent: Main Agent (Full-Stack Audit)
+Task: Comprehensive code audit + fix all identified issues
+
+Work Log:
+- Launched 3 parallel audit agents (backend, frontend, infrastructure) 
+- Found 33 total issues: 4 CRITICAL, 12 HIGH, 11 MEDIUM, 6 LOW
+- Fixed ALL CRITICAL and HIGH issues, plus key MEDIUM issues
+
+CRITICAL FIXES:
+- next.config.ts: disabled ignoreBuildErrors, enabled reactStrictMode, added security headers (X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy)
+- tsconfig.json: enabled noImplicitAny (was explicitly disabled despite strict:true)
+- tailwind.config.ts: fixed content paths from ./components/ to ./src/**/ (preventing tree-shaking in prod)
+- db.ts: Prisma query logging now only in dev (log: ['query'] was leaking PII to prod logs)
+
+HIGH FIXES:
+- guardian-ai/route.ts: 
+  - Fixed error response returning success:true (now returns success:false + error)
+  - Added message length cap (4000 chars) to prevent abuse
+  - Added session ID validation (regex + length check)
+  - Moved DELETE to JSON body (session IDs no longer in URL query params / logs / history)
+  - Used proper union type for workflow field
+  - Added unref() to cleanup interval (serverless-safe)
+  - Session type now typed as 'system'|'user'|'assistant'
+  - Fixed message casting (removed unsafe `as` cast)
+
+- rescue-lead/route.ts:
+  - Fixed DB failure silently swallowed (now returns 502 if DB write fails)
+  - Added field length sanitization (name, email, phone, etc.)
+  - Added dbSaved flag to response
+  - Added res.ok check before res.json()
+
+- ghl.ts:
+  - Added 10-second AbortController timeout on GHL fetch
+  - Fixed crmId fallback from 'created' string to proper error
+  - Added phone format validation (/^\+?[\d\s\-()]{7,20}$/)
+  - Added workPercentDone 0-100 range validation
+  - Fixed ZIP validation to require exactly 5 digits (/^\d{5}$/)
+
+- guardian-ai.tsx:
+  - Fixed race condition: isLoading guard uses stale closure → added isLoadingRef
+  - Fixed stale messages array: direct setMessages() → functional updater setMessages(prev => ...)
+  - Fixed stale activeWorkflow read: uses workflowTrigger param instead of closure
+  - Fixed session ID in URL: DELETE now uses POST with JSON body
+  - Added res.ok check before res.json() on chat and form submissions
+  - Added else branch for form submission failure (data.success === false)
+  - Made sendMessage callback stable (empty deps array)
+
+- store.ts:
+  - Added zustand persist middleware (auth/vault data survives refresh)
+  - Partialized: only persists isLoggedIn, userType, vaultSyncedBids, searchZip, searchCategory
+
+MEDIUM FIXES:
+- prisma/schema.prisma: removed unused User/Post models, added 5 indexes on RescueLead
+- Deleted dead public/guide-book-mockup.png (133KB)
+
+Stage Summary:
+- ESLint: 0 errors
+- All 5 validation tests pass (message length, session ID, empty message, bad ZIP, bad phone)
+- Security headers confirmed on all responses
+- DELETE endpoint confirmed working with JSON body
+- Dev server: restarted, serving 200s
+- DB schema: clean (no unused models), indexed
+- Zustand: persisted to localStorage

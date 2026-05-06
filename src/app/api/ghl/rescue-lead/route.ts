@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { pushRescueLeadToGHL, validateRescueLead, checkDepositViolation } from '@/lib/ghl';
 import { db } from '@/lib/db';
 
+const MAX_MESSAGE_LENGTH = 2000;
+const MAX_FIELD_LENGTH = 200;
+
 /* ──────────────────────────────────────────────────────────────── */
 /*  POST /api/ghl/rescue-lead                                      */
 /*  Capture Guardian AI rescue leads → GHL CRM + local DB          */
@@ -31,7 +34,30 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const validation = validateRescueLead({ zipCode, trade, amountPaid, email });
+    // Sanitize string lengths
+    const sanitize = (val: string | undefined, max: number): string | undefined => {
+      if (!val || typeof val !== 'string') return undefined;
+      return val.trim().slice(0, max);
+    };
+
+    const cleanZipCode = sanitize(zipCode, 10);
+    const cleanTrade = sanitize(trade, 100);
+    const cleanAmountPaid = sanitize(amountPaid, 20);
+    const cleanWorkPercentDone = sanitize(workPercentDone, 4);
+    const cleanTimeline = sanitize(projectTimeline, 100);
+    const cleanContractorName = sanitize(contractorName, MAX_FIELD_LENGTH);
+    const cleanEmail = sanitize(email, 254);
+    const cleanPhone = sanitize(phone, 20);
+    const cleanName = sanitize(name, MAX_FIELD_LENGTH);
+
+    const validation = validateRescueLead({
+      zipCode: cleanZipCode,
+      trade: cleanTrade,
+      amountPaid: cleanAmountPaid,
+      email: cleanEmail,
+      phone: cleanPhone,
+      workPercentDone: cleanWorkPercentDone,
+    });
     if (!validation.valid) {
       return NextResponse.json(
         { success: false, error: 'Validation failed', details: validation.errors },
@@ -41,8 +67,8 @@ export async function POST(request: NextRequest) {
 
     // Check for deposit violation if amount is provided
     let depositWarning: string | null = null;
-    if (amountPaid) {
-      const amount = parseFloat(amountPaid.replace(/[$,]/g, ''));
+    if (cleanAmountPaid) {
+      const amount = parseFloat(cleanAmountPaid.replace(/[$,]/g, ''));
       if (!isNaN(amount)) {
         const check = checkDepositViolation(amount);
         if (check.isViolation) {
@@ -56,41 +82,48 @@ export async function POST(request: NextRequest) {
     try {
       ghlResult = await pushRescueLeadToGHL({
         workflow,
-        zipCode,
-        trade,
-        amountPaid,
-        workPercentDone,
-        projectTimeline,
-        contractorName,
-        email,
-        phone,
-        name,
+        zipCode: cleanZipCode!,
+        trade: cleanTrade!,
+        amountPaid: cleanAmountPaid,
+        workPercentDone: cleanWorkPercentDone,
+        projectTimeline: cleanTimeline,
+        contractorName: cleanContractorName,
+        email: cleanEmail,
+        phone: cleanPhone,
+        name: cleanName,
       });
     } catch (err) {
       console.error('[Rescue Lead] GHL push failed (non-blocking):', err);
     }
 
-    // Always save to local database
+    // Save to local database — FAIL LOUD if DB write fails
+    let dbSaved = false;
     try {
       await db.rescueLead.create({
         data: {
           workflow,
-          zipCode,
-          trade,
-          amountPaid: amountPaid || null,
-          workPercentDone: workPercentDone || null,
-          projectTimeline: projectTimeline || null,
-          contractorName: contractorName || null,
-          email: email || null,
-          phone: phone || null,
-          name: name || null,
+          zipCode: cleanZipCode!,
+          trade: cleanTrade!,
+          amountPaid: cleanAmountPaid || null,
+          workPercentDone: cleanWorkPercentDone || null,
+          projectTimeline: cleanTimeline || null,
+          contractorName: cleanContractorName || null,
+          email: cleanEmail || null,
+          phone: cleanPhone || null,
+          name: cleanName || null,
           depositViolation: depositWarning ? true : false,
           crmSynced: ghlResult.success,
           crmId: ghlResult.crmId || null,
         },
       });
+      dbSaved = true;
     } catch (dbErr) {
-      console.error('[Rescue Lead] DB save failed:', dbErr);
+      console.error('[Rescue Lead] DB save FAILED:', dbErr);
+      // DB failure is critical — don't lie to the client
+      return NextResponse.json(
+        { success: false, error: 'Your request was received but could not be saved. Please try again.' },
+        { status: 502 },
+      );
     }
 
     return NextResponse.json({
@@ -99,6 +132,7 @@ export async function POST(request: NextRequest) {
         ? '🛡️ Your Priority Rescue Lead has been submitted. A Tier 3 Certified Guardian will be matched to your area within 24 hours.'
         : '🔍 Your Concierge Match Request is being processed. We\'re sourcing and auditing a verified Pro in your area.',
       crmSynced: ghlResult.success,
+      dbSaved,
       depositWarning,
     });
   } catch (error) {

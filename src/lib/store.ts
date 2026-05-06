@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 export interface VaultSyncedBid {
   id: string;
@@ -38,28 +39,42 @@ interface AppStore {
   addVaultSyncedBid: (bid: VaultSyncedBid) => void;
 }
 
-export const useAppStore = create<AppStore>((set) => ({
-  currentPage: 'home',
-  setCurrentPage: (page) => {
-    set({ currentPage: page });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  },
-  isLoggedIn: false,
-  userType: null,
-  login: (type) => set({ isLoggedIn: true, userType: type }),
-  logout: () => set({ isLoggedIn: false, userType: null, currentPage: 'home' }),
-  selectedProId: null,
-  setSelectedProId: (id) => set({ selectedProId: id }),
-  searchZipCode: '',
-  setSearchZipCode: (zip) => set({ searchZipCode: zip }),
-  searchCategory: '',
-  setSearchCategory: (category) => set({ searchCategory: category }),
-  hasSearched: false,
-  setHasSearched: (searched) => set({ hasSearched: searched }),
-  selectedArticleId: null,
-  setSelectedArticleId: (id) => set({ selectedArticleId: id }),
-  showEnrollSuccess: false,
-  setShowEnrollSuccess: (show) => set({ showEnrollSuccess: show }),
-  vaultSyncedBids: [],
-  addVaultSyncedBid: (bid) => set((state) => ({ vaultSyncedBids: [...state.vaultSyncedBids, bid] })),
-}));
+export const useAppStore = create<AppStore>()(
+  persist(
+    (set) => ({
+      currentPage: 'home' as PageView,
+      setCurrentPage: (page) => {
+        set({ currentPage: page });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      },
+      isLoggedIn: false,
+      userType: null,
+      login: (type) => set({ isLoggedIn: true, userType: type }),
+      logout: () => set({ isLoggedIn: false, userType: null, currentPage: 'home' as PageView }),
+      selectedProId: null,
+      setSelectedProId: (id) => set({ selectedProId: id }),
+      searchZipCode: '',
+      setSearchZipCode: (zip) => set({ searchZipCode: zip }),
+      searchCategory: '',
+      setSearchCategory: (category) => set({ searchCategory: category }),
+      hasSearched: false,
+      setHasSearched: (searched) => set({ hasSearched: searched }),
+      selectedArticleId: null,
+      setSelectedArticleId: (id) => set({ selectedArticleId: id }),
+      showEnrollSuccess: false,
+      setShowEnrollSuccess: (show) => set({ showEnrollSuccess: show }),
+      vaultSyncedBids: [],
+      addVaultSyncedBid: (bid) => set((state) => ({ vaultSyncedBids: [...state.vaultSyncedBids, bid] })),
+    }),
+    {
+      name: 'byldrs-guardian-store',
+      partialize: (state) => ({
+        isLoggedIn: state.isLoggedIn,
+        userType: state.userType,
+        vaultSyncedBids: state.vaultSyncedBids,
+        searchZipCode: state.searchZipCode,
+        searchCategory: state.searchCategory,
+      }),
+    }
+  )
+);

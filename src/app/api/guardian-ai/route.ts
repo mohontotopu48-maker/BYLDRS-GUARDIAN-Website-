@@ -5,26 +5,31 @@ import { checkDepositViolation } from '@/lib/ghl';
 /* ──────────────────────────────────────────────────────────────── */
 /*  In-memory conversation store (one session per client)          */
 /*  Includes 30-min TTL and 500-session cap with LRU cleanup       */
+/*  NOTE: For production scale, migrate to Redis/Upstash KV        */
 /* ──────────────────────────────────────────────────────────────── */
+type WorkflowType = 'ghosting_rescue' | 'matchmaking' | null;
+
 interface SessionEntry {
-  messages: { role: string; content: string }[];
+  messages: { role: 'system' | 'user' | 'assistant'; content: string }[];
   lastAccessed: number;
-  workflow: string | null;
+  workflow: WorkflowType;
 }
 
 const sessions = new Map<string, SessionEntry>();
 const MAX_SESSIONS = 500;
 const SESSION_TTL_MS = 30 * 60 * 1000; // 30 minutes
+const MAX_MESSAGE_LENGTH = 4000; // characters
+const MAX_MESSAGES_PER_SESSION = 24;
 
-// Periodic cleanup
-setInterval(() => {
+// Cleanup timer — use unref() so it doesn't block process exit in serverless
+const cleanupTimer = setInterval(() => {
   const now = Date.now();
   for (const [id, entry] of sessions) {
     if (now - entry.lastAccessed > SESSION_TTL_MS) {
       sessions.delete(id);
     }
   }
-  // LRU eviction if over cap
+  // LRU eviction only when over cap
   if (sessions.size > MAX_SESSIONS) {
     const sorted = [...sessions.entries()].sort(
       (a, b) => a[1].lastAccessed - b[1].lastAccessed,
@@ -33,6 +38,7 @@ setInterval(() => {
     for (const [id] of toRemove) sessions.delete(id);
   }
 }, 60_000);
+if (cleanupTimer.unref) cleanupTimer.unref();
 
 /* ══════════════════════════════════════════════════════════════════ */
 /*  SYSTEM PROMPT — Guardian AI Concierge Edition                  */
@@ -160,9 +166,9 @@ function getOrCreateSession(sessionId: string): SessionEntry {
   return entry;
 }
 
-function trimSession(messages: { role: string; content: string }[], maxMessages = 24) {
-  if (messages.length > maxMessages) {
-    return [messages[0], ...messages.slice(-(maxMessages - 1))];
+function trimSession(messages: SessionEntry['messages']): SessionEntry['messages'] {
+  if (messages.length > MAX_MESSAGES_PER_SESSION) {
+    return [messages[0], ...messages.slice(-(MAX_MESSAGES_PER_SESSION - 1))];
   }
   return messages;
 }
@@ -173,9 +179,26 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { message, sessionId = 'default' } = body;
 
+    // Input validation
     if (!message || typeof message !== 'string' || message.trim().length === 0) {
       return NextResponse.json(
-        { error: 'Message is required' },
+        { success: false, error: 'Message is required' },
+        { status: 400 },
+      );
+    }
+
+    // Cap message length to prevent abuse
+    if (message.length > MAX_MESSAGE_LENGTH) {
+      return NextResponse.json(
+        { success: false, error: `Message too long (max ${MAX_MESSAGE_LENGTH} characters)` },
+        { status: 400 },
+      );
+    }
+
+    // Validate sessionId — prevent injection
+    if (typeof sessionId !== 'string' || sessionId.length > 128 || !/^[\w._-]+$/.test(sessionId)) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid session ID' },
         { status: 400 },
       );
     }
@@ -233,7 +256,7 @@ export async function POST(request: NextRequest) {
     const zai = await ZAI.create();
 
     const completion = await zai.chat.completions.create({
-      messages: session.messages as Array<{ role: 'system' | 'user' | 'assistant'; content: string }>,
+      messages: session.messages,
       thinking: { type: 'disabled' },
     });
 
@@ -253,18 +276,34 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('[Guardian AI] Error:', error);
 
+    // Be HONEST about failures — don't fake success: true
     return NextResponse.json({
-      success: true,
-      response:
-        "I'm experiencing a momentary pause, but I'm still here to help. Could you try asking again? If you're dealing with a deposit over $1,000 or a contractor who has ghosted you, I recommend filling out the Rescue Lead form so we can prioritize your case.",
+      success: false,
+      error: "I'm experiencing a momentary pause. Please try again.",
+      fallback: "If you're dealing with a deposit over $1,000 or a contractor who has ghosted you, I recommend filling out the Rescue Lead form so we can prioritize your case.",
     });
   }
 }
 
 /* ─── DELETE Handler ──────────────────────────────────────────── */
 export async function DELETE(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const sessionId = searchParams.get('sessionId') || 'default';
-  sessions.delete(sessionId);
-  return NextResponse.json({ success: true, message: 'Session cleared' });
+  try {
+    const body = await request.json().catch(() => ({}));
+    const sessionId = body.sessionId;
+
+    if (!sessionId || typeof sessionId !== 'string') {
+      return NextResponse.json(
+        { success: false, error: 'Session ID required' },
+        { status: 400 },
+      );
+    }
+
+    sessions.delete(sessionId);
+    return NextResponse.json({ success: true, message: 'Session cleared' });
+  } catch {
+    return NextResponse.json(
+      { success: false, error: 'Invalid request' },
+      { status: 400 },
+    );
+  }
 }
