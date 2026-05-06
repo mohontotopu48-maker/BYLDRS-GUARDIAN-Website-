@@ -106,31 +106,43 @@ export async function GET(_req: NextRequest) {
 </body>
 </html>`;
 
-    const { chromium } = await import('playwright');
-
-    const browser = await chromium.launch({
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    });
-
+    // Attempt Playwright PDF generation (works locally; may fail on Vercel)
     try {
-      const page = await browser.newPage();
-      await page.setContent(html, { waitUntil: 'networkidle' });
+      const { chromium } = await import('playwright');
 
-      const pdfBuffer = await page.pdf({
-        format: 'A4',
-        printBackground: true,
-        margin: { top: 0, right: 0, bottom: 0, left: 0 },
-        displayHeaderFooter: false,
+      const browser = await chromium.launch({
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
       });
 
-      return new NextResponse(pdfBuffer, {
+      try {
+        const page = await browser.newPage();
+        await page.setContent(html, { waitUntil: 'networkidle' });
+
+        const pdfBuffer = await page.pdf({
+          format: 'A4',
+          printBackground: true,
+          margin: { top: 0, right: 0, bottom: 0, left: 0 },
+          displayHeaderFooter: false,
+        });
+
+        return new NextResponse(pdfBuffer, {
+          headers: {
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': 'attachment; filename="BYLDRS_GUARDIAN_20_Point_Shield_Marketers_Pack.pdf"',
+          },
+        });
+      } finally {
+        await browser.close();
+      }
+    } catch (playwrightError) {
+      console.warn('[Shield PDF] Playwright not available, falling back to HTML:', playwrightError);
+      // Fallback: return the styled HTML for client-side printing / save-as-PDF
+      return new NextResponse(html, {
         headers: {
-          'Content-Type': 'application/pdf',
-          'Content-Disposition': 'attachment; filename="BYLDRS_GUARDIAN_20_Point_Shield_Marketers_Pack.pdf"',
+          'Content-Type': 'text/html; charset=utf-8',
+          'Content-Disposition': 'inline; filename="BYLDRS_GUARDIAN_20_Point_Shield_Marketers_Pack.html"',
         },
       });
-    } finally {
-      await browser.close();
     }
   } catch (error) {
     console.error('PDF generation error:', error);

@@ -94,17 +94,38 @@ export function ShieldScriptsView() {
     try {
       const res = await fetch('/api/shield-pdf');
       if (!res.ok) throw new Error('Failed to generate PDF');
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'BYLDRS_GUARDIAN_20_Point_Shield_Marketers_Pack.pdf';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      const contentType = res.headers.get('content-type') || '';
+
+      if (contentType.includes('application/pdf')) {
+        // Got a real PDF blob — download directly
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'BYLDRS_GUARDIAN_20_Point_Shield_Marketers_Pack.pdf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } else {
+        // Got HTML fallback (Playwright not available) — open in new tab for print
+        const html = await res.text();
+        const blob = new Blob([html], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const win = window.open(url, '_blank');
+        if (!win) {
+          // Popup blocked — download HTML file
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'BYLDRS_GUARDIAN_20_Point_Shield_Marketers_Pack.html';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }
+        URL.revokeObjectURL(url);
+      }
     } catch {
-      // Fallback to text download
+      // Final fallback to text download
       const content = shieldScripts
         .map(
           (s) =>

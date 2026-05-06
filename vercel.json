@@ -1,0 +1,31 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "buildCommand": "npx prisma generate && next build",
+  "installCommand": "npm install && npx prisma generate",
+  "regions": ["iad1"],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    }
+  ],
+  "functions": {
+    "src/app/api/shield-pdf/route.ts": {
+      "maxDuration": 60
+    },
+    "src/app/api/guardian-ai/route.ts": {
+      "maxDuration": 30
+    },
+    "src/app/api/ghl/rescue-lead/route.ts": {
+      "maxDuration": 15
+    },
+    "src/app/api/contact/route.ts": {
+      "maxDuration": 15
+    }
+  }
+}
