@@ -125,7 +125,7 @@ export async function GET(_req: NextRequest) {
           displayHeaderFooter: false,
         });
 
-        return new NextResponse(pdfBuffer, {
+        return new NextResponse(new Uint8Array(pdfBuffer), {
           headers: {
             'Content-Type': 'application/pdf',
             'Content-Disposition': 'attachment; filename="BYLDRS_GUARDIAN_20_Point_Shield_Marketers_Pack.pdf"',

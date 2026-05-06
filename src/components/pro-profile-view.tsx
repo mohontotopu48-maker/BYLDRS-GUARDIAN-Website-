@@ -37,7 +37,7 @@ const fadeUp = {
   visible: (i: number = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.08, duration: 0.5, ease: 'easeOut' },
+    transition: { delay: i * 0.08, duration: 0.5, ease: 'easeOut' as const },
   }),
 };
 
@@ -484,6 +484,7 @@ export function ProProfileView() {
                   label="Workers' Comp"
                   value={pro.workersComp ? 'Active' : 'Not Found'}
                   verified={pro.workersComp}
+                  verifiedDate={null}
                 />
                 <VerificationRow
                   icon={Calendar}
@@ -566,6 +567,7 @@ function VerificationRow({
   verified,
   verifiedDate,
   highlight,
+  detail,
 }: {
   icon: React.ElementType;
   label: string;
@@ -573,6 +575,7 @@ function VerificationRow({
   verified: boolean;
   verifiedDate: string | null;
   highlight?: boolean;
+  detail?: string;
 }) {
   return (
     <div className="flex items-start gap-3">

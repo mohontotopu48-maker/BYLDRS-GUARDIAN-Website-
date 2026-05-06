@@ -153,7 +153,7 @@ function StandardFlyout({
                   onClose();
                   if (item.scrollTo) {
                     setTimeout(() => {
-                      document.querySelector(item.scrollTo)?.scrollIntoView({ behavior: 'smooth' });
+                      document.querySelector(item.scrollTo!)?.scrollIntoView({ behavior: 'smooth' });
                     }, 200);
                   }
                 }}
