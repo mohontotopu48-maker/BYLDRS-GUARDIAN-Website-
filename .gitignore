@@ -62,3 +62,9 @@ server.log
 
 # Skills directory
 /skills/
+
+# Z.ai scripts
+.zscripts/
+
+# Examples (reference code, not part of build)
+/examples/

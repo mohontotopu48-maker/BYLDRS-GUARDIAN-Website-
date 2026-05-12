@@ -5,7 +5,20 @@ import { motion } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
 
 /* ─── Policy Sections ──────────────────────────────────────── */
-const sections = [
+type SectionIcon = 'advice' | 'vault' | 'ip' | 'senior';
+
+interface PolicySection {
+  number: string;
+  title: string;
+  content?: string;
+  items?: { sub: string; text: string }[];
+  highlight?: boolean;
+  disclaimer?: boolean;
+  icon?: SectionIcon;
+  preamble?: string;
+}
+
+const sections: PolicySection[] = [
   {
     number: '1.0',
     title: 'THE SERVICE DEFINED',
@@ -16,7 +29,7 @@ const sections = [
     title: 'NO ARCHITECTURAL OR LEGAL ADVICE',
     content: 'The information provided in the Homeowner Academy, by the Guardian AI, or within a Guardian Risk Report is for educational and informational purposes only. It does not constitute legal, financial, or professional architectural advice. Users are encouraged to consult with licensed professionals for specific legal or structural concerns.',
     highlight: true,
-    icon: 'advice' as const,
+    icon: 'advice',
   },
   {
     number: '3.0',
@@ -36,7 +49,7 @@ const sections = [
       },
     ],
     highlight: true,
-    icon: 'vault' as const,
+    icon: 'vault',
   },
   {
     number: '4.0',
@@ -81,14 +94,14 @@ const sections = [
     title: 'INTELLECTUAL PROPERTY',
     content: 'The BYLDRS logo, the "20-Point Shield" methodology, and all video content in the Homeowner Academy are the exclusive property of the Company and VSUAL digitalmedia. Any unauthorized reproduction or "scraping" of this data for commercial use is strictly prohibited.',
     highlight: true,
-    icon: 'ip' as const,
+    icon: 'ip',
   },
   {
     number: '7.0',
     title: 'CALIFORNIA SENIOR CITIZEN PROTECTIONS',
     content: 'In accordance with California law, homeowners aged 65 or older are entitled to a five (5) business day right to cancel any service agreement made through this platform. All other users maintain a three (3) business day right to cancel.',
     highlight: true,
-    icon: 'senior' as const,
+    icon: 'senior',
   },
   {
     number: '8.0',

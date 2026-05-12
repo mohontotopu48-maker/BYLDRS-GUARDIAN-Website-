@@ -197,6 +197,201 @@ export function validateRescueLead(lead: Partial<RescueLeadData>): {
 }
 
 /**
+ * Upsert a contact in GoHighLevel CRM
+ * Creates a new contact or finds and updates an existing one.
+ */
+export async function upsertGHLContact(data: {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  zipCode?: string;
+  city?: string;
+  state?: string;
+  tags?: string[];
+  source?: string;
+  formType?: string;
+}): Promise<{ contactId: string; action: 'created' | 'updated' } | null> {
+  const apiKey = process.env.GHL_API_KEY;
+  const locationId = process.env.GHL_LOCATION_ID;
+
+  if (!apiKey || !locationId) {
+    console.warn('[GHL] Credentials not configured for upsertGHLContact');
+    return null;
+  }
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), GHL_REQUEST_TIMEOUT_MS);
+
+  try {
+    // Try to find existing contact by email or phone first
+    let existingContactId: string | null = null;
+
+    if (data.email) {
+      const searchResponse = await fetch(
+        `${GHL_API_BASE}/contacts/?query=${encodeURIComponent(data.email)}`,
+        {
+          signal: controller.signal,
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Version': '2021-07-28',
+            'Accept': 'application/json',
+          },
+        },
+      );
+
+      if (searchResponse.ok) {
+        const searchData = await searchResponse.json();
+        const match = searchData?.contacts?.find(
+          (c: Record<string, unknown>) => c.email === data.email,
+        );
+        if (match?.id) {
+          existingContactId = String(match.id);
+        }
+      }
+    }
+
+    const payload: GHLContactPayload = {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      phone: data.phone,
+      address: data.zipCode ? { zip: data.zipCode } : undefined,
+      tags: [
+        'BYLDRS GUARDIAN',
+        data.formType ? `Form: ${data.formType}` : '',
+        data.source || 'Website',
+        ...(data.tags || []),
+      ].filter(Boolean),
+      customFields: [
+        { id: '', field_key: 'lead_source', value: data.source || 'Website' },
+        { id: '', field_key: 'form_type', value: data.formType || '' },
+        ...(data.zipCode ? [{ id: '', field_key: 'zip_code', value: data.zipCode }] : []),
+      ],
+    };
+
+    const action: 'created' | 'updated' = existingContactId ? 'updated' : 'created';
+    const method = existingContactId ? 'PUT' : 'POST';
+    const url = existingContactId
+      ? `${GHL_API_BASE}/contacts/${existingContactId}`
+      : `${GHL_API_BASE}/contacts/`;
+
+    const response = await fetch(url, {
+      method,
+      signal: controller.signal,
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Version': '2021-07-28',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      console.error('[GHL] Contact upsert failed:', response.status, errorBody);
+      return null;
+    }
+
+    const responseData = await response.json();
+    const contactId = responseData?.contact?.id || responseData?.id || existingContactId;
+
+    if (!contactId) {
+      console.warn('[GHL] Contact upsert succeeded but no ID returned');
+      return null;
+    }
+
+    console.log(`[GHL] Contact ${action}: ${contactId}`);
+    return { contactId: String(contactId), action };
+  } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      console.error('[GHL] Upsert request timed out');
+      return null;
+    }
+    console.error('[GHL] upsertGHLContact error:', error);
+    return null;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
+/**
+ * Create a calendar appointment in GoHighLevel
+ */
+export async function createGHLAppointment(data: {
+  contactId: string;
+  calendarId?: string;
+  startTime: string;
+  selectedDate: string;
+  title: string;
+  description?: string;
+}): Promise<{ appointmentId: string } | null> {
+  const apiKey = process.env.GHL_API_KEY;
+  const locationId = process.env.GHL_LOCATION_ID;
+
+  if (!apiKey || !locationId) {
+    console.warn('[GHL] Credentials not configured for createGHLAppointment');
+    return null;
+  }
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), GHL_REQUEST_TIMEOUT_MS);
+
+  try {
+    const calendarId = data.calendarId || 'default';
+
+    const payload = {
+      contactId: data.contactId,
+      calendarId,
+      title: data.title,
+      description: data.description || '',
+      startTime: `${data.selectedDate}T${data.startTime}`,
+      endTime: `${data.selectedDate}T${data.startTime}`, // Default to same time
+      location: { type: 'online' } as const,
+    };
+
+    const response = await fetch(`${GHL_API_BASE}/calendars/events/appointments`, {
+      method: 'POST',
+      signal: controller.signal,
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Version': '2021-07-28',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      console.error('[GHL] Appointment creation failed:', response.status, errorBody);
+      return null;
+    }
+
+    const responseData = await response.json();
+    const appointmentId = responseData?.appointment?.id || responseData?.id;
+
+    if (!appointmentId) {
+      console.warn('[GHL] Appointment created but no ID returned');
+      return null;
+    }
+
+    console.log(`[GHL] Appointment created: ${appointmentId}`);
+    return { appointmentId: String(appointmentId) };
+  } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      console.error('[GHL] Appointment request timed out');
+      return null;
+    }
+    console.error('[GHL] createGHLAppointment error:', error);
+    return null;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
+/**
  * Check if a deposit amount violates CA BPC §7159
  */
 export function checkDepositViolation(amount: number, totalContractPrice?: number): {

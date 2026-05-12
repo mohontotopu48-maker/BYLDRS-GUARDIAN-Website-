@@ -25,6 +25,10 @@ import { ProtectionGuideDownloadView } from '@/components/protection-guide-downl
 import { VaultView } from '@/components/vault-view';
 import { EnrollShieldView } from '@/components/enroll-shield-view';
 import { ShieldScriptsView } from '@/components/shield-scripts-view';
+import { PrivacyPolicyView } from '@/components/privacy-policy-view';
+import { TermsOfServiceView } from '@/components/terms-of-service-view';
+import { CookiePolicyView } from '@/components/cookie-policy-view';
+import { LicensesView } from '@/components/licenses-view';
 import { Footer } from '@/components/footer';
 import { useAppStore, initHashRouting } from '@/lib/store';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -77,6 +81,14 @@ function PageView({ page }: { page: string }) {
       return <EnrollShieldView />;
     case 'shield-scripts':
       return <ShieldScriptsView />;
+    case 'privacy-policy':
+      return <PrivacyPolicyView />;
+    case 'terms-of-service':
+      return <TermsOfServiceView />;
+    case 'cookie-policy':
+      return <CookiePolicyView />;
+    case 'licenses':
+      return <LicensesView />;
     default:
       return <HomePage />;
   }

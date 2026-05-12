@@ -14,7 +14,7 @@ export interface VaultSyncedBid {
   reportId: string;
 }
 
-export type PageView = 'home' | 'dashboard' | 'pro-onboarding' | 'blog' | 'contact' | 'check-my-pro' | 'the-standard' | 'why-us' | 'pro-profile' | 'tier-2' | 'tier-3' | 'property-story' | 'protection-guide-download' | 'vault' | 'enroll-shield' | 'shield-scripts';
+export type PageView = 'home' | 'dashboard' | 'pro-onboarding' | 'blog' | 'contact' | 'check-my-pro' | 'the-standard' | 'why-us' | 'pro-profile' | 'tier-2' | 'tier-3' | 'property-story' | 'protection-guide-download' | 'vault' | 'enroll-shield' | 'shield-scripts' | 'privacy-policy' | 'terms-of-service' | 'cookie-policy' | 'licenses';
 
 /* ─── Page title map for dynamic document.title ──────────────────────── */
 export const PAGE_TITLES: Record<PageView, string> = {
@@ -34,6 +34,10 @@ export const PAGE_TITLES: Record<PageView, string> = {
   vault: 'Homeowner Vault – BYLDRS GUARDIAN',
   'enroll-shield': 'Enroll in Shield – BYLDRS GUARDIAN',
   'shield-scripts': "Marketer's Pack – BYLDRS GUARDIAN",
+  'privacy-policy': 'Privacy Policy – BYLDRS GUARDIAN',
+  'terms-of-service': 'Terms of Service – BYLDRS GUARDIAN',
+  'cookie-policy': 'Cookie Policy – BYLDRS GUARDIAN',
+  licenses: 'Licenses – BYLDRS GUARDIAN',
 };
 
 /* ─── Helpers for URL hash sync ───────────────────────────────────────── */
@@ -50,6 +54,7 @@ function hashToPage(hash: string): PageView {
     'check-my-pro', 'the-standard', 'why-us', 'pro-profile',
     'tier-2', 'tier-3', 'property-story',
     'protection-guide-download', 'vault', 'enroll-shield', 'shield-scripts',
+    'privacy-policy', 'terms-of-service', 'cookie-policy', 'licenses',
   ];
   const clean = hash.replace(HASH_PREFIX, '').replace(/^\/+/, '').replace(/\/+$/, '') as PageView;
   if (!clean) return 'home';
